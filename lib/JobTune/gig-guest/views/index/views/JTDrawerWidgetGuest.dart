@@ -124,27 +124,6 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     }
                   }),
                   Divider(height: 16, color: Colors.blueGrey),
-                  ListView.builder(
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text(
-                          drawerItems[index].name!,
-                          style: boldTextStyle(color: Colors.black),
-                        ),
-                      ).onTap(() {
-                        finish(context);
-                        appStore.setDrawerItemIndex(index);
-
-                        drawerItems[index].widget.launch(context);
-                      });
-                    },
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.only(top: 8, bottom: 8),
-                    itemCount: drawerItems.length,
-                    shrinkWrap: true,
-                  ),
-                  Divider(height: 16, color: Colors.blueGrey),
                   (login == true)
                   ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +180,7 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                               DTDashboardScreen().launch(context, isNewTask: true);
                             }
                           }),
-                          SizedBox(width:100),
+                          SizedBox(width:150),
                           Icon(
                             Icons.arrow_forward_ios,
                             size: 15,
@@ -224,6 +203,27 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                       }),
                     ],
                   ),
+//                  Divider(height: 16, color: Colors.blueGrey),
+//                  ListView.builder(
+//                    itemBuilder: (context, index) {
+//                      return Container(
+//                        padding: EdgeInsets.all(16),
+//                        child: Text(
+//                          drawerItems[index].name!,
+//                          style: boldTextStyle(color: Colors.black),
+//                        ),
+//                      ).onTap(() {
+//                        finish(context);
+//                        appStore.setDrawerItemIndex(index);
+//
+//                        drawerItems[index].widget.launch(context);
+//                      });
+//                    },
+//                    physics: NeverScrollableScrollPhysics(),
+//                    padding: EdgeInsets.only(top: 8, bottom: 8),
+//                    itemCount: drawerItems.length,
+//                    shrinkWrap: true,
+//                  ),
                 ],
               ),
             ),
