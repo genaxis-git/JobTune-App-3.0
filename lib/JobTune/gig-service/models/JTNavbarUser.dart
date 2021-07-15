@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatMessageModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
@@ -30,7 +30,6 @@ import 'package:prokit_flutter/defaultTheme/screen/DTSearchScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTSignInScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTSignUpScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTWalkThoughScreen.dart';
-import 'package:prokit_flutter/main/model/ListModels.dart';
 import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'dart:core';
 
@@ -50,26 +49,28 @@ import 'package:prokit_flutter/dashboard/utils/DbImages.dart';
 const sender_id = 1;
 const receiver_id = 2;
 
-List<ListModel> getDrawerItemsService() {
-  List<ListModel> drawerItems = [];
+class NavbarUserList {
+  String? name;
+  Widget? widget;
 
-  drawerItems.add(ListModel(name: 'My Profile', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: 'Business Profile', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: 'Post Service', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: 'My Service', widget: DTSignInScreen()));
-  drawerItems.add(ListModel(name: 'Timetable', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Clocking', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Verify Clocking', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Service History', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Transaction', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Change Password', widget: DTForgotPwdScreen()));
+  NavbarUserList({this.name, this.widget});
+}
 
-  drawerItems.add(ListModel(name: 'Cancellation & Refund', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Terms & Condition', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Privacy Policy', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'About', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'FAQ', widget: DTFAQScreen()));
-  if (isMobile) drawerItems.add(ListModel(name: 'Contact Us', widget: DTContactUsScreen()));
+List<NavbarUserList> getDrawerItemsService() {
+  List<NavbarUserList> drawerItems = [];
+
+  drawerItems.add(NavbarUserList(name: 'My Profile', widget: JTAccountScreenUser()));
+  drawerItems.add(NavbarUserList(name: 'Timetable', widget: DTAboutScreen()));
+  drawerItems.add(NavbarUserList(name: 'Verify Clocking', widget: DTAboutScreen()));
+  drawerItems.add(NavbarUserList(name: 'Transaction', widget: DTAboutScreen()));
+  drawerItems.add(NavbarUserList(name: 'Change Password', widget: DTForgotPwdScreen()));
+
+//  drawerItems.add(NavbarUserList(name: 'Cancellation & Refund', widget: DTAboutScreen()));
+//  drawerItems.add(NavbarUserList(name: 'Terms & Condition', widget: DTAboutScreen()));
+//  drawerItems.add(NavbarUserList(name: 'Privacy Policy', widget: DTAboutScreen()));
+//  drawerItems.add(NavbarUserList(name: 'About', widget: DTAboutScreen()));
+//  drawerItems.add(NavbarUserList(name: 'FAQ', widget: DTFAQScreen()));
+//  if (isMobile) drawerItems.add(NavbarUserList(name: 'Contact Us', widget: DTContactUsScreen()));
 
   return drawerItems;
 }

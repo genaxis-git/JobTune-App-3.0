@@ -3,6 +3,8 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-service/models/JTNavbarUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTOnboardingScreenProvider.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDashboardScreen.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/main/model/ListModels.dart';
@@ -13,6 +15,8 @@ import 'package:prokit_flutter/widgets/materialWidgets/mwAppStrucutreWidgets/MWD
 import '../../../../main.dart';
 import 'JTDashboardScreenUser.dart';
 
+bool seen = false;
+
 class JTDrawerWidgetUser extends StatefulWidget {
   static String tag = '/JTDrawerWidgetUser';
 
@@ -21,7 +25,7 @@ class JTDrawerWidgetUser extends StatefulWidget {
 }
 
 class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
-  List<ListModel> drawerItems = getDrawerItemsService();
+  List<NavbarUserList> drawerItems = getDrawerItemsService();
   var scrollController = ScrollController();
 
   @override
@@ -137,6 +141,20 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                     itemCount: drawerItems.length,
                     shrinkWrap: true,
                   ),
+                  Divider(height: 16, color: viewLineColor),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Logout', style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+
+                    if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                      JTAccountScreenUser().launch(context, isNewTask: true);
+                    } else {
+                      DTDashboardScreen().launch(context, isNewTask: true);
+                    }
+                  }),
                 ],
               ),
             ),

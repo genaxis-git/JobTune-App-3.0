@@ -50,17 +50,22 @@ import 'JTNewVacancies.dart';
 const sender_id = 1;
 const receiver_id = 2;
 
-List<ListModel> getDrawerItemsGuest() {
-  List<ListModel> drawerItems = [];
+class NavbarGuestItems {
+  String? name;
+  Widget? widget;
 
-  drawerItems.add(ListModel(name: 'Sign Up', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: 'Sign In', widget: DTSignInScreen()));
-  drawerItems.add(ListModel(name: 'Forgot Password', widget: DTForgotPwdScreen()));
-  drawerItems.add(ListModel(name: 'About', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'FAQ', widget: DTFAQScreen()));
-  if (isMobile) drawerItems.add(ListModel(name: 'Contact Us', widget: DTContactUsScreen()));
+  NavbarGuestItems({this.name, this.widget});
+}
 
+List<NavbarGuestItems> getDrawerItemsGuest() {
+  List<NavbarGuestItems> drawerItems = [];
 
+  drawerItems.add(NavbarGuestItems(name: 'About', widget: DTAboutScreen()));
+  drawerItems.add(NavbarGuestItems(name: 'FAQ', widget: DTFAQScreen()));
+  drawerItems.add(NavbarGuestItems(name: 'Cancellation & Refund', widget: DTAboutScreen()));
+  drawerItems.add(NavbarGuestItems(name: 'Terms & Conditions', widget: DTAboutScreen()));
+  drawerItems.add(NavbarGuestItems(name: 'Privacy Policy', widget: DTAboutScreen()));
+  if (isMobile) drawerItems.add(NavbarGuestItems(name: 'Contact Us', widget: DTContactUsScreen()));
   return drawerItems;
 }
 

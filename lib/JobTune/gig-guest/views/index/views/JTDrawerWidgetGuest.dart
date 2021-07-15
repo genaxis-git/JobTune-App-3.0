@@ -1,8 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/account/JTAccountScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTOnboardingScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDashboardScreen.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
@@ -14,6 +18,11 @@ import 'package:prokit_flutter/widgets/materialWidgets/mwAppStrucutreWidgets/MWD
 import '../../../../../../main.dart';
 import 'JTDashboardScreenGuest.dart';
 
+bool login = false;
+//bool login = true;
+bool seen = false;
+
+
 class JTDrawerWidgetGuest extends StatefulWidget {
   static String tag = '/JTDrawerWidgetGuest';
 
@@ -22,7 +31,7 @@ class JTDrawerWidgetGuest extends StatefulWidget {
 }
 
 class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
-  List<ListModel> drawerItems = getDrawerItemsGuest();
+  List<NavbarGuestItems> drawerItems = getDrawerItemsGuest();
   var scrollController = ScrollController();
 
   @override
@@ -119,12 +128,8 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     itemBuilder: (context, index) {
                       return Container(
                         padding: EdgeInsets.all(16),
-//                        decoration: BoxDecoration(
-//                          color: appStore.selectedDrawerItem == index ? appColorPrimary.withOpacity(0.3) : appStore.scaffoldBackground,
-//                        ),
                         child: Text(
                           drawerItems[index].name!,
-//                          style: boldTextStyle(color: appStore.selectedDrawerItem == index ? appColorPrimary : appStore.textPrimaryColor),
                           style: boldTextStyle(color: Colors.black),
                         ),
                       ).onTap(() {
@@ -138,6 +143,86 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     padding: EdgeInsets.only(top: 8, bottom: 8),
                     itemCount: drawerItems.length,
                     shrinkWrap: true,
+                  ),
+                  Divider(height: 16, color: Colors.blueGrey),
+                  (login == true)
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        appStore.setDrawerItemIndex(-1);
+
+                        if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                          JTDashboardScreenProduct().launch(context, isNewTask: true);
+                        } else {
+                          DTDashboardScreen().launch(context, isNewTask: true);
+                        }
+                      }),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('Forgot Password', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        appStore.setDrawerItemIndex(-1);
+
+                        if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                          JTDashboardScreenProduct().launch(context, isNewTask: true);
+                        } else {
+                          DTDashboardScreen().launch(context, isNewTask: true);
+                        }
+                      }),
+                    ],
+                  )
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            child: Text('Provider', style: boldTextStyle(color: Colors.black)),
+                          ).onTap(() {
+                            appStore.setDrawerItemIndex(-1);
+
+                            if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                              if(seen == false){
+                                JTOnboardingScreenProvider().launch(context, isNewTask: true);
+                              }
+                              else{
+                                JTAccountScreen().launch(context, isNewTask: true);
+                              }
+                            } else {
+                              DTDashboardScreen().launch(context, isNewTask: true);
+                            }
+                          }),
+                          SizedBox(width:100),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 15,
+                          ),
+                          SizedBox(width:0),
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('Logout', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        appStore.setDrawerItemIndex(-1);
+
+                        if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                          JTDashboardScreenProduct().launch(context, isNewTask: true);
+                        } else {
+                          DTDashboardScreen().launch(context, isNewTask: true);
+                        }
+                      }),
+                    ],
                   ),
                 ],
               ),
