@@ -117,17 +117,17 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
                   }),
-                  Divider(height: 16, color: viewLineColor),
+                  Divider(height: 16, color: Colors.blueGrey),
                   ListView.builder(
                     itemBuilder: (context, index) {
                       return Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: appStore.selectedDrawerItem == index ? appColorPrimary.withOpacity(0.3) : appStore.scaffoldBackground,
+//                          color: appStore.selectedDrawerItem == index ? appColorPrimary.withOpacity(0.3) : appStore.scaffoldBackground,
                         ),
                         child: Text(
                           drawerItems[index].name!,
-                          style: boldTextStyle(color: appStore.selectedDrawerItem == index ? appColorPrimary : appStore.textPrimaryColor),
+                          style: boldTextStyle(color: Colors.black),
                         ),
                       ).onTap(() {
                         finish(context);
@@ -141,20 +141,6 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                     itemCount: drawerItems.length,
                     shrinkWrap: true,
                   ),
-                  Divider(height: 16, color: viewLineColor),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    child: Text('Logout', style: boldTextStyle(color: Colors.black)),
-                  ).onTap(() {
-                    appStore.setDrawerItemIndex(-1);
-
-                    if (isMobile) {
-//                      ProKitLauncher().launch(context, isNewTask: true);
-                      JTAccountScreenUser().launch(context, isNewTask: true);
-                    } else {
-                      DTDashboardScreen().launch(context, isNewTask: true);
-                    }
-                  }),
                 ],
               ),
             ),

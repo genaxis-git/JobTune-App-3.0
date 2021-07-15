@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatMessageModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
@@ -59,18 +60,11 @@ class NavbarUserList {
 List<NavbarUserList> getDrawerItemsService() {
   List<NavbarUserList> drawerItems = [];
 
-  drawerItems.add(NavbarUserList(name: 'My Profile', widget: JTAccountScreenUser()));
+  drawerItems.add(NavbarUserList(name: 'My Account', widget: JTAccountScreenUsers()));
   drawerItems.add(NavbarUserList(name: 'Timetable', widget: DTAboutScreen()));
   drawerItems.add(NavbarUserList(name: 'Verify Clocking', widget: DTAboutScreen()));
   drawerItems.add(NavbarUserList(name: 'Transaction', widget: DTAboutScreen()));
-  drawerItems.add(NavbarUserList(name: 'Change Password', widget: DTForgotPwdScreen()));
 
-//  drawerItems.add(NavbarUserList(name: 'Cancellation & Refund', widget: DTAboutScreen()));
-//  drawerItems.add(NavbarUserList(name: 'Terms & Condition', widget: DTAboutScreen()));
-//  drawerItems.add(NavbarUserList(name: 'Privacy Policy', widget: DTAboutScreen()));
-//  drawerItems.add(NavbarUserList(name: 'About', widget: DTAboutScreen()));
-//  drawerItems.add(NavbarUserList(name: 'FAQ', widget: DTFAQScreen()));
-//  if (isMobile) drawerItems.add(NavbarUserList(name: 'Contact Us', widget: DTContactUsScreen()));
 
   return drawerItems;
 }
