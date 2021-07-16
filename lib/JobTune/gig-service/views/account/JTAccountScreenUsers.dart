@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -46,12 +48,12 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         children: [
           Row(
             children: [
-              Image.asset(profileImage, height: 70, width: 70, fit: BoxFit.cover).cornerRadiusWithClipRRect(40),
+              Image.asset("images/dashboard/db_profile.jpeg", height: 70, width: 70, fit: BoxFit.cover).cornerRadiusWithClipRRect(40),
               16.width,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("John", style: primaryTextStyle()),
+                  Text("John Doe", style: primaryTextStyle()),
                   2.height,
                   Text("John@gmail.com", style: primaryTextStyle()),
                 ],
@@ -70,10 +72,10 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'Change Password', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTChangePasswordScreen().launch(context);
           }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
           settingItem(context, 'Notifications', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
