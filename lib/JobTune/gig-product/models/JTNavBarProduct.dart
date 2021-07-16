@@ -44,8 +44,9 @@ import 'package:prokit_flutter/dashboard/model/db7/Db7Model.dart';
 import 'package:prokit_flutter/dashboard/model/db8/Db8Model.dart';
 import 'package:prokit_flutter/dashboard/utils/DbImages.dart';
 
-//import 'JTNewVacanciesUser.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
 
+//import 'JTNewVacanciesUser.dart';
 
 const sender_id = 1;
 const receiver_id = 2;
@@ -53,17 +54,23 @@ const receiver_id = 2;
 List<ListModel> getDrawerItemsProduct() {
   List<ListModel> drawerItems = [];
 
-  drawerItems.add(ListModel(name: 'My Profile', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: 'Timetable', widget: DTSignUpScreen()));
-  drawerItems.add(ListModel(name: '...', widget: DTSignUpScreen()));
+  drawerItems
+      .add(ListModel(name: 'Provider Account', widget: JTAccountScreenUsers()));
+  drawerItems
+      .add(ListModel(name: 'Purchase History', widget: DTSignUpScreen()));
+  // drawerItems.add(ListModel(name: '...', widget: DTSignUpScreen()));
 
-  drawerItems.add(ListModel(name: 'Change Password', widget: DTForgotPwdScreen()));
-  drawerItems.add(ListModel(name: 'Cancellation & Refund', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Terms & Condition', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'Privacy Policy', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'About', widget: DTAboutScreen()));
-  drawerItems.add(ListModel(name: 'FAQ', widget: DTFAQScreen()));
-  if (isMobile) drawerItems.add(ListModel(name: 'Contact Us', widget: DTContactUsScreen()));
+  // drawerItems
+  //     .add(ListModel(name: 'Change Password', widget: DTForgotPwdScreen()));
+  // drawerItems
+  //     .add(ListModel(name: 'Cancellation & Refund', widget: DTAboutScreen()));
+  // drawerItems
+  //     .add(ListModel(name: 'Terms & Condition', widget: DTAboutScreen()));
+  // drawerItems.add(ListModel(name: 'Privacy Policy', widget: DTAboutScreen()));
+  // drawerItems.add(ListModel(name: 'About', widget: DTAboutScreen()));
+  // drawerItems.add(ListModel(name: 'FAQ', widget: DTFAQScreen()));
+  // if (isMobile)
+  //   drawerItems.add(ListModel(name: 'Contact Us', widget: DTContactUsScreen()));
 
   return drawerItems;
 }

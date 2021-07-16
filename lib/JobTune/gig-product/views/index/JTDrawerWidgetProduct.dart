@@ -14,7 +14,6 @@ import 'package:prokit_flutter/widgets/materialWidgets/mwAppStrucutreWidgets/MWD
 
 import '../../../../main.dart';
 
-
 class JTDrawerWidgetProduct extends StatefulWidget {
   static String tag = '/JTDrawerWidgetProduct';
 
@@ -61,11 +60,13 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   16.height,
-                  Text('Gig Product', style: secondaryTextStyle(size: 12)).paddingOnly(left: 16),
+                  Text('Gig Product', style: secondaryTextStyle(size: 12))
+                      .paddingOnly(left: 16),
                   4.height,
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Home', style: boldTextStyle(color: Colors.black)),
+                    child:
+                        Text('Home', style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
@@ -78,7 +79,8 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Service', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Service',
+                        style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
@@ -91,7 +93,8 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Nomad',
+                        style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
@@ -104,13 +107,15 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Product', style: boldTextStyle(color: appColorPrimary)),
+                    child: Text('Gig Product',
+                        style: boldTextStyle(color: appColorPrimary)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
                     if (isMobile) {
 //                      ProKitLauncher().launch(context, isNewTask: true);
-                      JTDashboardScreenProduct().launch(context, isNewTask: true);
+                      JTDashboardScreenProduct()
+                          .launch(context, isNewTask: true);
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
@@ -121,11 +126,16 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                       return Container(
                         padding: EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: appStore.selectedDrawerItem == index ? appColorPrimary.withOpacity(0.3) : appStore.scaffoldBackground,
+                          color: appStore.selectedDrawerItem == index
+                              ? appColorPrimary.withOpacity(0.3)
+                              : appStore.scaffoldBackground,
                         ),
                         child: Text(
                           drawerItems[index].name!,
-                          style: boldTextStyle(color: appStore.selectedDrawerItem == index ? appColorPrimary : appStore.textPrimaryColor),
+                          style: boldTextStyle(
+                              color: appStore.selectedDrawerItem == index
+                                  ? appColorPrimary
+                                  : appStore.textPrimaryColor),
                         ),
                       ).onTap(() {
                         finish(context);

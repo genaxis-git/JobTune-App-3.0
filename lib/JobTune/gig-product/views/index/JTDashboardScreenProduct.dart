@@ -3,14 +3,17 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDashboardWidget.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
+import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
 
 class JTDashboardScreenProduct extends StatefulWidget {
   static String tag = '/JTDashboardScreenProduct';
   @override
-  _JTDashboardScreenProductState createState() => _JTDashboardScreenProductState();
+  _JTDashboardScreenProductState createState() =>
+      _JTDashboardScreenProductState();
 }
 
 class _JTDashboardScreenProductState extends State<JTDashboardScreenProduct> {
@@ -36,15 +39,13 @@ class _JTDashboardScreenProductState extends State<JTDashboardScreenProduct> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             backgroundColor: appStore.appBarColor,
-            title: appBarTitleWidget(context, 'JobTune'),
+            title: appBarTitleWidget(context, 'Gig Product'),
           ),
           drawer: JTDrawerWidgetProduct(),
 //          body: JTDashboardWidgetUser(),
-          body: Container(),
+          body: JTDashboardWidgetUser(),
         ),
       ),
     );
   }
 }
-
-
