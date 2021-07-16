@@ -5,7 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
+// import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -14,7 +14,6 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
-
 
 class JTAccountScreenUsers extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
@@ -48,7 +47,9 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         children: [
           Row(
             children: [
-              Image.asset("images/dashboard/db_profile.jpeg", height: 70, width: 70, fit: BoxFit.cover).cornerRadiusWithClipRRect(40),
+              Image.asset("images/dashboard/db_profile.jpeg",
+                      height: 70, width: 70, fit: BoxFit.cover)
+                  .cornerRadiusWithClipRRect(40),
               16.width,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,26 +73,26 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-            JTProfileScreenUser().launch(context);
+            // JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'Change Password', onTap: () {
             JTChangePasswordScreen().launch(context);
           }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
           settingItem(context, 'Notifications', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
-          }, leading: Icon(MaterialIcons.notifications_none), detail: SizedBox()),
+          },
+              leading: Icon(MaterialIcons.notifications_none),
+              detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                  "   GENERAL",
+              Text("   GENERAL",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
-                  )
-              ),
+                  )),
             ],
           ),
           settingItem(context, 'Help', onTap: () {
@@ -117,10 +118,10 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => JTDashboardSreenUser()),
+                  MaterialPageRoute(
+                      builder: (context) => JTDashboardSreenUser()),
                 );
-              }
-          ),
+              }),
         ),
         body: ContainerX(
           mobile: SingleChildScrollView(
@@ -128,7 +129,8 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
             child: Column(
               children: [
                 profileView(),
-                Divider(color: appDividerColor, height: 8).paddingOnly(top: 4, bottom: 4),
+                Divider(color: appDividerColor, height: 8)
+                    .paddingOnly(top: 4, bottom: 4),
                 options(),
               ],
             ),

@@ -9,7 +9,7 @@ import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTReviewModel.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAddressScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
+// import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTChatScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTContactUsScreen.dart';
@@ -21,7 +21,7 @@ import 'package:prokit_flutter/defaultTheme/screen/DTForgotPwdScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTMaintenanceScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTNoDataScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTNoResultScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTOrderSummaryScreen.dart';
+// import 'package:prokit_flutter/defaultTheme/screen/DTOrderSummaryScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTProductDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTProfileScreen.dart';
@@ -45,6 +45,7 @@ import 'package:prokit_flutter/dashboard/model/db8/Db8Model.dart';
 import 'package:prokit_flutter/dashboard/utils/DbImages.dart';
 
 import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
+import 'package:prokit_flutter/JobTune/gig-product/views/my_order/JTOrderScreen.dart';
 
 //import 'JTNewVacanciesUser.dart';
 
@@ -54,10 +55,11 @@ const receiver_id = 2;
 List<ListModel> getDrawerItemsProduct() {
   List<ListModel> drawerItems = [];
 
+  drawerItems.add(ListModel(name: 'My Order', widget: DTCartScreen()));
+  drawerItems.add(ListModel(name: 'Order History', widget: DTSignUpScreen()));
   drawerItems
       .add(ListModel(name: 'Provider Account', widget: JTAccountScreenUsers()));
-  drawerItems
-      .add(ListModel(name: 'Purchase History', widget: DTSignUpScreen()));
+
   // drawerItems.add(ListModel(name: '...', widget: DTSignUpScreen()));
 
   // drawerItems

@@ -108,12 +108,7 @@ class CartListViewState extends State<CartListView> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
                 4.height,
-                Text('Status : Pending',
-                    style: primaryTextStyle(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                4.height,
-                Text('Co-De : None',
+                Text('Status : Shipped',
                     style: primaryTextStyle(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -138,52 +133,11 @@ class CartListViewState extends State<CartListView> {
                           //   calculate();
                           // }),
                           6.width,
-                          Text('Co-De',
+                          Text('Receive Order',
                               style: boldTextStyle(color: whiteColor)),
                           6.width,
-                          Icon(Icons.add, color: whiteColor).onTap(() {
-                            mainCount = data.qty! + 1;
-                            data.qty = mainCount;
-
-                            calculate();
-                          }),
-                        ],
-                      ),
-                    ).onTap(() async {
-                      DTAddressListModel? model = await showInDialog(context,
-                          child: AddAddressDialog(),
-                          backgroundColor: Colors.transparent,
-                          contentPadding: EdgeInsets.all(0));
-
-                      if (model != null) {
-                        list.add(model);
-
-                        setState(() {});
-                      }
-                    }),
-                    8.width,
-                    Container(
-                      decoration: boxDecorationWithRoundedCorners(
-                        borderRadius: BorderRadius.circular(4),
-                        backgroundColor: appColorPrimaryDark,
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Icon(Icons.remove, color: whiteColor).onTap(() {
-                          //   var qty = data.qty!;
-                          //   if (qty <= 1) return;
-                          //   var q = qty - 1;
-                          //   data.qty = q;
-
-                          //   calculate();
-                          // }),
-                          6.width,
-                          Text('Status',
-                              style: boldTextStyle(color: whiteColor)),
-                          6.width,
-                          Icon(Icons.edit_outlined, color: whiteColor)
+                          Icon(Icons.assignment_turned_in_outlined,
+                                  color: whiteColor)
                               .onTap(() {
                             mainCount = data.qty! + 1;
                             data.qty = mainCount;
@@ -348,7 +302,7 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Update Status', style: boldTextStyle(size: 18)),
+                    Text('Confirm Order', style: boldTextStyle(size: 18)),
                     IconButton(
                       icon: Icon(Icons.close, color: appStore.iconColor),
                       onPressed: () {
@@ -357,58 +311,51 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
                     )
                   ],
                 ),
-                8.height,
-                DropdownButtonFormField(
-                  style: primaryTextStyle(),
-                  decoration: InputDecoration(
-                    // labelText: 'Co-De',
-                    contentPadding: EdgeInsets.all(16),
-                    labelStyle: secondaryTextStyle(),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(color: appColorPrimary)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide:
-                            BorderSide(color: appStore.textSecondaryColor!)),
-                  ),
-                  isExpanded: true,
-                  dropdownColor: appStore.appBarColor,
-                  value: selectedIndexCategory,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: appStore.iconColor,
-                  ),
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      toast(newValue);
-                      selectedIndexCategory = newValue;
-                    });
-                  },
-                  items: listOfCategory.map((category) {
-                    return DropdownMenuItem(
-                      child: Text(category, style: primaryTextStyle())
-                          .paddingLeft(8),
-                      value: category,
-                    );
-                  }).toList(),
-                ),
+                Text('Are you sure you have received this order?'),
                 16.height,
-                GestureDetector(
-                  onTap: () {
-                    validate();
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: appColorPrimary,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Center(
-                      child: Text("Submit", style: boldTextStyle(color: white)),
-                    ),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: GestureDetector(
+                          onTap: () {
+                            validate();
+                          },
+                          child: Container(
+                            // width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: appColorPrimary,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5))),
+                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                            child: Center(
+                              child: Text("Yes",
+                                  style: boldTextStyle(color: white)),
+                            ),
+                          ),
+                        )),
+                    8.width,
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          validate();
+                        },
+                        child: Container(
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: redColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child:
+                                Text("No", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 16.height,
               ],

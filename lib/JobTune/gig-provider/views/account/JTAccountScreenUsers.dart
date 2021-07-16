@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
 import '../ongoing_order/JTOrderScreen.dart';
+import '../co_de_booking/JTCoDeBookingScreen.dart';
 
 class JTAccountScreenUsers extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
@@ -87,6 +88,9 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           settingItem(context, 'Service History', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
           }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          settingItem(context, 'Co-De', onTap: () {
+            DTCartScreen1().launch(context);
+          }, leading: Icon(MaterialIcons.people_outline), detail: SizedBox()),
         ],
       );
     }
