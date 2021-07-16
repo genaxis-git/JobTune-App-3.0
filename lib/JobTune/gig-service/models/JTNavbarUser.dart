@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/transaction/JTTransactionScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/verify-clocking/JTVerifyScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatMessageModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTChatModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
@@ -61,10 +64,10 @@ List<NavbarUserList> getDrawerItemsService() {
   List<NavbarUserList> drawerItems = [];
 
   drawerItems.add(NavbarUserList(name: 'My Account', widget: JTAccountScreenUsers()));
-  drawerItems.add(NavbarUserList(name: 'Timetable', widget: DTAboutScreen()));
-  drawerItems.add(NavbarUserList(name: 'Verify Clocking', widget: DTAboutScreen()));
-  drawerItems.add(NavbarUserList(name: 'Transaction', widget: DTAboutScreen()));
-
+  drawerItems.add(NavbarUserList(name: 'Timetable', widget: JTScheduleScreenUser()));
+  drawerItems.add(NavbarUserList(name: 'Verify Clocking', widget: JTVerifyScreenUser()));
+  drawerItems.add(NavbarUserList(name: 'Transaction', widget: JTTransactionScreen()));
+  drawerItems.add(NavbarUserList(name: 'Filter', widget: DTFilterScreen()));
 
   return drawerItems;
 }
