@@ -5,6 +5,8 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
 // import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
@@ -73,8 +75,11 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-            // JTProfileScreenUser().launch(context);
+            JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
+          settingItem(context, 'Timetable', onTap: () {
+            JTScheduleScreenUser().launch(context);
+          }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
           settingItem(context, 'Change Password', onTap: () {
             JTChangePasswordScreen().launch(context);
           }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
