@@ -15,16 +15,18 @@ import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
 import '../ongoing_order/JTOrderScreen.dart';
 import '../co_de_booking/JTCoDeBookingScreen.dart';
-import '../add_post/add_post.dart';
+import './post_service.dart';
 
-class JTAccountScreenUsers extends StatefulWidget {
+class JTAddPost extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
 
   @override
-  _JTAccountScreenUsersState createState() => _JTAccountScreenUsersState();
+  _JTAddPostState createState() => _JTAddPostState();
 }
 
-class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
+class _JTAddPostState extends State<JTAddPost> {
+  var formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -115,27 +117,6 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       );
     }
 
-    Widget addServiceProduct() {
-      return FloatingActionButton.extended(
-          heroTag: '5',
-          label: Text(
-            "Post",
-            style: primaryTextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.blue,
-          icon: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            // toast('Icon with Label Fab');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => JTAddPost()),
-            );
-          });
-    }
-
     return Observer(
         builder: (_) => SafeArea(
               child: DefaultTabController(
@@ -148,7 +129,12 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
                     //   style: boldTextStyle(
                     //       color: appStore.textPrimaryColor, size: 20),
                     // ),
-                    title: appBarTitleWidget(context, 'Provider Account'),
+                    title: appBarTitleWidget(context, 'Add Post'),
+                    leading: IconButton(
+                        icon: Icon(Icons.arrow_back, color: Colors.black),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }),
                     bottom: TabBar(
                       onTap: (index) {
                         print(index);
@@ -166,8 +152,6 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
                       ],
                     ),
                   ),
-                  drawer: JTDrawerWidgetProduct(),
-                  floatingActionButton: addServiceProduct(),
                   body: TabBarView(
                     children: [
                       ContainerX(
@@ -175,10 +159,11 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
                             children: [
-                              profileView(),
+                              // profileView(),
+                              PostService(),
                               Divider(color: appDividerColor, height: 8)
                                   .paddingOnly(top: 4, bottom: 4),
-                              options(),
+                              // options(),
                             ],
                           ),
                         ),
@@ -202,10 +187,10 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
                             children: [
-                              profileView(),
+                              // profileView(),
                               Divider(color: appDividerColor, height: 8)
                                   .paddingOnly(top: 4, bottom: 4),
-                              options_product(),
+                              // options_product(),
                             ],
                           ),
                         ),
