@@ -1,23 +1,20 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTReviewScreen.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
-import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppConstant.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../../../main.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
 import 'JTDrawerWidget.dart';
 import 'JTAddressScreen.dart';
-import 'JTDrawerWidget.dart';
+import 'JTProductDetailWidget.dart';
+import 'JTReviewScreenUser.dart';
 import 'JTReviewWidget.dart';
+
+bool package = true;
 
 class JTProductDetail extends StatefulWidget {
   static String tag = '/JTProductDetail';
@@ -31,6 +28,15 @@ class JTProductDetail extends StatefulWidget {
 
 class _JTProductDetailState extends State<JTProductDetail> {
   var discount = 0.0;
+
+  var bookname = TextEditingController();
+  var bookemail = TextEditingController();
+  var bookphone = TextEditingController();
+  var bookaddress = TextEditingController();
+  var bookdesc = TextEditingController();
+
+  var passFocus = FocusNode();
+  DateTime selectedDate = DateTime.now();
 
   DTAddressListModel? mSelectedAddress;
 
@@ -59,6 +65,35 @@ class _JTProductDetailState extends State<JTProductDetail> {
     if (mounted) super.setState(fn);
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        helpText: 'Select your Booking date',
+        cancelText: 'Not Now',
+        confirmText: "Book",
+        fieldLabelText: 'Booking Date',
+        fieldHintText: 'Month/Date/Year',
+        errorFormatText: 'Enter valid date',
+        errorInvalidText: 'Enter date in valid range',
+        context: context,
+        builder: (BuildContext context, Widget? child) {
+          return JTCustomTheme(
+            child: child,
+          );
+        },
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        print(picked);
+        selectedDate = picked;
+      });
+  }
+
+  String hourcontroller = "00";
+  String mincontroller = "00";
+  int _hourController = 1;
+
   @override
   Widget build(BuildContext context) {
     Widget addToCartBtn() {
@@ -75,17 +110,324 @@ class _JTProductDetailState extends State<JTProductDetail> {
       });
     }
 
+    Widget checkCalendar() {
+      return Container(
+        height: 50,
+        width: context.width() / 2,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+        child: Text('Check Slot', style: boldTextStyle()),
+      ).onTap(() {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => JTScheduleScreenUser()),
+        );
+        // Do your logic
+      });
+    }
+
     Widget buyNowBtn() {
       return Container(
         height: 50,
         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
         alignment: Alignment.center,
         width: context.width() / 2,
-        decoration: BoxDecoration(color: appColorPrimary, boxShadow: defaultBoxShadow()),
-        child: Text('Buy Now', style: boldTextStyle(color: white)),
+        decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
+        child: Text('Book Now', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
-        DTCartScreen().launch(context);
+        showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+          backgroundColor: appStore.scaffoldBackground,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+          builder: (builder) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Booking Form', style: boldTextStyle(size: 24)),
+                    30.height,
+                    TextFormField(
+                      controller: bookname,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: 'Full Name',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      ),
+                      keyboardType: TextInputType.name,
+    //                          validator: (s) {
+    //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
+    //                            if (!s.trim().validateEmail()) return 'Email is invalid';
+    //                            return null;
+    //                          },
+    //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    16.height,
+                    TextFormField(
+                      controller: bookemail,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      ),
+                      keyboardType: TextInputType.name,
+                      //                          validator: (s) {
+                      //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      //                            if (!s.trim().validateEmail()) return 'Email is invalid';
+                      //                            return null;
+                      //                          },
+                      //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    16.height,
+                    TextFormField(
+                      controller: bookphone,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: 'Phone No.',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      ),
+                      keyboardType: TextInputType.name,
+                      //                          validator: (s) {
+                      //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      //                            if (!s.trim().validateEmail()) return 'Email is invalid';
+                      //                            return null;
+                      //                          },
+                      //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    16.height,
+                    TextFormField(
+                      controller: bookaddress,
+                      maxLines: 2,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: 'Full Address',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      ),
+                      keyboardType: TextInputType.name,
+                      //                          validator: (s) {
+                      //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      //                            if (!s.trim().validateEmail()) return 'Email is invalid';
+                      //                            return null;
+                      //                          },
+                      //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    16.height,
+                    TextFormField(
+                      controller: bookdesc,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: 'Description (optional)',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      ),
+                      keyboardType: TextInputType.name,
+                      //                          validator: (s) {
+                      //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      //                            if (!s.trim().validateEmail()) return 'Email is invalid';
+                      //                            return null;
+                      //                          },
+                      //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                      textInputAction: TextInputAction.next,
+                    ),
+                    16.height,
+                    Card(
+                        elevation: 4,
+                        child: ListTile(
+                          onTap: () {
+                            _selectDate(context);
+                          },
+                          title: Text(
+                            'Select your Booking date',
+                            style: primaryTextStyle(),
+                          ),
+                          subtitle: Text(
+                            "${selectedDate.toLocal()}".split(' ')[0],
+                            style: secondaryTextStyle(),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.date_range,
+                              color: appStore.iconColor,
+                            ),
+                            onPressed: () {
+                              _selectDate(context);
+                            },
+                          ),
+                        )),
+                    16.height,
+                    Text(
+                      "   Select Starting time:-",
+                      style: primaryTextStyle(),
+                      maxLines: 2,
+                    ),
+                    10.height,
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Hour',
+                              contentPadding: EdgeInsets.all(16),
+                              labelStyle: secondaryTextStyle(),
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                            ),
+                            value: hourcontroller,
+                            items:
+                            <String>
+                            ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
+                                .map((label) => DropdownMenuItem(
+                              child: Text(label.toString()),
+                              value: label,
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 14),
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Min',
+                              contentPadding: EdgeInsets.all(16),
+                              labelStyle: secondaryTextStyle(),
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                            ),
+                            value: mincontroller,
+                            items:
+                            <String>
+                            ['00','15','30','45']
+                                .map((label) => DropdownMenuItem(
+                              child: Text(label.toString()),
+                              value: label,
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    16.height,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        (package == true)
+                            ? Expanded(
+                                child: DropdownButtonFormField<int>(
+                                  decoration: InputDecoration(
+                                    labelText: 'Hour',
+                                    contentPadding: EdgeInsets.all(16),
+                                    labelStyle: secondaryTextStyle(),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                                  ),
+                                  value: _hourController,
+                                  items:
+                                  [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+                                      .map((label) => DropdownMenuItem(
+                                    child: Text(label.toString()),
+                                    value: label,
+                                  ))
+                                      .toList(),
+                                  onChanged: (value) {
+                                    setState(() {
+
+                                    });
+                                  },
+                                ),
+                              )
+                            : Container(),
+
+//                        Expanded(
+//                                child: DropdownButtonFormField<dynamic>(
+//                                  isExpanded: true,
+//                                  decoration: InputDecoration(
+//                                    labelText: "Choose package",
+//                                    labelStyle: TextStyle(fontSize: 14,color: Colors.grey.shade400),
+//                                    enabledBorder: OutlineInputBorder(
+//                                      borderRadius: BorderRadius.circular(20),
+//                                      borderSide: BorderSide(
+//                                        color: Colors.grey.shade300,
+//                                      ),
+//                                    ),
+//                                    focusedBorder: OutlineInputBorder(
+//                                        borderRadius: BorderRadius.circular(20),
+//                                        borderSide: BorderSide(
+//                                          color: Colors.blue,
+//                                        )
+//                                    ),
+//                                  ),
+//                                  value: packagecontroller,
+//                                  items:
+//                                  choices.map((label) => DropdownMenuItem(
+//                                    child: Text(label.toString()),
+//                                    value: label,
+//                                  ))
+//                                      .toList(),
+//                                  onChanged: (value) {
+//                                    setState(() {
+//
+//                                    });
+//                                  },
+//                                ),
+//                              ),
+                      ],
+                    ),
+                    16.height,
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                      decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                      child: Text('Pay Now', style: boldTextStyle(color: white, size: 18)),
+                    ).onTap(() {
+//                          DTSignUpScreen().launch(context);
+                    }),
+                  ]
+                ),
+              ),
+            );
+          },
+        );
       });
     }
 
@@ -93,8 +435,10 @@ class _JTProductDetailState extends State<JTProductDetail> {
       return Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          addToCartBtn(),
+//          addToCartBtn(),
+          checkCalendar(),
           buyNowBtn(),
+
         ],
       );
     }
@@ -110,18 +454,18 @@ class _JTProductDetailState extends State<JTProductDetail> {
               Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  priceWidget(widget.productModel!.discountPrice, fontSize: 28, textColor: appColorPrimary),
+                  JTpriceWidget(widget.productModel!.discountPrice, fontSize: 28, textColor: Color(0xFF0A79DF)),
                   8.width,
-                  priceWidget(widget.productModel!.price, applyStrike: true, fontSize: 18),
+                  JTpriceWidget(widget.productModel!.price, applyStrike: true, fontSize: 18),
                   16.width,
-                  Text('${discount.toInt()}% off', style: boldTextStyle(color: appColorPrimary)).visible(discount != 0.0),
+                  Text('${discount.toInt()}% off', style: boldTextStyle(color: Color(0xFF0A79DF))).visible(discount != 0.0),
                 ],
               ),
               10.height,
               Row(
                 children: [
                   Container(
-                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(16)),
+                    decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
                     padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
                     child: Row(
                       children: [
@@ -131,11 +475,11 @@ class _JTProductDetailState extends State<JTProductDetail> {
                       ],
                     ),
                   ).onTap(() {
-                    DTReviewScreen().launch(context);
+                    JTReviewScreenUser().launch(context);
                   }),
                   8.width,
                   Text('${Random.secure().nextInt(100).toString()} ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                    DTReviewScreen().launch(context);
+                    JTReviewScreenUser().launch(context);
                   }),
                 ],
               ),
@@ -151,14 +495,14 @@ class _JTProductDetailState extends State<JTProductDetail> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Deliver to', style: primaryTextStyle()),
+                      Text('Please come to', style: primaryTextStyle()),
                       10.width,
                       Text(mSelectedAddress != null ? mSelectedAddress!.name.validate() : 'John Doe', style: boldTextStyle()).expand(),
                     ],
                   ).expand(),
                   Container(
                     padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                    decoration: BoxDecoration(border: Border.all(color: Color(0xFF0A79DF)), borderRadius: BorderRadius.circular(3)),
                     child: Text('Change', style: primaryTextStyle()),
                   ).onTap(() async {
                     var res = await JTAddressScreen().launch(context);
@@ -176,16 +520,105 @@ class _JTProductDetailState extends State<JTProductDetail> {
               Text(mSelectedAddress != null ? mSelectedAddress!.addressLine1.validate() : '4683 Stadium Drive, Cambridge, MA', style: secondaryTextStyle()),
               16.height,
               Divider(height: 0),
+              Padding(
+                padding: EdgeInsets.fromLTRB(5, 20, 10, 30),
+                child: Text(
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae blandit ante. Donec aliquam aliquam nibh in tristique. Quisque molestie eget nisl et malesuada. Maecenas feugiat lectus rutrum lacus condimentum.",
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Tags: ",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 120,),
+                        Text(
+                          "Baby Sitting",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Available Day: ",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 68,),
+                        Text(
+                          "Monday, Tuesday, Friday",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Operating Hours: ",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(width: 52,),
+                        Text(
+                          "09:30:00 to 15:00:00",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+                  ],
+                ),
+              ),
+              Divider(height: 0),
             ],
           ).paddingAll(16),
-          settingItem(context, '\$10 Delivery in 2 days, Monday', leading: Icon(MaterialCommunityIcons.truck_delivery, color: appColorPrimary), textSize: 15, padding: 0.0, onTap: () {
-            mMoreOfferBottomSheet(context);
+          JTsettingItem(context, 'Location Available', leading: Icon(MaterialCommunityIcons.map_marker, color: Color(0xFF0A79DF)), textSize: 15, padding: 0.0, onTap: () {
+            locationAvailable(context);
           }),
-          settingItem(context, '7 Days return policy', leading: Icon(FontAwesome.exchange, color: appColorPrimary, size: 18), textSize: 15, padding: 0.0, onTap: () {
-            mMoreOfferBottomSheet(context);
-          }),
-          settingItem(context, 'Cash on Delivery', leading: Icon(MaterialIcons.attach_money, color: appColorPrimary), textSize: 15, padding: 0.0, onTap: () {
-            mMoreOfferBottomSheet(context);
+          JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
+            packagesAvailable(context);
           }),
         ],
       );
@@ -201,7 +634,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
               children: [
                 Container(
                   height: context.height() * 0.45,
-                  child: Image.network(
+                  child: Image.asset(
                     widget.productModel!.image!,
                     width: context.width(),
                     height: context.height() * 0.45,
@@ -251,7 +684,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
               ).expand(flex: 40),
               VerticalDivider(width: 0),
               Container(
-                decoration: boxDecoration(bgColor: appStore.scaffoldBackground),
+                decoration: JTboxDecoration(bgColor: appStore.scaffoldBackground),
                 child: SingleChildScrollView(
                   child: productDetail(),
                 ),
@@ -266,15 +699,156 @@ class _JTProductDetailState extends State<JTProductDetail> {
     }
 
     return Scaffold(
-      appBar: appBar(context, 'Detail'),
+      appBar: JTappBar(context, 'Detail'),
       drawer: JTDrawerWidgetUser(),
-      body: ContainerX(
+      body: JTContainerX(
         mobile: mobileWidget(),
         web: SingleChildScrollView(child: webWidget()),
         useFullWidth: true,
       ),
     );
   }
+}
+
+void locationAvailable(BuildContext aContext) {
+  showModalBottomSheet(
+    context: aContext,
+    backgroundColor: appStore.scaffoldBackground,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+    ),
+    builder: (builder) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              16.height,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+                  10.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Johor Bahru",
+                        style: boldTextStyle(size: 15),
+                        maxLines: 2,
+                      ),
+                      4.height,
+                    ],
+                  ).expand()
+                ],
+              ),
+              16.height,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+                  10.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Taman Baru Uda",
+                        style: boldTextStyle(size: 15),
+                        maxLines: 2,
+                      ),
+                      4.height,
+                    ],
+                  ).expand()
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void packagesAvailable(BuildContext aContext) {
+  showModalBottomSheet(
+    context: aContext,
+    backgroundColor: appStore.scaffoldBackground,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+    ),
+    builder: (builder) {
+      return SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              16.height,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+                  10.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Jamuan Hari Jadi (100 pax) RM 500",
+                        style: boldTextStyle(size: 15),
+                        maxLines: 2,
+                      ),
+                      4.height,
+                    ],
+                  ).expand()
+                ],
+              ),
+              16.height,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+                  10.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Jamuan Akikah (100 pax) RM 600",
+                        style: boldTextStyle(size: 15),
+                        maxLines: 2,
+                      ),
+                      4.height,
+                    ],
+                  ).expand()
+                ],
+              ),
+              16.height,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+                  10.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Jamuan Doa Selamat (100 pax) RM 300",
+                        style: boldTextStyle(size: 15),
+                        maxLines: 2,
+                      ),
+                      4.height,
+                    ],
+                  ).expand()
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 void mMoreOfferBottomSheet(BuildContext aContext) {
@@ -295,7 +869,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(MaterialCommunityIcons.truck_delivery, color: appColorPrimary),
+                  Icon(MaterialCommunityIcons.truck_delivery, color: Color(0xFF0A79DF)),
                   10.width,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +877,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
                       Text("\$10 Delivery in 2 days, Monday", style: boldTextStyle()),
                       4.height,
                       Text(
-                        LoremText,
+                        "lorem meh",
                         style: secondaryTextStyle(size: 14),
                         maxLines: 2,
                       ),
@@ -315,7 +889,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(FontAwesome.exchange, color: appColorPrimary),
+                  Icon(FontAwesome.exchange, color: Color(0xFF0A79DF)),
                   10.width,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +897,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
                       Text("7 Days return policy", style: boldTextStyle()),
                       4.height,
                       Text(
-                        LoremText,
+                        "lorem meh",
                         style: secondaryTextStyle(size: 14),
                         maxLines: 2,
                       ),
@@ -335,7 +909,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(MaterialIcons.attach_money, color: appColorPrimary),
+                  Icon(MaterialIcons.attach_money, color: Color(0xFF0A79DF)),
                   10.width,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,7 +917,7 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
                       Text("Cash on Delivery", style: boldTextStyle()),
                       4.height,
                       Text(
-                        LoremText,
+                        "lorem meh",
                         style: secondaryTextStyle(size: 14),
                         maxLines: 2,
                       ),

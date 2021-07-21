@@ -83,3 +83,19 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
     );
   }
 }
+
+Gradient JTdefaultThemeGradient() {
+  return LinearGradient(
+    colors: [
+      appColorPrimary,
+      appColorPrimary.withOpacity(0.5),
+    ],
+    tileMode: TileMode.mirror,
+    begin: Alignment.topCenter,
+    end: Alignment.bottomLeft,
+  );
+}
+
+double JTdynamicWidth(BuildContext context) {
+  return isMobile ? context.width() : 500.0;
+}

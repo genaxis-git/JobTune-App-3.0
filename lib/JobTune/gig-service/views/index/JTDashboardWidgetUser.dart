@@ -17,6 +17,7 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 import 'JTProductDetailScreen.dart';
+import 'JTProductDetailWidget.dart';
 
 class JTDashboardWidgetUser extends StatefulWidget {
   static String tag = '/JTDashboardWidgetUser';
@@ -306,7 +307,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                               Positioned(
                                 right: 10,
                                 top: 10,
-                                child: data.isLiked.validate() ? Icon(Icons.favorite, color: Colors.red, size: 16) : Icon(Icons.favorite_border, size: 16),
+                                child: data.isLiked.validate()
+                                    ? Icon(Icons.favorite, color: Colors.red, size: 16)
+                                    : Icon(Icons.favorite_border, size: 16),
                               ),
                             ],
                           ),
@@ -338,9 +341,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                             4.height,
                             Row(
                               children: [
-                                priceWidget(data.discountPrice),
+                                JTpriceWidget(data.discountPrice),
                                 8.width,
-                                priceWidget(data.price, applyStrike: true),
+                                JTpriceWidget(data.price, applyStrike: true),
                               ],
                             ),
                           ],
