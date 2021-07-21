@@ -16,12 +16,12 @@ import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetPro
 import '../ongoing_order/JTOrderScreen.dart';
 import '../co_de_booking/JTCoDeBookingScreen.dart';
 
-class PostService extends StatefulWidget {
+class PostProduct extends StatefulWidget {
   @override
-  _PostServiceState createState() => _PostServiceState();
+  _PostProductState createState() => _PostProductState();
 }
 
-class _PostServiceState extends State<PostService> {
+class _PostProductState extends State<PostProduct> {
   var formKey = GlobalKey<FormState>();
 
   List<String> listOfCategory = [
@@ -441,63 +441,63 @@ class _PostServiceState extends State<PostService> {
               8.height,
               availabilityLabel(),
               availabilityDay(),
-              8.height,
-              Row(
-                children: [
-                  Expanded(
-                    child: Card(
-                        elevation: 4,
-                        child: ListTile(
-                          onTap: () {
-                            _selectTime(context);
-                          },
-                          title: Text(
-                            'Start Shift',
-                            style: primaryTextStyle(),
-                          ),
-                          subtitle: Text(
-                            "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                            style: secondaryTextStyle(),
-                          ),
-                          // trailing: IconButton(
-                          //   icon: Icon(
-                          //     Icons.access_time,
-                          //     color: appStore.iconColor,
-                          //   ),
-                          //   onPressed: () {
-                          //     // _selectDate(context);
-                          //   },
-                          // ),
-                        )),
-                  ),
-                  Expanded(
-                    child: Card(
-                        elevation: 4,
-                        child: ListTile(
-                          onTap: () {
-                            _selectTime(context);
-                          },
-                          title: Text(
-                            'End Shift',
-                            style: primaryTextStyle(),
-                          ),
-                          subtitle: Text(
-                            "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                            style: secondaryTextStyle(),
-                          ),
-                          // trailing: IconButton(
-                          //   icon: Icon(
-                          //     Icons.access_time,
-                          //     color: appStore.iconColor,
-                          //   ),
-                          //   onPressed: () {
-                          //     // _selectDate(context);
-                          //   },
-                          // ),
-                        )),
-                  ),
-                ],
-              ),
+              // 8.height,
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Card(
+              //           elevation: 4,
+              //           child: ListTile(
+              //             onTap: () {
+              //               _selectTime(context);
+              //             },
+              //             title: Text(
+              //               'Start Shift',
+              //               style: primaryTextStyle(),
+              //             ),
+              //             subtitle: Text(
+              //               "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+              //               style: secondaryTextStyle(),
+              //             ),
+              //             // trailing: IconButton(
+              //             //   icon: Icon(
+              //             //     Icons.access_time,
+              //             //     color: appStore.iconColor,
+              //             //   ),
+              //             //   onPressed: () {
+              //             //     // _selectDate(context);
+              //             //   },
+              //             // ),
+              //           )),
+              //     ),
+              //     Expanded(
+              //       child: Card(
+              //           elevation: 4,
+              //           child: ListTile(
+              //             onTap: () {
+              //               _selectTime(context);
+              //             },
+              //             title: Text(
+              //               'End Shift',
+              //               style: primaryTextStyle(),
+              //             ),
+              //             subtitle: Text(
+              //               "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+              //               style: secondaryTextStyle(),
+              //             ),
+              //             // trailing: IconButton(
+              //             //   icon: Icon(
+              //             //     Icons.access_time,
+              //             //     color: appStore.iconColor,
+              //             //   ),
+              //             //   onPressed: () {
+              //             //     // _selectDate(context);
+              //             //   },
+              //             // ),
+              //           )),
+              //     ),
+              //   ],
+              // ),
               16.height,
               GestureDetector(
                 // onTap: () {

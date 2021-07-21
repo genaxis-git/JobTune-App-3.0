@@ -16,6 +16,7 @@ import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetPro
 import '../ongoing_order/JTOrderScreen.dart';
 import '../co_de_booking/JTCoDeBookingScreen.dart';
 import './post_service.dart';
+import './post_product.dart';
 
 class JTAddPost extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
@@ -161,8 +162,8 @@ class _JTAddPostState extends State<JTAddPost> {
                             children: [
                               // profileView(),
                               PostService(),
-                              Divider(color: appDividerColor, height: 8)
-                                  .paddingOnly(top: 4, bottom: 4),
+                              // Divider(color: appDividerColor, height: 8)
+                              //     .paddingOnly(top: 4, bottom: 4),
                               // options(),
                             ],
                           ),
@@ -187,9 +188,10 @@ class _JTAddPostState extends State<JTAddPost> {
                           padding: EdgeInsets.only(top: 16),
                           child: Column(
                             children: [
+                              PostProduct(),
                               // profileView(),
-                              Divider(color: appDividerColor, height: 8)
-                                  .paddingOnly(top: 4, bottom: 4),
+                              // Divider(color: appDividerColor, height: 8)
+                              //     .paddingOnly(top: 4, bottom: 4),
                               // options_product(),
                             ],
                           ),
