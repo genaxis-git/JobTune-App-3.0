@@ -435,7 +435,7 @@ class _PostServiceState extends State<PostService> {
               ),
               16.height,
               Text(
-                ' Availability',
+                ' Availability (Day)',
                 style: primaryTextStyle(),
               ),
               8.height,

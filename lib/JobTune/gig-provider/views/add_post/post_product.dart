@@ -361,14 +361,45 @@ class _PostProductState extends State<PostProduct> {
                 textInputAction: TextInputAction.next,
               ),
               8.height,
+              TextFormField(
+                // controller: mobileCont,
+                // focusNode: mobileFocus,
+                style: primaryTextStyle(),
+                decoration: InputDecoration(
+                  labelText: 'Expected Day(s) taken to deliver product',
+                  contentPadding: EdgeInsets.all(16),
+                  labelStyle: secondaryTextStyle(),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: appColorPrimary)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide:
+                          BorderSide(color: appStore.textSecondaryColor!)),
+                ),
+                // keyboardType: TextInputType.text(),
+                // validator: (s) {
+                //   if (s!.trim().isEmpty) return errorThisFieldRequired;
+                //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
+                //   return null;
+                // },
+                // onFieldSubmitted: (s) =>
+                //     FocusScope.of(context).requestFocus(addressLine1Focus),
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.numberWithOptions(),
+              ),
+              8.height,
               Row(
                 children: [
                   Expanded(
-                    child: DropdownButtonFormField(
+                    child: TextFormField(
+                      // controller: mobileCont,
+                      // focusNode: mobileFocus,
                       style: primaryTextStyle(),
                       decoration: InputDecoration(
-                        // labelText: 'Co-De',
-                        contentPadding: EdgeInsets.fromLTRB(8, 16, 16, 16),
+                        labelText: 'Price (RM)',
+                        contentPadding: EdgeInsets.all(16),
                         labelStyle: secondaryTextStyle(),
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
@@ -379,26 +410,15 @@ class _PostProductState extends State<PostProduct> {
                             borderSide: BorderSide(
                                 color: appStore.textSecondaryColor!)),
                       ),
-                      isExpanded: true,
-                      dropdownColor: appStore.appBarColor,
-                      value: selectedRateBy,
-                      icon: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: appStore.iconColor,
-                      ),
-                      onChanged: (dynamic newValue) {
-                        setState(() {
-                          toast(newValue);
-                          selectedRateBy = newValue;
-                        });
-                      },
-                      items: rateBy.map((rateby) {
-                        return DropdownMenuItem(
-                          child: Text(rateby, style: primaryTextStyle())
-                              .paddingLeft(8),
-                          value: rateby,
-                        );
-                      }).toList(),
+                      keyboardType: TextInputType.numberWithOptions(),
+                      // validator: (s) {
+                      //   if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
+                      //   return null;
+                      // },
+                      // onFieldSubmitted: (s) =>
+                      //     FocusScope.of(context).requestFocus(addressLine1Focus),
+                      textInputAction: TextInputAction.next,
                     ),
                   ),
                   8.width,
@@ -408,7 +428,7 @@ class _PostProductState extends State<PostProduct> {
                       // focusNode: mobileFocus,
                       style: primaryTextStyle(),
                       decoration: InputDecoration(
-                        labelText: 'Rate Per Hour/ Pkg',
+                        labelText: 'Delivery Fee',
                         contentPadding: EdgeInsets.all(16),
                         labelStyle: secondaryTextStyle(),
                         border: OutlineInputBorder(),
@@ -435,7 +455,7 @@ class _PostProductState extends State<PostProduct> {
               ),
               16.height,
               Text(
-                ' Availability',
+                ' Order Availability (Day)',
                 style: primaryTextStyle(),
               ),
               8.height,
