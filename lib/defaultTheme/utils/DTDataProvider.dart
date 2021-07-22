@@ -44,9 +44,9 @@ List<DTProductModel> getProducts() {
   p1.price = 300;
   p1.discountPrice = 250;
   p1.rating = 4.5;
-  p1.isLiked = true;
+  p1.isLiked = false;
   p1.qty = 1;
-  p1.image = ProductImg1;
+  p1.image = 'images/dashboard/ic_chair1.jpeg';
   list.add(p1);
 
   DTProductModel p2 = DTProductModel();
@@ -56,7 +56,7 @@ List<DTProductModel> getProducts() {
   p2.rating = 4.0;
   p2.isLiked = false;
   p2.qty = 1;
-  p2.image = ProductImg2;
+  p2.image = 'images/dashboard/ic_chair2.jpg';
   list.add(p2);
 
   DTProductModel p3 = DTProductModel();
@@ -66,7 +66,7 @@ List<DTProductModel> getProducts() {
   p3.rating = 3.5;
   p3.isLiked = true;
   p3.qty = 1;
-  p3.image = ProductImg3;
+  p3.image = 'images/dashboard/ic_chair1.jpeg';
   list.add(p3);
 
   DTProductModel p4 = DTProductModel();
@@ -76,7 +76,7 @@ List<DTProductModel> getProducts() {
   p4.rating = 4.5;
   p4.isLiked = true;
   p4.qty = 1;
-  p4.image = ProductImg4;
+  p4.image = 'images/dashboard/ic_chair2.jpg';
   list.add(p4);
 
   DTProductModel p6 = DTProductModel();
@@ -86,7 +86,7 @@ List<DTProductModel> getProducts() {
   p6.rating = 3.0;
   p6.qty = 1;
   p6.isLiked = false;
-  p6.image = ProductImg5;
+  p6.image = 'images/dashboard/ic_chair1.jpeg';
   list.add(p6);
 
   DTProductModel p5 = DTProductModel();
@@ -96,7 +96,7 @@ List<DTProductModel> getProducts() {
   p5.rating = 5.0;
   p5.isLiked = false;
   p5.qty = 1;
-  p5.image = ProductImg6;
+  p5.image = 'images/dashboard/ic_chair1.jpeg';
   list.add(p5);
 
   return list;
