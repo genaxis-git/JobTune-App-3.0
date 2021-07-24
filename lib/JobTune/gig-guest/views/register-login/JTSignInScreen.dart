@@ -1,0 +1,207 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDrawerWidgetGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/onboarding/JTWalkThroughScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTDashboardScreen.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTForgotPwdScreen.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTSignUpScreen.dart';
+import 'package:prokit_flutter/main.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
+
+import 'JTSignUpScreen.dart';
+
+class JTSignInScreen extends StatefulWidget {
+  static String tag = '/JTSignInScreen';
+
+  @override
+  _JTSignInScreenState createState() => _JTSignInScreenState();
+}
+
+class _JTSignInScreenState extends State<JTSignInScreen> {
+  var formKey = GlobalKey<FormState>();
+  bool obscureText = true;
+  bool autoValidate = false;
+
+  var emailCont = TextEditingController();
+  var passCont = TextEditingController();
+
+  var passFocus = FocusNode();
+
+  // functions starts //
+
+  List user = [];
+  Future<void> readLogin(email, pass) async{
+    http.Response response = await http.get(
+        Uri.parse(
+            "https://jobtune.ai/REST/API/index.php?interface=jt_login_selectlogin&lgid=" + email),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      user = json.decode(response.body);
+    });
+
+    if(user.length > 0) {
+      if(user[0]["password"] == pass) {
+        if(user[0]["status"] == "confirmed") {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('email', email);
+          JTDashboardScreenGuest().launch(context, isNewTask: true);
+//          alert: login success
+//          if(user[0]["intro_status"] == "1") {
+//            JTDashboardScreenGuest().launch(context, isNewTask: true);
+//          }
+//          else {
+//            JTWalkThroughScreen().launch(context, isNewTask: true);
+//          }
+        }
+        else {
+          // alert: not confirmed yet
+        }
+      }
+      else {
+        // alert: wrong password
+      }
+    }
+    else {
+      // alert: not available
+    }
+  }
+
+  // functions ends //
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {
+    //
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'Sign In'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTDashboardScreenGuest()),
+              );
+            }),
+      ),
+      body: Center(
+        child: Container(
+          width: dynamicWidth(context),
+          child: Form(
+            key: formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Sign In', style: boldTextStyle(size: 24)),
+                  30.height,
+                  TextFormField(
+                    controller: emailCont,
+                    style: primaryTextStyle(),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      contentPadding: EdgeInsets.all(16),
+                      labelStyle: secondaryTextStyle(),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (s) {
+                      if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      if (!s.trim().validateEmail()) return 'Email is invalid';
+                      return null;
+                    },
+                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  16.height,
+                  TextFormField(
+                    obscureText: obscureText,
+                    focusNode: passFocus,
+                    controller: passCont,
+                    style: primaryTextStyle(),
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      contentPadding: EdgeInsets.all(16),
+                      labelStyle: secondaryTextStyle(),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                      suffix: Icon(!obscureText ? Icons.visibility : Icons.visibility_off).onTap(() {
+                        obscureText = !obscureText;
+                        setState(() {});
+                      }),
+                    ),
+                    validator: (s) {
+                      if (s!.trim().isEmpty) return errorThisFieldRequired;
+                      return null;
+                    },
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      JTForgotPasswordScreen().launch(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(top: 8, bottom: 8),
+                      alignment: Alignment.topRight,
+                      child: Text("Forgot Password?", style: boldTextStyle(color: appColorPrimary)),
+                    ),
+                  ),
+                  16.height,
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                    child: Text('Sign In', style: boldTextStyle(color: white, size: 18)),
+                  ).onTap(() {
+                    readLogin(emailCont.text, passCont.text);
+                  }),
+                  10.height,
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                    child: Text('Sign Up', style: boldTextStyle(color: white, size: 18)),
+                  ).onTap(() {
+                    JTSignUpScreen().launch(context);
+                  }),
+                ],
+              ),
+            ),
+          ).center(),
+        ),
+      ),
+    );
+  }
+}
