@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
@@ -12,7 +14,6 @@ import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
@@ -29,14 +30,40 @@ class JTDashboardWidgetUser extends StatefulWidget {
 class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   PageController pageController = PageController();
 
+  List indexlist = [];
+
+  Future<void> getcategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "https://jobtune.ai/REST/API/index.php?interface=jt_provider_selectallcategory"),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      indexlist = json.decode(response.body);
+    });
+
+    for(var m=0;m<indexlist.length;m++){
+      print(m);
+      print(indexlist[m]["category"]);
+    }
+  }
+
   List<Widget> pages = [];
   List<CategoryModel> categories = [];
 
   int selectedIndex = 0;
 
+  // functions starts //
+
+
+
+  // functions ends //
+
+
   @override
   void initState() {
     super.initState();
+    this.getcategory();
     init();
   }
 
@@ -458,9 +485,154 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
 
     return Scaffold(
       body: ContainerX(
-        mobile: mobileWidget(),
+        mobile: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: appColorPrimary,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                      ),
+                    ).visible(false),
+                    Column(
+                      children: [
+                        10.height,
+                        searchTxt(),
+                      ],
+                    ),
+                  ],
+                ),
+                10.height,
+                Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.only(right: 8, top: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: categories.map((e) {
+                      return Container(
+                        width: isMobile ? 100 : 120,
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
+                              child: Image.asset(e.icon!, height: 30, width: 30, color: white),
+                            ),
+                            4.height,
+                            Text(
+                                e.name!,
+                                style: primaryTextStyle(size: 12),
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis
+                            ),
+                          ],
+                        ),
+                      ).onTap(() {
+                        DTCategoryDetailScreen().launch(context);
+                      });
+                    }).toList(),
+                  ),
+                ),
+                20.height,
+                Text(' Featured', style: boldTextStyle()).paddingAll(8),
+                Container(
+                  height: 500,
+                  child: JTServiceListUser()
+                ),
+              ],
+            ),
+          ),
+        ),
         web: webWidget(),
       ),
+    );
+  }
+}
+
+class JTServiceListUser extends StatefulWidget {
+  @override
+  _JTServiceListUserState createState() => _JTServiceListUserState();
+}
+
+class _JTServiceListUserState extends State<JTServiceListUser> {
+
+  // functions starts //
+
+  List servicelist = [];
+
+  Future<void> checklocation() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "https://jobtune.ai/REST/API/index.php?interface=jt_provider_servicelist&jlocation=Wilayah%20Persekutuan%20Kuala%20Lumpur&jcategory=Baby%20Sitting"),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checklocation();
+  }
+
+  // functions ends //
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemCount: servicelist == null ? 0 : servicelist.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          child: Container(
+            decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+            margin: EdgeInsets.all(8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 110,
+                  width: 126,
+                  child: Stack(
+                    children: [
+                      Image.network(
+                        "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                        fit: BoxFit.cover,
+                        height: 110,
+                        width: 126,
+                      ).cornerRadiusWithClipRRect(8),
+                    ],
+                  ),
+                ),
+                8.width,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(servicelist[index]["service_name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    4.height,
+                    Row(
+                      children: [
+                        JTpriceWidget(10),
+                      ],
+                    ),
+                  ],
+                ).paddingAll(8).expand(),
+              ],
+            ),
+          ),
+        );
+      }
     );
   }
 }

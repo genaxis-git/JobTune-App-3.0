@@ -18,8 +18,6 @@ import 'JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'main/utils/AppConstant.dart';
 import 'muvi/utils/flix_app_localizations.dart';
 
-bool register = false; //have not register
-bool login = false; //have not login yet
 
 /// This variable is used to get dynamic colors when theme mode is changed
 AppStore appStore = AppStore();
@@ -47,7 +45,12 @@ void main() async {
   //endregion
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -65,9 +68,7 @@ class MyApp extends StatelessWidget {
         routes: routes(),
         title: '$mainAppName${!isMobile ? ' ${platformName()}' : ''}',
 //        home: DTWalkThoughScreen(),
-        home: (login == true)
-        ? JTDashboardSreenUser()
-        : JTDashboardScreenGuest(),
+        home: JTDashboardScreenGuest(),
         theme: !appStore.isDarkModeOn
             ? AppThemeData.lightTheme
             : AppThemeData.darkTheme,
