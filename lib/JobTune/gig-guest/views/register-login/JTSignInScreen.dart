@@ -38,7 +38,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogin&jemail=" + email),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {

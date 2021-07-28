@@ -37,7 +37,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> checkregister(email, pass) async {
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogin&jemail=" + email),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
@@ -66,7 +66,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> register(email, pass) async {
     http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signup&jemail=" + email + '&jpassword=' + pass),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signups&jemail=" + email + '&jpassword=' + pass),
         headers: {"Accept": "application/json"}
     );
 
