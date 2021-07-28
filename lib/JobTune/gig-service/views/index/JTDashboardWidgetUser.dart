@@ -594,6 +594,13 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
       itemCount: servicelist == null ? 0 : servicelist.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => JTProductDetail()),
+            );
+          },
           child: Container(
             decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
             margin: EdgeInsets.all(8),

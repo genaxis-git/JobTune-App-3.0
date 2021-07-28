@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/main/utils/Lipsum.dart' as lipsum;
 import 'package:nb_utils/nb_utils.dart';
 
-import 'package:prokit_flutter/JobTune/gig-guest/views/account/JTAccountScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 
-
-class JTWalkThroughScreen extends StatefulWidget {
-  static String tag = '/JTWalkThroughScreen';
+class JTWalkThroughScreenGuest extends StatefulWidget {
+  static String tag = '/JTWalkThroughScreenGuest';
 
   @override
-  _JTWalkThroughScreenState createState() => _JTWalkThroughScreenState();
+  _JTWalkThroughScreenGuestState createState() => _JTWalkThroughScreenGuestState();
 }
 
-class _JTWalkThroughScreenState extends State<JTWalkThroughScreen> {
+class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
   var pageController = PageController();
 
   List<Widget>  pages = [];
@@ -99,7 +98,7 @@ class _JTWalkThroughScreenState extends State<JTWalkThroughScreen> {
                   padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8)),
                 ).onTap(() {
-                  JTAccountScreen().launch(context);
+                  JTDashboardScreenGuest().launch(context);
                 }),
                 secondChild: SizedBox(),
                 duration: Duration(milliseconds: 300),
@@ -118,7 +117,7 @@ class _JTWalkThroughScreenState extends State<JTWalkThroughScreen> {
                 decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8)),
               ).onTap(() {
                 finish(context);
-                JTAccountScreen().launch(context);
+                JTDashboardScreenGuest().launch(context);
               }),
               left: 20,
               bottom: 20,

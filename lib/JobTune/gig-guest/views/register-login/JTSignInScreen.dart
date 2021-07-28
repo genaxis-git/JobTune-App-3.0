@@ -4,21 +4,16 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDrawerWidgetGuest.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/onboarding/JTWalkThroughScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTReviewWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTDashboardScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTForgotPwdScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSignUpScreen.dart';
-import 'package:prokit_flutter/main.dart';
-import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
-
+import 'package:prokit_flutter/JobTune/gig-guest/views/onboarding/JTWalkThroughScreenGuest.dart';
+import '../../../../main.dart';
 import 'JTSignUpScreen.dart';
+
 
 class JTSignInScreen extends StatefulWidget {
   static String tag = '/JTSignInScreen';
@@ -43,7 +38,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_login_selectlogin&lgid=" + email),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogin&jemail=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -54,15 +49,17 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
       if(user[0]["password"] == pass) {
         if(user[0]["status"] == "confirmed") {
           SharedPreferences prefs = await SharedPreferences.getInstance();
+          final String lgcount = prefs.getString('logincount').toString();
+          final int newcount = int.parse(lgcount) + 1;
+          prefs.setString('logincount', newcount.toString());
           prefs.setString('email', email);
-          JTDashboardScreenGuest().launch(context, isNewTask: true);
-//          alert: login success
-//          if(user[0]["intro_status"] == "1") {
-//            JTDashboardScreenGuest().launch(context, isNewTask: true);
-//          }
-//          else {
-//            JTWalkThroughScreen().launch(context, isNewTask: true);
-//          }
+
+          if(newcount > 1) {
+            JTDashboardScreenGuest().launch(context, isNewTask: true);
+          }
+          else {
+            JTWalkThroughScreenGuest().launch(context, isNewTask: true);
+          }
         }
         else {
           // alert: not confirmed yet
@@ -100,7 +97,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
-        title: appBarTitleWidget(context, 'Sign In'),
+        title: JTappBarTitleWidget(context, 'Sign In'),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
@@ -113,7 +110,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
       ),
       body: Center(
         child: Container(
-          width: dynamicWidth(context),
+          width: JTdynamicWidth(context),
           child: Form(
             key: formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -133,7 +130,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                       contentPadding: EdgeInsets.all(16),
                       labelStyle: secondaryTextStyle(),
                       border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -156,7 +153,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                       contentPadding: EdgeInsets.all(16),
                       labelStyle: secondaryTextStyle(),
                       border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                       suffix: Icon(!obscureText ? Icons.visibility : Icons.visibility_off).onTap(() {
                         obscureText = !obscureText;
@@ -175,14 +172,14 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                     child: Container(
                       padding: EdgeInsets.only(top: 8, bottom: 8),
                       alignment: Alignment.topRight,
-                      child: Text("Forgot Password?", style: boldTextStyle(color: appColorPrimary)),
+                      child: Text("Forgot Password?", style: boldTextStyle(color: Color(0xFF0A79DF))),
                     ),
                   ),
                   16.height,
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                    decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                     child: Text('Sign In', style: boldTextStyle(color: white, size: 18)),
                   ).onTap(() {
                     readLogin(emailCont.text, passCont.text);
@@ -191,7 +188,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                    decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                     child: Text('Sign Up', style: boldTextStyle(color: white, size: 18)),
                   ).onTap(() {
                     JTSignUpScreen().launch(context);

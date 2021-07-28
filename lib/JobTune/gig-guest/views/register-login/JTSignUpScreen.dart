@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTReviewWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../../../main.dart';
 import 'JTSignInScreen.dart';
+
+
 
 class JTSignUpScreen extends StatefulWidget {
   static String tag = '/JTSignUpScreen';
@@ -35,7 +37,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> checkregister(email, pass) async {
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_login_selectlogin&lgid=" + email),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogin&jemail=" + email),
         headers: {"Accept": "application/json"}
     );
 
@@ -52,11 +54,11 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   }
 
   Future<void> smtp(email, pass) async{
-    http.get(
-        Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_mail&jemail=" + email + "&host=jobtune.ai"),
-        headers: {"Accept": "application/json"}
-    );
+//    http.get(
+//        Uri.parse(
+//            "https://jobtune.ai/REST/API/index.php?interface=jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+//        headers: {"Accept": "application/json"}
+//    );
 
     register(email, pass);
   }
@@ -64,7 +66,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> register(email, pass) async {
     http.get(
         Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_register&jemail=" + email + '&jpassword=' + pass + '&jtype=Testing'),
+            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signup&jemail=" + email + '&jpassword=' + pass),
         headers: {"Accept": "application/json"}
     );
 
@@ -93,11 +95,11 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: appBar(context, 'Sign Up'),
+      appBar: JTappBar(context, 'Sign Up'),
 //      drawer: DTDrawerWidget(),
       body: Center(
         child: Container(
-          width: dynamicWidth(context),
+          width: JTdynamicWidth(context),
           child: Form(
             key: formKey,
             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -118,7 +120,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                       labelStyle: secondaryTextStyle(),
                       contentPadding: EdgeInsets.all(16),
                       border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                     ),
                     keyboardType: TextInputType.emailAddress,
@@ -141,7 +143,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                       contentPadding: EdgeInsets.all(16),
                       labelStyle: secondaryTextStyle(),
                       border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                       suffix: Icon(!obscureText ? Icons.visibility : Icons.visibility_off).onTap(() {
                         obscureText = !obscureText;
@@ -164,7 +166,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                       contentPadding: EdgeInsets.all(16),
                       labelStyle: secondaryTextStyle(),
                       border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                       suffix: Icon(!obscureText ? Icons.visibility : Icons.visibility_off).onTap(() {
                         obscureText = !obscureText;
@@ -180,13 +182,13 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                   Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                    decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                     child: Text('Sign Up', style: boldTextStyle(color: white, size: 18)),
                   ).onTap(() {
                     checkregister(emailCont.text,confirmCont.text);
                   }),
                   20.height,
-                  Text('Already Registered?', style: boldTextStyle(color: appColorPrimary)).center().onTap(() {
+                  Text('Already Registered?', style: boldTextStyle(color: Color(0xFF0A79DF))).center().onTap(() {
                     finish(context);
                   }),
                 ],

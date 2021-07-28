@@ -22,6 +22,7 @@ dependencies:
 
   # Common
   share: ^2.0.4
+  shared_preferences: ^2.0.6
   url_launcher: ^6.0.3
   http: ^0.13.3
   html: ^0.15.0
