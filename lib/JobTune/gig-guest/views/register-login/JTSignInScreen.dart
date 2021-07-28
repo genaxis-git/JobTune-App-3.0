@@ -35,10 +35,11 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   // functions starts //
 
   List user = [];
+  double newcount = 0.0;
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -50,7 +51,13 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
         if(user[0]["status"] == "confirmed") {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           final String lgcount = prefs.getString('logincount').toString();
-          final int newcount = int.parse(lgcount) + 1;
+          if(lgcount == "null") {
+            newcount = 1.0;
+          }
+          else {
+            newcount = double.parse(lgcount) + 1;
+          }
+
           prefs.setString('logincount', newcount.toString());
           prefs.setString('email', email);
 

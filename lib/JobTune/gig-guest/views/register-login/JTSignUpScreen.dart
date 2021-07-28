@@ -35,15 +35,18 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   List user = [];
 
   Future<void> checkregister(email, pass) async {
+    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email);
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
     this.setState(() {
       user = json.decode(response.body);
     });
+
+    print(user.length);
 
     if(user.length == 0){
       smtp(email, pass);
@@ -54,11 +57,11 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   }
 
   Future<void> smtp(email, pass) async{
-//    http.get(
-//        Uri.parse(
-//            "https://jobtune.ai/REST/API/index.php?interface=jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
-//        headers: {"Accept": "application/json"}
-//    );
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+        headers: {"Accept": "application/json"}
+    );
 
     register(email, pass);
   }
@@ -66,7 +69,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> register(email, pass) async {
     http.get(
         Uri.parse(
-            "https://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signups&jemail=" + email + '&jpassword=' + pass),
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signups&jemail=" + email + '&jpassword=' + pass),
         headers: {"Accept": "application/json"}
     );
 
