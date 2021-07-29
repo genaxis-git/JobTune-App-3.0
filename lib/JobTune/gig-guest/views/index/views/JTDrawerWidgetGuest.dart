@@ -30,7 +30,7 @@ class JTDrawerWidgetGuest extends StatefulWidget {
 class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   // functions starts//
 
-  late int loginstat;
+  int loginstat = 0;
 
   Future<void> readUser() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
