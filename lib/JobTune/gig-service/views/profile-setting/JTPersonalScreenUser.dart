@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -15,14 +17,16 @@ class JTPersonalScreenUser extends StatefulWidget {
 }
 
 class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
-  List<String> listOfRace = ['Malay', 'Chinese', 'Indian', 'Others', 'Foreign/ Non-Malaysian'];
-  String? selectedIndexRace = 'Malay';
-  List<String> listOfGender = ['Male', 'Female'];
-  String? selectedIndexGender = 'Male';
+  List<String> listOfRace = ['Choose Race..','Malay', 'Chinese', 'Indian', 'Others', 'Foreign/ Non-Malaysian'];
+  String? selectedIndexRace = 'Choose Race..';
+  List<String> listOfGender = ['Choose Gender..','Male', 'Female'];
+  String? selectedIndexGender = 'Choose Gender..';
   String? dropdownNames;
   String? dropdownScrollable = 'I';
   bool obscureText = true;
   bool autoValidate = false;
+  String pickedgender = "";
+  String pickedrace = "";
   var formKey = GlobalKey<FormState>();
 
   var fname = TextEditingController();
@@ -31,18 +35,73 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   var dob = TextEditingController();
   var description = TextEditingController();
 
-//  var emailFocus = FocusNode();
-//  var passFocus = FocusNode();
+
+  // functions starts //
+
+  List profile = [];
+  String email = " ";
+  Future<void> readProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      email = lgid;
+      profile = json.decode(response.body);
+    });
+  }
+
+  Future<void> updateProfile(fname,lname,nric,gender,race,desc,dob) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updateprofile&id=" + lgid
+                + "&fname=" + fname
+                + "&lname=" + lname
+                + "&telno=" + profile[0]["phone_no"]
+                + "&nric=" + nric
+                + "&gender=" + gender
+                + "&race=" + race
+                + "&desc=" + desc
+                + "&dob=" + dob
+                + "&address=" + profile[0]["address"]
+                + "&city=" + profile[0]["city"]
+                + "&state=" + profile[0]["state"]
+                + "&postcode=" + profile[0]["postcode"]
+                + "&country=" + profile[0]["country"]
+                + "&ecname=" + profile[0]["ec_name"]
+                + "&ecno=" + profile[0]["ec_phone_no"]
+                + "&banktype=" + profile[0]["bank_type"]
+                + "&bankno=" + profile[0]["bank_account_no"]
+                + "&lat=" + profile[0]["location_latitude"]
+                + "&long=" + profile[0]["location_longitude"]
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    //alert: update success
+  }
 
   @override
   void initState() {
     super.initState();
-    init();
+    this.readProfile();
+    fname = TextEditingController(text: "Shahirah");
+    lname = TextEditingController(text: "Rahim");
+    nric = TextEditingController(text: "");
+    dob = TextEditingController(text: "");
+    description = TextEditingController(text: "Busy life");
   }
 
-  init() async {
-    //
-  }
+  // functions ends //
+
 
   @override
   void setState(fn) {
@@ -51,6 +110,12 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   @override
   Widget build(BuildContext context) {
+//    var fname = TextEditingController(text: profile[0]["first_name"]);
+//    var lname = TextEditingController(text: profile[0]["last_name"]);
+//    var nric = TextEditingController(text: profile[0]["nric"]);
+//    var dob = TextEditingController(text: profile[0]["dob"]);
+//    var description = TextEditingController(text: profile[0]["description"]);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
@@ -97,17 +162,11 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                         ),
                         keyboardType: TextInputType.text,
-                        validator: (s) {
-                          if (s!.trim().isEmpty) return errorThisFieldRequired;
-                          return null;
-                        },
-//                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(emailFocus),
-//                    textInputAction: TextInputAction.next,
+                        textInputAction: TextInputAction.next,
                       ),
                       16.height,
                       TextFormField(
                         controller: lname,
-//                    focusNode: emailFocus,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
                           labelText: 'Last Name',
@@ -117,41 +176,27 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (s) {
-                          if (s!.trim().isEmpty) return errorThisFieldRequired;
-                          return null;
-                        },
-//                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
-//                    textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       16.height,
                       TextFormField(
-                        obscureText: obscureText,
-//                    focusNode: passFocus,
                         controller: nric,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
-                          labelText: 'NRIC no.',
+                          labelText: 'NRIC No. /Passport No.',
                           contentPadding: EdgeInsets.all(16),
                           labelStyle: secondaryTextStyle(),
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-                          suffix: Icon(!obscureText ? Icons.visibility : Icons.visibility_off).onTap(() {
-                            obscureText = !obscureText;
-                            setState(() {});
-                          }),
                         ),
-                        validator: (s) {
-                          if (s!.trim().isEmpty) return errorThisFieldRequired;
-                          return null;
-                        },
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
                       ),
                       16.height,
                       TextFormField(
                         controller: dob,
-//                    focusNode: emailFocus,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
                           labelText: 'Date of birth',
@@ -161,19 +206,13 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (s) {
-                          if (s!.trim().isEmpty) return errorThisFieldRequired;
-                          return null;
-                        },
-//                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
-//                    textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.datetime,
+                        textInputAction: TextInputAction.next,
                       ),
                       16.height,
                       Container(
                         height: 60,
                         child: Card(
-                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10), // if you need this
                               side: BorderSide(
@@ -209,7 +248,6 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       Container(
                         height: 60,
                         child: Card(
-                            elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10), // if you need this
                               side: BorderSide(
@@ -244,7 +282,6 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       16.height,
                       TextFormField(
                         controller: description,
-//                    focusNode: emailFocus,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
                           labelText: 'Description (optional)',
@@ -254,13 +291,8 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                         ),
-                        keyboardType: TextInputType.emailAddress,
-                        validator: (s) {
-                          if (s!.trim().isEmpty) return errorThisFieldRequired;
-                          return null;
-                        },
-//                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
-//                    textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                       ),
                       40.height,
                       Container(
@@ -269,16 +301,13 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        finish(context);
-
-                        /// Remove comment if you want enable validation
-                        /* if (formKey.currentState.validate()) {
-                        formKey.currentState.save();
-                        finish(context);
-                      } else {
-                        autoValidate = true;
-                      }
-                      setState(() {});*/
+                        if(selectedIndexGender.toString() != 'Choose Gender..'){
+                          pickedgender = selectedIndexGender.toString();
+                        }
+                        if(selectedIndexRace.toString() != 'Choose Race'){
+                          pickedrace = selectedIndexRace.toString();
+                        }
+                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
                       }),
                       20.height,
                     ],
