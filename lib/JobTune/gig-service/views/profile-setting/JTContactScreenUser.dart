@@ -43,6 +43,11 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
       lgemail = lgid;
       profile = json.decode(response.body);
     });
+
+    setState(() {
+      phoneno = TextEditingController(text: profile[0]["phone_no"]);
+      emails = TextEditingController(text: profile[0]["email"]);
+    });
   }
 
   Future<void> updateProfile(telno) async {
@@ -82,8 +87,6 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
   void initState() {
     super.initState();
     this.readProfile();
-    phoneno = TextEditingController(text: "0163929098");
-    emails = TextEditingController(text: "syee");
   }
 
   // functions ends //

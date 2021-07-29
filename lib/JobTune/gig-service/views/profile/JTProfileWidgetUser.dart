@@ -14,10 +14,10 @@ Widget jtprofile_text(
       Color? textColor,
       var fontFamily,
       var isCentered = false,
-      var maxLine = 1,
+      var maxLine = 3,
       var latterSpacing = 0.5,
       bool textAllCaps = false,
-      var isLongText = false,
+      var isLongText = true,
       bool lineThrough = false,
     }) {
   return Text(

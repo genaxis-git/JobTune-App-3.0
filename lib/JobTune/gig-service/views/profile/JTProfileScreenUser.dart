@@ -29,6 +29,16 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
 
   List profile = [];
   String email = " ";
+  String fullname = " ";
+  String desc = " ";
+  String nric = " ";
+  String dob = " ";
+  String race = " ";
+  String gender = " ";
+  String telno = " ";
+  String address = " ";
+  String ecname = " ";
+  String ecno = " ";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -40,8 +50,21 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
     );
 
     this.setState(() {
-      email = lgid;
       profile = json.decode(response.body);
+    });
+
+    setState(() {
+      email = lgid;
+      fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
+      desc = profile[0]["description"] ;
+      nric = profile[0]["nric"] ;
+      dob = profile[0]["dob"] ;
+      race = profile[0]["race"] ;
+      gender = profile[0]["gender"] ;
+      telno = profile[0]["phone_no"] ;
+      address = profile[0]["address"] ;
+      ecname = profile[0]["ec_name"] ;
+      ecno = profile[0]["ec_phone_no"] ;
     });
   }
 
@@ -55,7 +78,6 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-    print(profile[0]["email"]);
     jtchangeStatusColor(appStore.appBarColor!);
     return Scaffold(
       appBar: AppBar(
@@ -92,9 +114,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                           children: <Widget>[
                             SizedBox(height: 50),
                             jtprofile_text(
-                                (profile[0]["first_name"] == null && profile[0]["last_name"] == null)
+                                (fullname == "")
                                     ? " "
-                                    : profile[0]["first_name"] + " " + profile[0]["last_name"],
+                                    : fullname,
                                 textColor: appStore.textPrimaryColor,
                                 fontSize: 20.0, fontFamily: 'Medium'
                             ),
@@ -103,9 +125,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             Padding(
                               padding: EdgeInsets.all(5),
                               child: Text(
-                                (profile[0]["description"] == null)
+                                (desc == "")
                                     ? "Write something.."
-                                    : profile[0]["description"],
+                                    : desc,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.grey,
@@ -215,9 +237,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 10),
                       jtprofile_profileText(
-                          (profile[0]["first_name"] == null && profile[0]["last_name"] == null)
+                          (fullname == " ")
                               ? "Full name.."
-                              : profile[0]["first_name"] + " " + profile[0]["last_name"]
+                              : fullname
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -225,9 +247,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 8),
                       jtprofile_profileText(
-                          (profile[0]["nric"] == null)
+                          (nric == "")
                               ? "NRIC No.."
-                              : profile[0]["nric"]
+                              : nric
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -235,9 +257,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 8),
                       jtprofile_profileText(
-                          (profile[0]["dob"] == null)
+                          (dob == "")
                               ? "Date of birth.."
-                              : profile[0]["dob"]
+                              : dob
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -245,9 +267,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 8),
                       jtprofile_profileText(
-                          (profile[0]["race"] == null)
+                          (race == "")
                               ? "Race.."
-                              : profile[0]["race"]
+                              : race
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -255,13 +277,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 8),
                       jtprofile_profileText(
-                          (profile[0]["gender"] == null)
+                          (gender == "")
                               ? "Gender.."
-                              : profile[0]["gender"]
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
-                        child: jtprofile_view(),
+                              : gender
                       ),
                       SizedBox(height: 16),
                     ],
@@ -294,9 +312,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 10),
                       jtprofile_profileText(
-                          (profile[0]["phone_no"] == null)
+                          (telno == "")
                               ? "Phone No.."
-                              : profile[0]["phone_no"]
+                              : telno
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -335,9 +353,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 10),
                       jtprofile_profileText(
-                          (profile[0]["address"] == null)
+                          (address == "")
                               ? "Full Address.."
-                              : profile[0]["address"]
+                              : address.replaceAll(",", ",\n")
                       ),
                       SizedBox(height: 8),
                     ],
@@ -370,9 +388,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 10),
                       jtprofile_profileText(
-                          (profile[0]["ec_name"] == null)
+                          (ecname == "")
                               ? "Guardian Name.."
-                              : profile[0]["ec_name"]
+                              : ecname
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -380,9 +398,9 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       ),
                       SizedBox(height: 8),
                       jtprofile_profileText(
-                          (profile[0]["ec_phone_no"] == null)
+                          (ecno == "")
                               ? "Guardian Phone No.."
-                              : profile[0]["ec_phone_no"]
+                              : ecno
                       ),
                       SizedBox(height: 8),
                     ],

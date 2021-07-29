@@ -43,6 +43,11 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
       email = lgid;
       profile = json.decode(response.body);
     });
+
+    setState(() {
+      names = TextEditingController(text: profile[0]["ec_name"]);
+      telnos = TextEditingController(text: profile[0]["ec_phone_no"]);
+    });
   }
 
   Future<void> updateProfile(names,telnos) async {
@@ -82,8 +87,6 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
   void initState() {
     super.initState();
     this.readProfile();
-    names = TextEditingController(text: "Naini Rahman");
-    telnos = TextEditingController(text: "0169702140");
   }
 
   // functions ends //

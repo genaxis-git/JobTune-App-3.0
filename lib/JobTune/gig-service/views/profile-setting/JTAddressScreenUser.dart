@@ -50,6 +50,20 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
       email = lgid;
       profile = json.decode(response.body);
     });
+
+    setState(() {
+      full = TextEditingController(text: profile[0]["address"]);
+      postcode = TextEditingController(text: profile[0]["postcode"]);
+      city = TextEditingController(text: profile[0]["city"]);
+      country = TextEditingController(text: profile[0]["country"]);
+
+      if(profile[0]["state"] == ""){
+        selectedIndexState = 'Choose Gender..';
+      }
+      else{
+        selectedIndexState = profile[0]["state"];
+      }
+    });
   }
 
   Future<void> updateProfile(full,postcode,city,country,state) async {
@@ -89,10 +103,6 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
   void initState() {
     super.initState();
     this.readProfile();
-    full = TextEditingController(text: "Taman Desa Mewah, Semenyih, Selangor.");
-    postcode = TextEditingController(text: "34500");
-    city = TextEditingController(text: "Semenyih");
-    country = TextEditingController(text: "Malaysia");
   }
 
   // functions ends //

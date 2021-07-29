@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
@@ -25,15 +27,35 @@ class JTAccountScreenUsers extends StatefulWidget {
 }
 
 class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
+
+  // functions starts //
+
+  List profile = [];
+  String email = " ";
+  Future<void> readProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      email = lgid;
+      profile = json.decode(response.body);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    init();
+    this.readProfile();
   }
 
-  init() async {
-    //
-  }
+  // functions ends //
+
 
   @override
   void setState(fn) {
@@ -56,9 +78,13 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("John Doe", style: primaryTextStyle()),
+                  Text(
+                      (profile[0]["first_name"] == "" || profile[0]["last_name"] == "")
+                      ? ""
+                      : profile[0]["first_name"] + " " + profile[0]["last_name"],
+                      style: primaryTextStyle()),
                   2.height,
-                  Text("John@gmail.com", style: primaryTextStyle()),
+                  Text(email, style: primaryTextStyle()),
                 ],
               )
             ],

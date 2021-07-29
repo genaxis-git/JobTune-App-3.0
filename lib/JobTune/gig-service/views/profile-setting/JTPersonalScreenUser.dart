@@ -40,6 +40,8 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   List profile = [];
   String email = " ";
+  String dbgender = " ";
+  String dbrace = " ";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -53,6 +55,27 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     this.setState(() {
       email = lgid;
       profile = json.decode(response.body);
+    });
+
+    setState(() {
+      fname = TextEditingController(text: profile[0]["first_name"]);
+      lname = TextEditingController(text: profile[0]["last_name"]);
+      nric = TextEditingController(text: profile[0]["nric"]);
+      dob = TextEditingController(text: profile[0]["dob"]);
+      description = TextEditingController(text: profile[0]["description"]);
+      if(profile[0]["gender"] == ""){
+        selectedIndexGender = 'Choose Gender..';
+      }
+      else{
+        selectedIndexGender = profile[0]["gender"];
+      }
+
+      if(profile[0]["race"] == ""){
+        selectedIndexRace = 'Choose Race..';
+      }
+      else{
+        selectedIndexRace = profile[0]["race"];
+      }
     });
   }
 
@@ -93,11 +116,6 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   void initState() {
     super.initState();
     this.readProfile();
-    fname = TextEditingController(text: "Shahirah");
-    lname = TextEditingController(text: "Rahim");
-    nric = TextEditingController(text: "");
-    dob = TextEditingController(text: "");
-    description = TextEditingController(text: "Busy life");
   }
 
   // functions ends //
@@ -110,12 +128,6 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-//    var fname = TextEditingController(text: profile[0]["first_name"]);
-//    var lname = TextEditingController(text: profile[0]["last_name"]);
-//    var nric = TextEditingController(text: profile[0]["nric"]);
-//    var dob = TextEditingController(text: profile[0]["dob"]);
-//    var description = TextEditingController(text: profile[0]["description"]);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
