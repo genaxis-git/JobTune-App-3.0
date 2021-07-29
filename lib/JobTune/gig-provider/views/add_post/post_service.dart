@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -24,16 +27,159 @@ class PostService extends StatefulWidget {
 class _PostServiceState extends State<PostService> {
   var formKey = GlobalKey<FormState>();
 
-  List<String> listOfCategory = [
-    'Category',
-    'It',
-    'Computer Science',
-    'Business',
-    'Data Science',
-    'Infromation Technologies',
-    'Health',
-    'Physics'
-  ];
+  var titleCont = TextEditingController();
+  var descCont = TextEditingController();
+  var locationCont = TextEditingController();
+  var rateCont = TextEditingController();
+
+  var packnameCont = TextEditingController();
+  var priceCont = TextEditingController();
+  var timeCont = TextEditingController();
+
+  // functions starts //
+
+  List category = [];
+  List<String> listOfCategory = ['Category'];
+  Future<void> readCategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+
+    for(var m=0;m<category.length;m++) {
+      listOfCategory.add(category[m]["category"]);
+    }
+  }
+
+  Future<void> insertService(days, starts, ends, title, category, by, rate, desc, location) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertservice&proid=" + lgid
+                + '&name=' + title
+                + '&category=' + category
+                + '&by=' + by
+                + '&rate=' + rate
+                + '&desc=' + desc
+                + '&days=' + days
+                + '&starts=' + starts
+                + '&ends=' + ends
+                + '&location=' + location
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    if(by == "Package") {
+      readlatestService();
+    }
+    else {
+      // navigate: product detail
+    }
+
+  }
+
+  List service = [];
+  Future<void> readlatestService() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectmaxservice&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      service = json.decode(response.body);
+    });
+
+    readAgain();
+  }
+
+  String again = "";
+  Future<void> readAgain() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectmaxservice&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      again = response.body;
+    });
+
+    insertPackage(again);
+  }
+
+  Future<void> insertPackage(serviceid) async {
+
+    for(var a=0;a<packagearr.length;a++) {
+      var name = packagearr[a].toString().split(" | ")[0];
+      var price = packagearr[a].toString().split(" | ")[1];
+      var time = packagearr[a].toString().split(" | ")[2].split(" ")[1];
+
+      http.get(
+          Uri.parse(
+              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertpackage&serviceid=" + serviceid
+                  + "&name=" + name
+                  + "&rate=" + price
+                  + "&time=" + time
+          ),
+          headers: {"Accept": "application/json"}
+      );
+    }
+
+    readService(serviceid);
+  }
+
+  List info = [];
+  Future<void> readService(serviceid) async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + serviceid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      info = json.decode(response.body);
+    });
+
+
+  }
+// alert: post success
+//    Navigator.push(context,
+//      MaterialPageRoute(builder: (context) => JTProductDetail(
+////        postid: a,
+////        img: info[0]["profile_pic"],
+////        name: info[0]["service_name"],
+////        provider: info[0]["provider_name"],
+////        ratehr: info[0]["rate_hour"],
+////        ids: info[0]["provider_id"],
+////        category: info[0]["category"],
+////        start: info[0]["available_start"],
+////        end: info[0]["available_end"],
+////        desc: info[0]["description"],
+////        loc: info[0]["location"],
+////        days:info[0]["available_day"],
+////        variation: smallest.toString(),
+//      )),
+//    );
+  @override
+  void initState() {
+    super.initState();
+    this.readCategory();
+  }
+
+  // functions ends //
 
   String? selectedIndexCategory = 'Category';
 
@@ -45,12 +191,13 @@ class _PostServiceState extends State<PostService> {
 
   String? selectedRateBy = 'Rate By';
 
-  TimeOfDay selectedTime = TimeOfDay.now();
+  TimeOfDay selectedTimeIN = TimeOfDay.now();
+  TimeOfDay selectedTimeOUT = TimeOfDay.now();
 
-  Future<Null> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
+  Future<Null> _selectTimeIN(BuildContext context) async {
+    final TimeOfDay? pickedIN = await showTimePicker(
         context: context,
-        initialTime: selectedTime,
+        initialTime: selectedTimeIN,
         builder: (BuildContext context, Widget? child) {
           return CustomTheme(
             child: MediaQuery(
@@ -61,9 +208,28 @@ class _PostServiceState extends State<PostService> {
           );
         });
 
-    if (picked != null)
+    if (pickedIN != null)
       setState(() {
-        selectedTime = picked;
+        selectedTimeIN = pickedIN;
+      });
+  }
+  Future<Null> _selectTimeOUT(BuildContext context) async {
+    final TimeOfDay? pickedOUT = await showTimePicker(
+        context: context,
+        initialTime: selectedTimeOUT,
+        builder: (BuildContext context, Widget? child) {
+          return CustomTheme(
+            child: MediaQuery(
+              data:
+                  MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+              child: child!,
+            ),
+          );
+        });
+
+    if (pickedOUT != null)
+      setState(() {
+        selectedTimeOUT = pickedOUT;
       });
   }
 
@@ -79,6 +245,75 @@ class _PostServiceState extends State<PostService> {
   bool? isChecked10 = false;
   bool? isChecked11 = false;
   bool? isChecked12 = false;
+
+  List<Widget> _children = [];
+  int _count = 0;
+  List packagearr = [];
+  String rateperhour = "0.00";
+  List choosenday = [];
+  String stringList = " ";
+
+  void _add(a) {
+    _children =
+    List.from(_children)
+      ..add(Column(
+        children: [
+          8.height,
+          Row(
+            children: [
+              Container(
+                  width: MediaQuery.of(context).size.width / 1.27,
+                  child:TextFormField(
+                    readOnly: true,
+                    style: primaryTextStyle(),
+                    decoration: InputDecoration(
+                      hintText: a,
+                      contentPadding: EdgeInsets.all(16),
+                      labelStyle: secondaryTextStyle(),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(color: appColorPrimary)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:
+                          BorderSide(color: appStore.textSecondaryColor!)),
+                    ),
+                  )
+              ),
+              SizedBox(width: 10,),
+              Container(
+                width: MediaQuery.of(context).size.width / 10,
+                height: 40,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _children =
+                      List.of(_children)
+                        ..removeAt(packagearr.indexWhere((packagearr) => packagearr.startsWith(a)));
+                    });
+                    packagearr.remove(a);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    child: Center(
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      )
+      );
+    setState(() => ++_count);
+  }
 
   Widget availabilityLabel() {
     return Row(
@@ -239,8 +474,7 @@ class _PostServiceState extends State<PostService> {
             mainAxisSize: MainAxisSize.min, // To make the card compact
             children: <Widget>[
               TextFormField(
-                // controller: mobileCont,
-                // focusNode: mobileFocus,
+                controller: titleCont,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
                   labelText: 'Title',
@@ -255,14 +489,6 @@ class _PostServiceState extends State<PostService> {
                       borderSide:
                           BorderSide(color: appStore.textSecondaryColor!)),
                 ),
-                // keyboardType: TextInputType.numberWithOptions(),
-                // validator: (s) {
-                //   if (s!.trim().isEmpty) return errorThisFieldRequired;
-                //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
-                //   return null;
-                // },
-                // onFieldSubmitted: (s) =>
-                //     FocusScope.of(context).requestFocus(addressLine1Focus),
                 textInputAction: TextInputAction.next,
               ),
               8.height,
@@ -304,8 +530,7 @@ class _PostServiceState extends State<PostService> {
               ),
               8.height,
               TextFormField(
-                // controller: mobileCont,
-                // focusNode: mobileFocus,
+                controller: descCont,
                 maxLines: 5,
                 minLines: 3,
                 style: primaryTextStyle(),
@@ -322,20 +547,11 @@ class _PostServiceState extends State<PostService> {
                       borderSide:
                           BorderSide(color: appStore.textSecondaryColor!)),
                 ),
-                // keyboardType: TextInputType.numberWithOptions(),
-                // validator: (s) {
-                //   if (s!.trim().isEmpty) return errorThisFieldRequired;
-                //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
-                //   return null;
-                // },
-                // onFieldSubmitted: (s) =>
-                //     FocusScope.of(context).requestFocus(addressLine1Focus),
                 textInputAction: TextInputAction.next,
               ),
               8.height,
               TextFormField(
-                // controller: mobileCont,
-                // focusNode: mobileFocus,
+                controller: locationCont,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
                   labelText: 'Preferred Location',
@@ -350,18 +566,94 @@ class _PostServiceState extends State<PostService> {
                       borderSide:
                           BorderSide(color: appStore.textSecondaryColor!)),
                 ),
-                // keyboardType: TextInputType.text(),
-                // validator: (s) {
-                //   if (s!.trim().isEmpty) return errorThisFieldRequired;
-                //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
-                //   return null;
-                // },
-                // onFieldSubmitted: (s) =>
-                //     FocusScope.of(context).requestFocus(addressLine1Focus),
                 textInputAction: TextInputAction.next,
               ),
+              16.height,
+              Text(
+                ' Availability (Day)',
+                style: primaryTextStyle(),
+              ),
+              8.height,
+              availabilityLabel(),
+              availabilityDay(),
               8.height,
               Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                        elevation: 4,
+                        child: ListTile(
+                          onTap: () {
+                            _selectTimeIN(context);
+                          },
+                          title: Text(
+                            'Start Shift',
+                            style: primaryTextStyle(),
+                          ),
+                          subtitle: Text(
+                            "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                            style: secondaryTextStyle(),
+                          ),
+                        )),
+                  ),
+                  Expanded(
+                    child: Card(
+                        elevation: 4,
+                        child: ListTile(
+                          onTap: () {
+                            _selectTimeOUT(context);
+                          },
+                          title: Text(
+                            'End Shift',
+                            style: primaryTextStyle(),
+                          ),
+                          subtitle: Text(
+                            "${selectedTimeOUT.hour < 10 ? "0${selectedTimeOUT.hour}" : "${selectedTimeOUT.hour}"} : ${selectedTimeOUT.minute < 10 ? "0${selectedTimeOUT.minute}" : "${selectedTimeOUT.minute}"} ${selectedTimeOUT.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                            style: secondaryTextStyle(),
+                          ),
+                        )),
+                  ),
+                ],
+              ),
+              8.height,
+              (selectedRateBy == 'Rate By')
+              ? DropdownButtonFormField(
+                style: primaryTextStyle(),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(8, 16, 16, 16),
+                  labelStyle: secondaryTextStyle(),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(color: appColorPrimary)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                          color: appStore.textSecondaryColor!)),
+                ),
+                isExpanded: true,
+                dropdownColor: appStore.appBarColor,
+                value: selectedRateBy,
+                icon: Icon(
+                  Icons.keyboard_arrow_down,
+                  color: appStore.iconColor,
+                ),
+                onChanged: (dynamic newValue) {
+                  setState(() {
+                    toast(newValue);
+                    selectedRateBy = newValue;
+                  });
+                },
+                items: rateBy.map((rateby) {
+                  return DropdownMenuItem(
+                    child: Text(rateby, style: primaryTextStyle())
+                        .paddingLeft(8),
+                    value: rateby,
+                  );
+                }).toList(),
+              )
+              : (selectedRateBy == 'Hour')
+              ? Row(
                 children: [
                   Expanded(
                     child: DropdownButtonFormField(
@@ -421,88 +713,225 @@ class _PostServiceState extends State<PostService> {
                                 color: appStore.textSecondaryColor!)),
                       ),
                       keyboardType: TextInputType.numberWithOptions(),
-                      // validator: (s) {
-                      //   if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      //   if (!s.trim().validatePhone()) return 'Mobile is invalid';
-                      //   return null;
-                      // },
-                      // onFieldSubmitted: (s) =>
-                      //     FocusScope.of(context).requestFocus(addressLine1Focus),
                       textInputAction: TextInputAction.next,
                     ),
                   )
                 ],
-              ),
-              16.height,
-              Text(
-                ' Availability (Day)',
-                style: primaryTextStyle(),
-              ),
-              8.height,
-              availabilityLabel(),
-              availabilityDay(),
-              8.height,
-              Row(
+              )
+              : Column(
                 children: [
-                  Expanded(
-                    child: Card(
-                        elevation: 4,
-                        child: ListTile(
-                          onTap: () {
-                            _selectTime(context);
-                          },
-                          title: Text(
-                            'Start Shift',
-                            style: primaryTextStyle(),
-                          ),
-                          subtitle: Text(
-                            "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                            style: secondaryTextStyle(),
-                          ),
-                          // trailing: IconButton(
-                          //   icon: Icon(
-                          //     Icons.access_time,
-                          //     color: appStore.iconColor,
-                          //   ),
-                          //   onPressed: () {
-                          //     // _selectDate(context);
-                          //   },
-                          // ),
-                        )),
+                  DropdownButtonFormField(
+                    style: primaryTextStyle(),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(8, 16, 16, 16),
+                      labelStyle: secondaryTextStyle(),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(color: appColorPrimary)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(
+                              color: appStore.textSecondaryColor!)),
+                    ),
+                    isExpanded: true,
+                    dropdownColor: appStore.appBarColor,
+                    value: selectedRateBy,
+                    icon: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: appStore.iconColor,
+                    ),
+                    onChanged: (dynamic newValue) {
+                      setState(() {
+                        toast(newValue);
+                        selectedRateBy = newValue;
+                      });
+                    },
+                    items: rateBy.map((rateby) {
+                      return DropdownMenuItem(
+                        child: Text(rateby, style: primaryTextStyle())
+                            .paddingLeft(8),
+                        value: rateby,
+                      );
+                    }).toList(),
                   ),
-                  Expanded(
-                    child: Card(
-                        elevation: 4,
-                        child: ListTile(
+                  8.height,
+                  TextFormField(
+                    controller: packnameCont,
+                    style: primaryTextStyle(),
+                    decoration: InputDecoration(
+                      labelText: 'Package Name',
+                      contentPadding: EdgeInsets.all(16),
+                      labelStyle: secondaryTextStyle(),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide: BorderSide(color: appColorPrimary)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:
+                          BorderSide(color: appStore.textSecondaryColor!)),
+                    ),
+                    textInputAction: TextInputAction.next,
+                  ),
+                  8.height,
+                  Row(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width / 3.2,
+                        child: TextFormField(
+                          controller: priceCont,
+                          style: primaryTextStyle(),
+                          decoration: InputDecoration(
+                            labelText: 'Price',
+                            contentPadding: EdgeInsets.all(16),
+                            labelStyle: secondaryTextStyle(),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide(color: appColorPrimary)),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide:
+                                BorderSide(color: appStore.textSecondaryColor!)),
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      9.width,
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2.17,
+                        child: TextFormField(
+                          controller: timeCont,
+                          style: primaryTextStyle(),
+                          decoration: InputDecoration(
+                            labelText: 'Expected time needed (Hr)',
+                            contentPadding: EdgeInsets.all(16),
+                            labelStyle: secondaryTextStyle(),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: BorderSide(color: appColorPrimary)),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide:
+                                BorderSide(color: appStore.textSecondaryColor!)),
+                          ),
+                          textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      8.width,
+                      Container(
+                        width: MediaQuery.of(context).size.width / 10,
+                        height: 40,
+                        child: GestureDetector(
                           onTap: () {
-                            _selectTime(context);
+                            var newname = packnameCont.text + " | RM " + double.parse(priceCont.text).toStringAsFixed(2) + " | est: " + timeCont.text + " Hr";
+                            packagearr.add(newname);
+                            _add(newname);
                           },
-                          title: Text(
-                            'End Shift',
-                            style: primaryTextStyle(),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: appColorPrimary,
+                                borderRadius: BorderRadius.all(Radius.circular(50))),
+                            child: Center(
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
-                          subtitle: Text(
-                            "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                            style: secondaryTextStyle(),
-                          ),
-                          // trailing: IconButton(
-                          //   icon: Icon(
-                          //     Icons.access_time,
-                          //     color: appStore.iconColor,
-                          //   ),
-                          //   onPressed: () {
-                          //     // _selectDate(context);
-                          //   },
-                          // ),
-                        )),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
               16.height,
+              Column(children:_children),
+              16.height,
               GestureDetector(
-                // onTap: () {
-                //   validate();
-                // },
+                 onTap: () {
+                   if(isChecked1 == true){
+                     choosenday.add("Monday");
+                   }
+                   else{
+                     choosenday.remove("Monday");
+                   }
+
+                   if(isChecked2 == true){
+                     choosenday.add("Tuesday");
+                   }
+                   else{
+                     choosenday.remove("Tuesday");
+                   }
+
+                   if(isChecked3 == true){
+                     choosenday.add("Wednesday");
+                   }
+                   else{
+                     choosenday.remove("Wednesday");
+                   }
+
+                   if(isChecked4 == true){
+                     choosenday.add("Thursday");
+                   }
+                   else{
+                     choosenday.remove("Thursday");
+                   }
+
+                   if(isChecked5 == true){
+                     choosenday.add("Friday");
+                   }
+                   else{
+                     choosenday.remove("Friday");
+                   }
+
+                   if(isChecked6 == true){
+                     choosenday.add("Saturday");
+                   }
+                   else{
+                     choosenday.remove("Saturday");
+                   }
+
+                   if(isChecked7 == true){
+                     choosenday.add("Sunday");
+                   }
+                   else{
+                     choosenday.remove("Sunday");
+                   }
+
+                   stringList = choosenday.join(",");
+
+                   print(selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00");
+                   print(selectedTimeOUT.hour.toString()+":"+selectedTimeOUT.minute.toString()+":00");
+                   var starts = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
+                   var ends = selectedTimeOUT.hour.toString()+":"+selectedTimeOUT.minute.toString()+":00";
+
+                   if(selectedTimeOUT.hour > selectedTimeIN.hour) {
+                     if(titleCont.text == "" || descCont.text == "" || locationCont.text == "" || stringList == "") {
+                       // alert: tak lengkap
+                     }
+                     else {
+                       if(selectedIndexCategory != 'Category') {
+                         if(selectedRateBy == 'Hour') {
+                           rateperhour = rateCont.text;
+                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text);
+                         }
+                         else {
+                           rateperhour = "0.00";
+                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text);
+                         }
+                       }
+                       else{
+                         // alert: choose category
+                       }
+                     }
+                   }
+                   else {
+                     // alert: error masa
+                   }
+                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
