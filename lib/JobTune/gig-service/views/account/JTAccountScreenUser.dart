@@ -1,196 +1,156 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
-import 'package:prokit_flutter/JobTune/gig-service/models/JTAccountUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
-import 'package:prokit_flutter/grocery/utils/GroceryWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
+// import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
-import 'package:prokit_flutter/theme4/utils/T4Colors.dart';
-import 'package:prokit_flutter/theme4/utils/T4DataGenerator.dart';
-import 'package:prokit_flutter/theme4/utils/T4Images.dart';
-import 'package:prokit_flutter/theme4/utils/T4Strings.dart';
-import 'package:prokit_flutter/theme4/models/T4Models.dart';
-import 'package:prokit_flutter/theme4/utils/T4Widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
 
 class JTAccountScreenUser extends StatefulWidget {
-  static var tag = "/JTAccountScreenUser";
+  static String tag = '/JTAccountScreenUser';
 
   @override
   _JTAccountScreenUserState createState() => _JTAccountScreenUserState();
 }
 
 class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
-  int selectedPos = 1;
-  List<AccountModel>? mListings;
-
   @override
   void initState() {
     super.initState();
-    selectedPos = 1;
-    mListings = getData();
+    init();
   }
 
-  Widget getItem(String name, String icon) {
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                children: <Widget>[
-                  SizedBox(width: 16),
-                  SvgPicture.asset(icon, width: 20, height: 20, color: t4_colorPrimary),
-                  SizedBox(width: 16),
-                  text(name, textColor: appStore.textPrimaryColor)
-                ],
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.keyboard_arrow_right),
-            )
-          ],
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Divider(),
-        )
-      ],
-    );
+  init() async {
+    //
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
   }
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    changeStatusColor(appStore.appBarColor!);
-    return Scaffold(
-      backgroundColor: appStore.scaffoldBackground,
-      appBar: AppBar(
-        backgroundColor: appStore.appBarColor,
-        title: appBarTitleWidget(context, 'Welcome Provider'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => JTDashboardScreenGuest()),
-              );
-            }
+    Widget profileView() {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Image.asset("images/dashboard/db_profile.jpeg",
+                  height: 70, width: 70, fit: BoxFit.cover)
+                  .cornerRadiusWithClipRRect(40),
+              16.width,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("John Doe", style: primaryTextStyle()),
+                  2.height,
+                  Text("John@gmail.com", style: primaryTextStyle()),
+                ],
+              )
+            ],
+          ),
+          IconButton(
+            icon: Icon(AntDesign.edit, color: appStore.iconSecondaryColor),
+            onPressed: () {},
+          ).visible(false)
+        ],
+      ).paddingAll(16);
+    }
+
+    Widget options() {
+      return Column(
+        children: [
+          settingItem(context, 'My Profile', onTap: () {
+            JTProfileScreenUser().launch(context);
+          }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
+          settingItem(context, 'Timetable', onTap: () {
+            JTScheduleScreenUser().launch(context);
+          }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
+          settingItem(context, 'Change Password', onTap: () {
+            JTChangePasswordScreen().launch(context);
+          }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
+          settingItem(context, 'Notifications', onTap: () {
+//            DTNotificationSettingScreen().launch(context);
+          },
+              leading: Icon(MaterialIcons.notifications_none),
+              detail: SizedBox()),
+          SizedBox(height: 60),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("   GENERAL",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  )),
+            ],
+          ),
+          settingItem(context, 'Help', onTap: () {
+            launch('https://www.google.com');
+          }, leading: Icon(MaterialIcons.help_outline), detail: SizedBox()),
+          settingItem(context, 'About', onTap: () {
+            DTAboutScreen().launch(context);
+          }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
+          settingItem(context, 'Logout', onTap: () {
+//            DTNotificationSettingScreen().launch(context);
+          }, leading: Icon(MaterialIcons.logout), detail: SizedBox()),
+        ],
+      );
+    }
+
+    return Observer(
+      builder: (_) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: appStore.appBarColor,
+          title: appBarTitleWidget(context, 'My Account'),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => JTDashboardSreenUser()),
+                );
+              }),
         ),
-      ),
-      body: Observer(
-        builder: (_) => Container(
-          color: appStore.scaffoldBackground,
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    margin: EdgeInsets.all(16.0),
-                    decoration: boxDecoration(bgColor: appStore.scaffoldBackground, radius: 8, showShadow: true),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Stack(
-                        children: <Widget>[
-                          CachedNetworkImage(
-                            placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
-                            imageUrl: t4_profile_covr_page,
-                            height: height * 0.3,
-                            fit: BoxFit.fill,
-                          ),
-                          Column(
-                            children: <Widget>[
-                              SizedBox(height: height * 0.225),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  SizedBox(width: 24),
-                                  Container(
-                                    padding: EdgeInsets.all(4),
-                                    decoration: BoxDecoration(shape: BoxShape.circle, color: white),
-                                    child: CircleAvatar(backgroundImage: CachedNetworkImageProvider(t4_profile), radius: width * 0.15),
-                                  ),
-                                  SizedBox(width: 20),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      text(t4_username, textColor: appStore.textPrimaryColor, fontFamily: fontBold, fontSize: textSizeLargeMedium),
-                                      text(t4_designation, fontFamily: fontMedium, fontSize: textSizeMedium),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: 60),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "PROVIDER ACCOUNT",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                      )
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              getItem("Provider Profile", t4_home),
-                              getItem("Timetable", t4_home),
-                              getItem("Manage Service", t4_home),
-                              getItem("Clocking", t4_home),
-                              getItem("Transaction Received", t4_home),
-                              SizedBox(height: 40),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "PRODUCTS",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                      )
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 24),
-                              getItem("Selling Item", t4_home),
-                              getItem("Scheduled", t4_home),
-                              getItem("Transaction Received", t4_home),
-                              SizedBox(height: 40),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "GENERAL",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
-                                      )
-                                  ),
-                                ],
-                              ),
-                              getItem(t4_lbl_notification, t4_bell),
-                              getItem(t4_lbl_terms_conditions, t4_file),
-                              getItem(t4_lbl_help_support, t4_help),
-                              getItem(t4_lbl_logout, t4_logout),
-                              SizedBox(height: 24),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+        body: ContainerX(
+          mobile: SingleChildScrollView(
+            padding: EdgeInsets.only(top: 16),
+            child: Column(
+              children: [
+                profileView(),
+                Divider(color: appDividerColor, height: 8)
+                    .paddingOnly(top: 4, bottom: 4),
+                options(),
+              ],
+            ),
+          ),
+          web: Column(
+            children: [
+              profileView(),
+              Divider(height: 8).paddingOnly(top: 4, bottom: 4),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: options(),
                   ),
-                ),
+                ],
               )
             ],
           ),
