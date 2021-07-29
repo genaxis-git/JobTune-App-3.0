@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
@@ -25,15 +28,62 @@ class JTAccountScreenUsers extends StatefulWidget {
 }
 
 class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
+  List profile = [];
+  String email = " ";
+  String names = " ";
+  Future<void> checkProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      profile = json.decode(response.body);
+    });
+
+    if(profile[0]["name"] == "" || profile[0]["industry_type"] == "" || profile[0]["phone_no"] == "" || profile[0]["address"] == "" || profile[0]["city"] == "" || profile[0]["state"] == "" || profile[0]["postcode"] == "0" || profile[0]["country"] == "" || profile[0]["profile_pic"] == "") {
+      // alert:  please update
+      print("update profile");
+    }
+    else{
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => JTAddPost()),
+      );
+    }
+  }
+
+  Future<void> readProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      profile = json.decode(response.body);
+    });
+
+    setState(() {
+      email = lgid;
+      names = profile[0]["name"];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    init();
+    this.readProfile();
   }
 
-  init() async {
-    //
-  }
+  // functions ends //
 
   @override
   void setState(fn) {
@@ -56,9 +106,9 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("John", style: primaryTextStyle()),
+                  Text(names, style: primaryTextStyle()),
                   2.height,
-                  Text("John@gmail.com", style: primaryTextStyle()),
+                  Text(email, style: primaryTextStyle()),
                 ],
               )
             ],
@@ -75,7 +125,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTProfileScreenProvider().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'Timetable', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
@@ -100,7 +150,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTProfileScreenProvider().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'My Product', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
@@ -129,10 +179,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           ),
           onPressed: () {
             // toast('Icon with Label Fab');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => JTAddPost()),
-            );
+            readProfile();
           });
     }
 
