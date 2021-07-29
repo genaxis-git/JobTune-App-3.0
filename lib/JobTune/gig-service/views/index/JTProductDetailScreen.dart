@@ -454,9 +454,9 @@ class _JTProductDetailState extends State<JTProductDetail> {
               Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  JTpriceWidget(widget.productModel!.discountPrice, fontSize: 28, textColor: Color(0xFF0A79DF)),
+//                  JTpriceWidget(widget.productModel!.discountPrice, fontSize: 28, textColor: Color(0xFF0A79DF)),
                   8.width,
-                  JTpriceWidget(widget.productModel!.price, applyStrike: true, fontSize: 18),
+//                  JTpriceWidget(widget.productModel!.price, applyStrike: true, fontSize: 18),
                   16.width,
                   Text('${discount.toInt()}% off', style: boldTextStyle(color: Color(0xFF0A79DF))).visible(discount != 0.0),
                 ],

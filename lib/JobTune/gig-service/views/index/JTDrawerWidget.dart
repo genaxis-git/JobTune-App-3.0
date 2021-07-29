@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-service/models/JTNavbarUser.dart';
@@ -29,11 +34,33 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
   List<NavbarUserList> drawerItems = getDrawerItemsService();
   var scrollController = ScrollController();
 
+  // functions starts//
+
+  int loginstat = 0;
+  Future<void> readUser() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    setState(() {
+      if(lgid == "null") {
+        loginstat = 0;
+      }
+      else{
+        loginstat = 1;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    this.readUser();
     init();
   }
+
+  // functions ends//
+
+
 
   init() async {
     if (appStore.selectedDrawerItem > 7) {
@@ -51,6 +78,7 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
 
   @override
   Widget build(BuildContext context) {
+    print(loginstat);
     return SafeArea(
       child: ClipPath(
         clipper: OvalRightBorderClipper(),
@@ -119,7 +147,27 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                     }
                   }),
                   Divider(height: 16, color: Colors.blueGrey),
-                  ListView.builder(
+                  (loginstat == 0)
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        appStore.setDrawerItemIndex(-1);
+                        JTSignInScreen().launch(context, isNewTask: true);
+                      }),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('Forgot Password', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        appStore.setDrawerItemIndex(-1);
+                        JTForgotPasswordScreen().launch(context, isNewTask: true);
+                      }),
+                    ],
+                  )
+                  : ListView.builder(
                     itemBuilder: (context, index) {
                       return Container(
                         padding: EdgeInsets.all(16),

@@ -74,7 +74,7 @@ Widget JTsettingItem(context, String text, {Function? onTap, Widget? detail, Wid
   );
 }
 
-Widget JTpriceWidget(int? price, {bool applyStrike = false, double? fontSize, Color? textColor}) {
+Widget JTpriceWidget(double? price, {bool applyStrike = false, double? fontSize, Color? textColor}) {
   return Text(
     applyStrike ? '$price' : '\RM $price',
     style: TextStyle(

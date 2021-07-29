@@ -4,6 +4,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
@@ -29,25 +30,6 @@ class JTDashboardWidgetUser extends StatefulWidget {
 
 class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   PageController pageController = PageController();
-
-  List indexlist = [];
-
-  Future<void> getcategory() async {
-    http.Response response = await http.get(
-        Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_provider_selectallcategory"),
-        headers: {"Accept": "application/json"});
-
-    this.setState(() {
-      indexlist = json.decode(response.body);
-    });
-
-    for(var m=0;m<indexlist.length;m++){
-      print(m);
-      print(indexlist[m]["category"]);
-    }
-  }
-
   List<Widget> pages = [];
   List<CategoryModel> categories = [];
 
@@ -55,7 +37,22 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
 
   // functions starts //
 
+  List category = [];
+  Future<void> readCategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
 
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+
+    for(var m=0;m<category.length;m++) {
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+    }
+  }
 
   // functions ends //
 
@@ -63,8 +60,8 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   @override
   void initState() {
     super.initState();
-    this.getcategory();
-    init();
+    this.readCategory();
+//    init();
   }
 
   init() async {
@@ -368,9 +365,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                             4.height,
                             Row(
                               children: [
-                                JTpriceWidget(data.discountPrice),
+//                                JTpriceWidget(data.discountPrice),
                                 8.width,
-                                JTpriceWidget(data.price, applyStrike: true),
+//                                JTpriceWidget(data.price, applyStrike: true),
                               ],
                             ),
                           ],
@@ -567,12 +564,33 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
 
   // functions starts //
 
-  List servicelist = [];
+  List profile = [];
+  Future<void> checkProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
 
-  Future<void> checklocation() async {
     http.Response response = await http.get(
         Uri.parse(
-            "https://jobtune.ai/REST/API/index.php?interface=jt_provider_servicelist&jlocation=Wilayah%20Persekutuan%20Kuala%20Lumpur&jcategory=Baby%20Sitting"),
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      profile = json.decode(response.body);
+    });
+
+    print(profile[0]["city"]+profile[0]["state"]+profile[0]["country"]);
+    checkFeatured(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+  }
+
+  List servicelist = [];
+  Future<void> checkFeatured(city,state,country) async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city="+city
+                +"&state="+state
+                +"&country="+country
+        ),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -583,7 +601,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   @override
   void initState() {
     super.initState();
-    this.checklocation();
+    this.checkProfile();
   }
 
   // functions ends //
@@ -598,7 +616,9 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => JTProductDetail()),
+                  builder: (context) => JTServiceDetailScreen(
+                    id: servicelist[index]["service_id"],
+                  )),
             );
           },
           child: Container(
@@ -613,7 +633,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   child: Stack(
                     children: [
                       Image.network(
-                        "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                        "https://jobtune.ai/gig/JobTune/assets/img/shah.jpg",
                         fit: BoxFit.cover,
                         height: 110,
                         width: 126,
@@ -626,11 +646,13 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(servicelist[index]["service_name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(servicelist[index]["name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
                     4.height,
                     Row(
                       children: [
-                        JTpriceWidget(10),
+                        (servicelist[index]["name"] != "0" || servicelist[index]["name"] != "0 ")
+                        ? JTpriceWidget(double.parse(double.parse(servicelist[index]["rate"]).toStringAsFixed(2)))
+                        : JTpriceWidget(0),
                       ],
                     ),
                   ],
