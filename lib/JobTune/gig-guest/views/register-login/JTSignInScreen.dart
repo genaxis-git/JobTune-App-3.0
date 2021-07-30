@@ -78,6 +78,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
     }
     else {
       // alert: not available
+      JTSignUpScreen().launch(context, isNewTask: true);
     }
   }
 

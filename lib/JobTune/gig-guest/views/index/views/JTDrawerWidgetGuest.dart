@@ -31,7 +31,6 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   // functions starts//
 
   int loginstat = 0;
-
   Future<void> readUser() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -53,18 +52,18 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
     JTDashboardScreenGuest().launch(context, isNewTask: true);
   }
 
-  // functions ends//
-
-
-  List<NavbarGuestItems> drawerItems = getDrawerItemsGuest();
-  var scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
     this.readUser();
     init();
   }
+
+  // functions ends//
+
+
+  List<NavbarGuestItems> drawerItems = getDrawerItemsGuest();
+  var scrollController = ScrollController();
 
   init() async {
     if (appStore.selectedDrawerItem > 7) {

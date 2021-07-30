@@ -45,8 +45,6 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
       user = json.decode(response.body);
     });
 
-    print(user.length);
-
     if(user.length == 0){
       smtp(email, pass);
     }
