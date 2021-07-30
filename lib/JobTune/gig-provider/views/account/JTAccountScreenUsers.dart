@@ -75,6 +75,16 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
       email = lgid;
       names = profile[0]["name"];
     });
+
+    if(profile[0]["name"] != ""){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => JTAddPost()),
+      );
+    }
+    else {
+      // alert: profile not ready
+    }
   }
 
   @override

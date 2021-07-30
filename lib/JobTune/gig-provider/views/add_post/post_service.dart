@@ -7,6 +7,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -75,17 +76,11 @@ class _PostServiceState extends State<PostService> {
         headers: {"Accept": "application/json"}
     );
 
-    if(by == "Package") {
-      readlatestService();
-    }
-    else {
-      // navigate: product detail
-    }
-
+    readlatestService(by);
   }
 
-  List service = [];
-  Future<void> readlatestService() async {
+  String service = "";
+  Future<void> readlatestService(by) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
@@ -96,14 +91,14 @@ class _PostServiceState extends State<PostService> {
     );
 
     this.setState(() {
-      service = json.decode(response.body);
+      service = response.body;
     });
 
-    readAgain();
+    readAgain(by);
   }
 
   String again = "";
-  Future<void> readAgain() async {
+  Future<void> readAgain(by) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
@@ -117,7 +112,17 @@ class _PostServiceState extends State<PostService> {
       again = response.body;
     });
 
-    insertPackage(again);
+    if(by == "Package") {
+      insertPackage(again);
+    }
+    else {
+      // navigate: product detail
+      Navigator.push(context,
+        MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
+          id: again,
+        )),
+      );
+    }
   }
 
   Future<void> insertPackage(serviceid) async {
@@ -138,7 +143,12 @@ class _PostServiceState extends State<PostService> {
       );
     }
 
-    readService(serviceid);
+    // alert: post success
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
+        id: serviceid,
+      )),
+    );
   }
 
   List info = [];
@@ -152,27 +162,8 @@ class _PostServiceState extends State<PostService> {
     this.setState(() {
       info = json.decode(response.body);
     });
-
-
   }
-// alert: post success
-//    Navigator.push(context,
-//      MaterialPageRoute(builder: (context) => JTProductDetail(
-////        postid: a,
-////        img: info[0]["profile_pic"],
-////        name: info[0]["service_name"],
-////        provider: info[0]["provider_name"],
-////        ratehr: info[0]["rate_hour"],
-////        ids: info[0]["provider_id"],
-////        category: info[0]["category"],
-////        start: info[0]["available_start"],
-////        end: info[0]["available_end"],
-////        desc: info[0]["description"],
-////        loc: info[0]["location"],
-////        days:info[0]["available_day"],
-////        variation: smallest.toString(),
-//      )),
-//    );
+
   @override
   void initState() {
     super.initState();
@@ -696,8 +687,7 @@ class _PostServiceState extends State<PostService> {
                   8.width,
                   Expanded(
                     child: TextFormField(
-                      // controller: mobileCont,
-                      // focusNode: mobileFocus,
+                       controller: rateCont,
                       style: primaryTextStyle(),
                       decoration: InputDecoration(
                         labelText: 'Rate Per Hour/ Pkg',

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/webview_payment.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -12,7 +13,11 @@ import '../../../JTDrawerWidget.dart';
 
 
 class JTBookingFormScreen extends StatefulWidget {
-  const JTBookingFormScreen({Key? key, required this.id}) : super(key: key);
+  const JTBookingFormScreen({
+    Key? key,
+    required
+    this.id,
+  }) : super(key: key);
   final String id;
   @override
   _JTBookingFormScreenState createState() => _JTBookingFormScreenState();
@@ -130,6 +135,32 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   }
 
   TimeOfDay selectedTimeIN = TimeOfDay.now();
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        helpText: 'Select your Booking date',
+        cancelText: 'Not Now',
+        confirmText: "Book",
+        fieldLabelText: 'Booking Date',
+        fieldHintText: 'Month/Date/Year',
+        errorFormatText: 'Enter valid date',
+        errorInvalidText: 'Enter date in valid range',
+        context: context,
+        builder: (BuildContext context, Widget? child) {
+          return JTCustomTheme(
+            child: child,
+          );
+        },
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        print(picked);
+        selectedDate = picked;
+      });
+  }
 
   Future<Null> _selectTimeIN(BuildContext context) async {
     final TimeOfDay? pickedIN = await showTimePicker(
@@ -207,7 +238,34 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
             decoration: boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xFF0A79DF)),
             child: Text('Checkout', style: boldTextStyle(color: white)),
           ).onTap(() {
-
+//              Navigator.of(context).push(MaterialPageRoute(
+//                  builder: (BuildContext context) => WebviewPayment(
+////                    postid: widget.id.toString(),
+////                    nilaidb: total.toString(),
+////                    fullname: Uri.encodeComponent(fullname.toString()),
+////                    email: email.toString(),
+////                    telno: Uri.encodeComponent(telno.toString()),
+////                    platformdb: platformfee.toString(),
+////                    proid: email.toString(),
+////                    empid: empid.toString(),
+////                    emprid: emprid.toString(),
+////                    timein: timein.toString(),
+////                    date: date.toString(),
+////                    address: address.toString(),
+////                    describe: Uri.encodeComponent(describe.toString()),
+////                    timeout: timeout.toString(),
+////                    input: input.toString(),
+////                    service: Uri.encodeComponent(service.toString()),
+////                    proname: Uri.encodeComponent(proname.toString()),
+////                    hr: hr.toString(),
+////                    emailid: emailid.toString(),
+////                    protel: Uri.encodeComponent(protel.toString()),
+////                    package: Uri.encodeComponent(package.toString()),
+////                    insurancedb: insurance.toString(),
+////                    adminfeedb: adminfee.toString(),
+//                  )
+//              ));
+//            }
           }),
         ],
       ).paddingAll(8);
@@ -277,96 +335,160 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
             ),
             10.height,
             (by == "Hour " || by == "Hour")
-            ? Row(
+            ? Column(
               children: [
-                Expanded(
-                  child: Container(
-                    child: Card(
-                      elevation: 1,
-                        child: ListTile(
-                          onTap: () {
-                            _selectTimeIN(context);
-                          },
-                          title: Text(
-                            'Start Shift',
-                            style: primaryTextStyle(),
-                          ),
-                          subtitle: Text(
-                            "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                            style: secondaryTextStyle(),
-                          ),
-                        )),
-                  ),
-                ),
-                8.width,
-                Expanded(
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("  Pick hour:-"),
-                        7.height,
-                        Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10), // if you need this
-                              side: BorderSide(
-                                color: Colors.black.withOpacity(0.6),
-                                width: 1,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: Card(
+                            elevation: 1,
+                            child: ListTile(
+                              onTap: () {
+                                _selectTimeIN(context);
+                              },
+                              title: Text(
+                                'Start Shift',
+                                style: primaryTextStyle(),
                               ),
+                              subtitle: Text(
+                                "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                                style: secondaryTextStyle(),
+                              ),
+                            )),
+                      ),
+                    ),
+                    8.width,
+                    Expanded(
+                      child: Card(
+                          elevation: 1,
+                          child: ListTile(
+                            onTap: () {
+                              _selectDate(context);
+                            },
+                            title: Text(
+                              'Select date',
+                              style: primaryTextStyle(),
                             ),
-                            child: DropdownButton(
-                              isExpanded: true,
-                              dropdownColor: appStore.appBarColor,
-                              value: selectedIndexQty,
-                              style: boldTextStyle(),
+                            subtitle: Text(
+                              "${selectedDate.toLocal()}".split(' ')[0],
+                              style: secondaryTextStyle(),
+                            ),
+                            trailing: IconButton(
                               icon: Icon(
-                                Icons.keyboard_arrow_down,
+                                Icons.date_range,
                                 color: appStore.iconColor,
                               ),
-                              underline: 0.height,
-                              onChanged: (dynamic newValue) {
-                                setState(() {
-                                  toast(newValue);
-                                  selectedIndexQty = newValue;
-
-                                  setState(() {
-                                    subtotal = double.parse(rate) * double.parse(selectedIndexQty.toString());
-                                    total = subtotal + platformfee;
-                                  });
-                                });
+                              onPressed: () {
+                                _selectDate(context);
                               },
-                              items: listOfQty.map((category) {
-                                return DropdownMenuItem(
-                                  child: Text(category, style: primaryTextStyle()).paddingLeft(8),
-                                  value: category,
-                                );
-                              }).toList(),
-                            )
-                        ),
-                      ],
+                            ),
+                          )),
                     ),
+                    8.width,
+                  ],
+                ),
+                10.height,
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("  Pick hour:-"),
+                      7.height,
+                      Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10), // if you need this
+                            side: BorderSide(
+                              color: Colors.black.withOpacity(0.6),
+                              width: 1,
+                            ),
+                          ),
+                          child: DropdownButton(
+                            isExpanded: true,
+                            dropdownColor: appStore.appBarColor,
+                            value: selectedIndexQty,
+                            style: boldTextStyle(),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color: appStore.iconColor,
+                            ),
+                            underline: 0.height,
+                            onChanged: (dynamic newValue) {
+                              setState(() {
+                                toast(newValue);
+                                selectedIndexQty = newValue;
+
+                                setState(() {
+                                  subtotal = double.parse(rate) * double.parse(selectedIndexQty.toString());
+                                  total = subtotal + platformfee;
+                                });
+                              });
+                            },
+                            items: listOfQty.map((category) {
+                              return DropdownMenuItem(
+                                child: Text(category, style: primaryTextStyle()).paddingLeft(8),
+                                value: category,
+                              );
+                            }).toList(),
+                          )
+                      ),
+                    ],
                   ),
                 ),
               ],
             )
             : Column(
               children: [
-                Container(
-                  child: Card(
-                      elevation: 1,
-                      child: ListTile(
-                        onTap: () {
-                          _selectTimeIN(context);
-                        },
-                        title: Text(
-                          'Start Shift',
-                          style: primaryTextStyle(),
-                        ),
-                        subtitle: Text(
-                          "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                          style: secondaryTextStyle(),
-                        ),
-                      )),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        child: Card(
+                            elevation: 1,
+                            child: ListTile(
+                              onTap: () {
+                                _selectTimeIN(context);
+                              },
+                              title: Text(
+                                'Start Shift',
+                                style: primaryTextStyle(),
+                              ),
+                              subtitle: Text(
+                                "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                                style: secondaryTextStyle(),
+                              ),
+                            )),
+                      ),
+                    ),
+                    8.width,
+                    Expanded(
+                      child: Card(
+                          elevation: 4,
+                          child: ListTile(
+                            onTap: () {
+                              _selectDate(context);
+                            },
+                            title: Text(
+                              'Select date',
+                              style: primaryTextStyle(),
+                            ),
+                            subtitle: Text(
+                              "${selectedDate.toLocal()}".split(' ')[0],
+                              style: secondaryTextStyle(),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.date_range,
+                                color: appStore.iconColor,
+                              ),
+                              onPressed: () {
+                                _selectDate(context);
+                              },
+                            ),
+                          )),
+                    ),
+                    8.width,
+                  ],
                 ),
                 Container(
                   child: Column(
