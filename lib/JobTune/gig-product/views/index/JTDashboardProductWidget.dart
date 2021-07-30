@@ -16,7 +16,11 @@ import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:prokit_flutter/JobTune/gig-product/views/product_detail/JTProductDetailScreen.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 class JTDashboardWidgetUser extends StatefulWidget {
   static String tag = '/JTDashboardWidgetUser';
@@ -235,9 +239,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
               ],
             ),
           ).onTap(() async {
-            int? index =
-                await JTProductDetail(productModel: data).launch(context);
-            if (index != null) appStore.setDrawerItemIndex(index);
+            // int? index =
+            //     await JTProductDetail(productModel: data).launch(context);
+            // if (index != null) appStore.setDrawerItemIndex(index);
           });
         },
         /*gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -338,90 +342,91 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
               horizontalList(),
               20.height,
               Text(' Featured', style: boldTextStyle()).paddingAll(8),
-              ListView.builder(
-                padding: EdgeInsets.all(8),
-                itemBuilder: (_, index) {
-                  DTProductModel data = getProducts()[index];
+              Container(height: 1000, child: JTProductList()),
+              // ListView.builder(
+              //   padding: EdgeInsets.all(8),
+              //   itemBuilder: (_, index) {
+              //     DTProductModel data = getProducts()[index];
 
-                  return Container(
-                    decoration: boxDecorationRoundedWithShadow(8,
-                        backgroundColor: appStore.appBarColor!),
-                    margin: EdgeInsets.all(8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 110,
-                          width: 126,
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                data.image!,
-                                fit: BoxFit.cover,
-                                height: 110,
-                                width: 126,
-                              ).cornerRadiusWithClipRRect(8),
-                              Positioned(
-                                right: 10,
-                                top: 10,
-                                child: data.isLiked.validate()
-                                    ? Icon(Icons.favorite,
-                                        color: Colors.red, size: 16)
-                                    : Icon(Icons.favorite_border, size: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                        8.width,
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(data.name!,
-                                style: primaryTextStyle(),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis),
-                            4.height,
-                            Row(
-                              children: [
-                                IgnorePointer(
-                                  child: RatingBar(
-                                    onRatingChanged: (r) {},
-                                    filledIcon: Icons.star,
-                                    emptyIcon: Icons.star_border,
-                                    initialRating: data.rating!,
-                                    maxRating: 5,
-                                    filledColor: Colors.yellow,
-                                    size: 14,
-                                  ),
-                                ),
-                                5.width,
-                                Text('${data.rating}',
-                                    style: secondaryTextStyle(size: 12)),
-                              ],
-                            ),
-                            4.height,
-                            Row(
-                              children: [
-                                priceWidget(data.discountPrice),
-                                8.width,
-                                priceWidget(data.price, applyStrike: true),
-                              ],
-                            ),
-                          ],
-                        ).paddingAll(8).expand(),
-                      ],
-                    ),
-                  ).onTap(() async {
-                    int? index = await JTProductDetail(productModel: data)
-                        .launch(context);
-                    if (index != null) appStore.setDrawerItemIndex(index);
-                  });
-                },
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: getProducts().length,
-              ),
+              //     return Container(
+              //       decoration: boxDecorationRoundedWithShadow(8,
+              //           backgroundColor: appStore.appBarColor!),
+              //       margin: EdgeInsets.all(8),
+              //       child: Row(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Container(
+              //             height: 110,
+              //             width: 126,
+              //             child: Stack(
+              //               children: [
+              //                 Image.asset(
+              //                   data.image!,
+              //                   fit: BoxFit.cover,
+              //                   height: 110,
+              //                   width: 126,
+              //                 ).cornerRadiusWithClipRRect(8),
+              //                 Positioned(
+              //                   right: 10,
+              //                   top: 10,
+              //                   child: data.isLiked.validate()
+              //                       ? Icon(Icons.favorite,
+              //                           color: Colors.red, size: 16)
+              //                       : Icon(Icons.favorite_border, size: 16),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //           8.width,
+              //           Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             mainAxisAlignment: MainAxisAlignment.center,
+              //             children: [
+              //               Text(data.name!,
+              //                   style: primaryTextStyle(),
+              //                   maxLines: 1,
+              //                   overflow: TextOverflow.ellipsis),
+              //               4.height,
+              //               Row(
+              //                 children: [
+              //                   IgnorePointer(
+              //                     child: RatingBar(
+              //                       onRatingChanged: (r) {},
+              //                       filledIcon: Icons.star,
+              //                       emptyIcon: Icons.star_border,
+              //                       initialRating: data.rating!,
+              //                       maxRating: 5,
+              //                       filledColor: Colors.yellow,
+              //                       size: 14,
+              //                     ),
+              //                   ),
+              //                   5.width,
+              //                   Text('${data.rating}',
+              //                       style: secondaryTextStyle(size: 12)),
+              //                 ],
+              //               ),
+              //               4.height,
+              //               Row(
+              //                 children: [
+              //                   priceWidget(data.discountPrice),
+              //                   8.width,
+              //                   priceWidget(data.price, applyStrike: true),
+              //                 ],
+              //               ),
+              //             ],
+              //           ).paddingAll(8).expand(),
+              //         ],
+              //       ),
+              //     ).onTap(() async {
+              //       int? index = await JTProductDetail(productModel: data)
+              //           .launch(context);
+              //       if (index != null) appStore.setDrawerItemIndex(index);
+              //     });
+              //   },
+              //   shrinkWrap: true,
+              //   physics: NeverScrollableScrollPhysics(),
+              //   itemCount: getProducts().length,
+              // ),
             ],
           ),
         ),
@@ -536,5 +541,123 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         web: webWidget(),
       ),
     );
+  }
+}
+
+class JTProductList extends StatefulWidget {
+  @override
+  _JTProductListState createState() => _JTProductListState();
+}
+
+class _JTProductListState extends State<JTProductList> {
+  // functions starts //
+
+  List productlist = [];
+
+  Future<void> getProduct() async {
+    http.Response response = await http.get(
+        Uri.parse(server.server + "jtnew_product_selectproduct"),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      productlist = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.getProduct();
+  }
+
+  // functions ends //
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        padding: EdgeInsets.all(8),
+        itemCount: productlist == null ? 0 : productlist.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTProductDetail(
+                          productid: productlist[index]["product_id"],
+                          providerid: productlist[index]["provider_id"],
+                          name: productlist[index]["name"],
+                          category: productlist[index]["category"],
+                          price: productlist[index]["price"],
+                          additionalfee: productlist[index]["additional_fee"],
+                          totalprice: productlist[index]["total_price"],
+                          description: productlist[index]["description"],
+                          expected: productlist[index]
+                              ["expected_delivery_days"],
+                          availableday: productlist[index]["available_day"],
+                          location: productlist[index]["location"],
+                          productphoto: productlist[index]["product_photo"],
+                          postdate: productlist[index]["post_date"],
+                        )),
+              );
+            },
+            child: Container(
+              decoration: boxDecorationRoundedWithShadow(8,
+                  backgroundColor: appStore.appBarColor!),
+              margin: EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 110,
+                    width: 126,
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          "https://jobtune.ai/gig/JobTune/assets/img/" +
+                              productlist[index]["product_photo"],
+                          fit: BoxFit.cover,
+                          height: 110,
+                          width: 126,
+                        ).cornerRadiusWithClipRRect(8),
+                      ],
+                    ),
+                  ),
+                  8.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(productlist[index]["name"],
+                          style: primaryTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      4.height,
+                      Row(
+                        children: [
+                          Text(
+                            'RM ' + productlist[index]["price"],
+                            style: TextStyle(
+                              // decoration: TextDecoration.lineThrough,
+                              // // : TextDecoration.none,
+                              color: appStore.textPrimaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          // JTpriceWidget(10),
+                        ],
+                      ),
+                      16.height,
+                      Text(productlist[index]["location"],
+                          style: primaryTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ],
+                  ).paddingAll(8).expand(),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

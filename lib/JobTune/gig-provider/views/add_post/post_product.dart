@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+// import 'package:flutter_mobx/flutter_mobx.dart';
+// import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
+// import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+// import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+// import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
+// import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppConstant.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:prokit_flutter/main/utils/AppConstant.dart';
+// import 'package:prokit_flutter/main/utils/AppWidget.dart';
+// import 'package:url_launcher/url_launcher.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
@@ -23,6 +27,27 @@ class PostProduct extends StatefulWidget {
 
 class _PostProductState extends State<PostProduct> {
   var formKey = GlobalKey<FormState>();
+  String? selectedCategory = 'Category';
+  String? selectedRateBy = 'Rate By';
+  TimeOfDay selectedTime = TimeOfDay.now();
+  List chosenDay = [];
+
+  bool? isChecked1 = false;
+  bool? isChecked2 = false;
+  bool? isChecked3 = false;
+  bool? isChecked4 = false;
+  bool? isChecked5 = false;
+  bool? isChecked6 = false;
+  bool? isChecked7 = false;
+
+  var titleField = TextEditingController();
+  var categoryField = TextEditingController();
+  var descField = TextEditingController();
+  var locationField = TextEditingController();
+  var expectedDayField = TextEditingController();
+  var priceField = TextEditingController();
+  var deliveryFeeField = TextEditingController();
+  var availabilityField = TextEditingController();
 
   List<String> listOfCategory = [
     'Category',
@@ -35,50 +60,11 @@ class _PostProductState extends State<PostProduct> {
     'Physics'
   ];
 
-  String? selectedIndexCategory = 'Category';
-
   List<String> rateBy = [
     'Rate By',
     'Hour',
     'Package',
   ];
-
-  String? selectedRateBy = 'Rate By';
-
-  TimeOfDay selectedTime = TimeOfDay.now();
-
-  Future<Null> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-        context: context,
-        initialTime: selectedTime,
-        builder: (BuildContext context, Widget? child) {
-          return CustomTheme(
-            child: MediaQuery(
-              data:
-                  MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-              child: child!,
-            ),
-          );
-        });
-
-    if (picked != null)
-      setState(() {
-        selectedTime = picked;
-      });
-  }
-
-  bool? isChecked1 = false;
-  bool? isChecked2 = false;
-  bool? isChecked3 = false;
-  bool? isChecked4 = false;
-  bool? isChecked5 = false;
-  bool? isChecked6 = false;
-  bool? isChecked7 = false;
-  bool? isChecked8 = false;
-  bool isChecked9 = false;
-  bool? isChecked10 = false;
-  bool? isChecked11 = false;
-  bool? isChecked12 = false;
 
   Widget availabilityLabel() {
     return Row(
@@ -226,6 +212,72 @@ class _PostProductState extends State<PostProduct> {
     );
   }
 
+  Future<void> getInput() async {
+    if (isChecked1 == true) {
+      chosenDay.add("Monday");
+    }
+    if (isChecked2 == true) {
+      chosenDay.add("Tuesday");
+    }
+    if (isChecked3 == true) {
+      chosenDay.add("Wednesday");
+    }
+    if (isChecked4 == true) {
+      chosenDay.add("Thursday");
+    }
+    if (isChecked5 == true) {
+      chosenDay.add("Friday");
+    }
+    if (isChecked6 == true) {
+      chosenDay.add("Saturday");
+    }
+    if (isChecked7 == true) {
+      chosenDay.add("Sunday");
+    }
+
+    var availableDay = chosenDay.join(",");
+    var titleData = titleField.text;
+    var descData = descField.text;
+    var locationData = locationField.text;
+    var expectedDayData = expectedDayField.text;
+    var priceData = priceField.text;
+    var deliveryFeeData = deliveryFeeField.text;
+
+    addProduct(availableDay, titleData, descData, locationData, expectedDayData,
+        priceData, deliveryFeeData);
+  }
+
+  Future<void> addProduct(availableDay, titleData, descData, locationData,
+      expectedDayData, priceData, deliveryFeeData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final jobtuneUser = prefs.getString('user');
+    final jobtuneUser = "syeeraayeem@gmail.com";
+
+    http.get(
+        Uri.parse(server.server +
+            "jtnew_product_insertproduct&j_providerid=" +
+            jobtuneUser.toString() +
+            "&j_title=" +
+            Uri.encodeComponent(titleData) +
+            "&j_category=" +
+            Uri.encodeComponent(selectedCategory.toString()) +
+            "&j_desc=" +
+            Uri.encodeComponent(descData) +
+            "&j_location=" +
+            Uri.encodeComponent(locationData) +
+            "&j_expectday=" +
+            expectedDayData +
+            "&j_price=" +
+            priceData +
+            "&j_deliveryfee=" +
+            deliveryFeeData +
+            "&j_availability=" +
+            availableDay),
+        headers: {"Accept": "application/json"});
+
+    toast("Product added successfully");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -239,7 +291,7 @@ class _PostProductState extends State<PostProduct> {
             mainAxisSize: MainAxisSize.min, // To make the card compact
             children: <Widget>[
               TextFormField(
-                // controller: mobileCont,
+                controller: titleField,
                 // focusNode: mobileFocus,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
@@ -283,7 +335,7 @@ class _PostProductState extends State<PostProduct> {
                 ),
                 isExpanded: true,
                 dropdownColor: appStore.appBarColor,
-                value: selectedIndexCategory,
+                value: selectedCategory,
                 icon: Icon(
                   Icons.keyboard_arrow_down,
                   color: appStore.iconColor,
@@ -291,7 +343,7 @@ class _PostProductState extends State<PostProduct> {
                 onChanged: (dynamic newValue) {
                   setState(() {
                     toast(newValue);
-                    selectedIndexCategory = newValue;
+                    selectedCategory = newValue;
                   });
                 },
                 items: listOfCategory.map((category) {
@@ -304,7 +356,7 @@ class _PostProductState extends State<PostProduct> {
               ),
               8.height,
               TextFormField(
-                // controller: mobileCont,
+                controller: descField,
                 // focusNode: mobileFocus,
                 maxLines: 5,
                 minLines: 3,
@@ -334,7 +386,7 @@ class _PostProductState extends State<PostProduct> {
               ),
               8.height,
               TextFormField(
-                // controller: mobileCont,
+                controller: locationField,
                 // focusNode: mobileFocus,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
@@ -362,7 +414,7 @@ class _PostProductState extends State<PostProduct> {
               ),
               8.height,
               TextFormField(
-                // controller: mobileCont,
+                controller: expectedDayField,
                 // focusNode: mobileFocus,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
@@ -394,7 +446,7 @@ class _PostProductState extends State<PostProduct> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      // controller: mobileCont,
+                      controller: priceField,
                       // focusNode: mobileFocus,
                       style: primaryTextStyle(),
                       decoration: InputDecoration(
@@ -424,7 +476,7 @@ class _PostProductState extends State<PostProduct> {
                   8.width,
                   Expanded(
                     child: TextFormField(
-                      // controller: mobileCont,
+                      controller: deliveryFeeField,
                       // focusNode: mobileFocus,
                       style: primaryTextStyle(),
                       decoration: InputDecoration(
@@ -461,68 +513,11 @@ class _PostProductState extends State<PostProduct> {
               8.height,
               availabilityLabel(),
               availabilityDay(),
-              // 8.height,
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: Card(
-              //           elevation: 4,
-              //           child: ListTile(
-              //             onTap: () {
-              //               _selectTime(context);
-              //             },
-              //             title: Text(
-              //               'Start Shift',
-              //               style: primaryTextStyle(),
-              //             ),
-              //             subtitle: Text(
-              //               "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-              //               style: secondaryTextStyle(),
-              //             ),
-              //             // trailing: IconButton(
-              //             //   icon: Icon(
-              //             //     Icons.access_time,
-              //             //     color: appStore.iconColor,
-              //             //   ),
-              //             //   onPressed: () {
-              //             //     // _selectDate(context);
-              //             //   },
-              //             // ),
-              //           )),
-              //     ),
-              //     Expanded(
-              //       child: Card(
-              //           elevation: 4,
-              //           child: ListTile(
-              //             onTap: () {
-              //               _selectTime(context);
-              //             },
-              //             title: Text(
-              //               'End Shift',
-              //               style: primaryTextStyle(),
-              //             ),
-              //             subtitle: Text(
-              //               "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"} : ${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"} ${selectedTime.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-              //               style: secondaryTextStyle(),
-              //             ),
-              //             // trailing: IconButton(
-              //             //   icon: Icon(
-              //             //     Icons.access_time,
-              //             //     color: appStore.iconColor,
-              //             //   ),
-              //             //   onPressed: () {
-              //             //     // _selectDate(context);
-              //             //   },
-              //             // ),
-              //           )),
-              //     ),
-              //   ],
-              // ),
               16.height,
               GestureDetector(
-                // onTap: () {
-                //   validate();
-                // },
+                onTap: () {
+                  getInput();
+                },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(

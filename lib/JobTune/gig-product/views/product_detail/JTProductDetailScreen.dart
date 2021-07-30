@@ -13,17 +13,52 @@ import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import '../../../../main.dart';
 // import 'JTDrawerWidget.dart';
 import 'JTAddressScreen.dart';
 import 'JTReviewWidget.dart';
 import '../checkout/JTOrderSummaryScreen.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 class JTProductDetail extends StatefulWidget {
   static String tag = '/JTProductDetail';
-  DTProductModel? productModel;
+  // DTProductModel? productModel;
 
-  JTProductDetail({this.productModel});
+  // JTProductDetail({this.productModel});
+
+  final String productid;
+  final String providerid;
+  final String name;
+  final String category;
+  final String price;
+  final String additionalfee;
+  final String totalprice;
+  final String description;
+  final String expected;
+  final String availableday;
+  final String location;
+  final String productphoto;
+  final String postdate;
+
+  const JTProductDetail({
+    Key? key,
+    required this.productid,
+    required this.providerid,
+    required this.name,
+    required this.category,
+    required this.price,
+    required this.additionalfee,
+    required this.totalprice,
+    required this.description,
+    required this.expected,
+    required this.availableday,
+    required this.location,
+    required this.productphoto,
+    required this.postdate,
+  });
 
   @override
   _JTProductDetailState createState() => _JTProductDetailState();
@@ -41,19 +76,19 @@ class _JTProductDetailState extends State<JTProductDetail> {
   }
 
   init() async {
-    if (widget.productModel != null) {
-      if (widget.productModel!.price.validate() >
-          widget.productModel!.discountPrice.validate()) {
-        double mrp = widget.productModel!.price.validate().toDouble();
-        double discountPrice =
-            widget.productModel!.discountPrice.validate().toDouble();
-        discount = (((mrp - discountPrice) / mrp) * 100);
+    // if (widget.productModel != null) {
+    //   if (widget.productModel!.price.validate() >
+    //       widget.productModel!.discountPrice.validate()) {
+    //     double mrp = widget.productModel!.price.validate().toDouble();
+    //     double discountPrice =
+    //         widget.productModel!.discountPrice.validate().toDouble();
+    //     discount = (((mrp - discountPrice) / mrp) * 100);
 
-        setState(() {});
-      }
-    } else {
-      widget.productModel = getProducts()[2];
-    }
+    //     setState(() {});
+    //   }
+    // } else {
+    //   widget.productModel = getProducts()[2];
+    // }
   }
 
   @override
@@ -90,7 +125,27 @@ class _JTProductDetailState extends State<JTProductDetail> {
         child: Text('Buy Now', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
-        DTOrderSummaryScreen(getCartProducts()).launch(context);
+        // DTOrderSummaryScreen(getCartProducts()).launch(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DTOrderSummaryScreen(
+              productid: widget.productid,
+              providerid: widget.providerid,
+              name: widget.name,
+              category: widget.category,
+              price: widget.price,
+              additionalfee: widget.additionalfee,
+              totalprice: widget.totalprice,
+              description: widget.description,
+              expected: widget.expected,
+              availableday: widget.availableday,
+              location: widget.location,
+              productphoto: widget.productphoto,
+              postdate: widget.postdate,
+            ),
+          ),
+        );
       });
     }
 
@@ -110,20 +165,30 @@ class _JTProductDetailState extends State<JTProductDetail> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.productModel!.name!, style: boldTextStyle(size: 18)),
+              Text(widget.name, style: boldTextStyle(size: 18)),
               10.height,
               Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  priceWidget(widget.productModel!.discountPrice,
-                      fontSize: 28, textColor: appColorPrimary),
-                  8.width,
-                  priceWidget(widget.productModel!.price,
-                      applyStrike: true, fontSize: 18),
-                  16.width,
-                  Text('${discount.toInt()}% off',
-                          style: boldTextStyle(color: appColorPrimary))
-                      .visible(discount != 0.0),
+                  Text(
+                    'RM ' + widget.price,
+                    style: TextStyle(
+                      // decoration: TextDecoration.lineThrough,
+                      // // : TextDecoration.none,
+                      color: appColorPrimary,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  // priceWidget(widget.productModel!.discountPrice,
+                  //     fontSize: 28, textColor: appColorPrimary),
+                  // 8.width,
+                  // priceWidget(widget.productModel!.price,
+                  //     applyStrike: true, fontSize: 18),
+                  // 16.width,
+                  // Text('${discount.toInt()}% off',
+                  //         style: boldTextStyle(color: appColorPrimary))
+                  //     .visible(discount != 0.0),
                 ],
               ),
               10.height,
@@ -139,8 +204,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
                       children: [
                         Icon(Icons.star_border, color: Colors.white, size: 14),
                         8.width,
-                        Text(widget.productModel!.rating.toString(),
-                            style: primaryTextStyle(color: white)),
+                        Text("5", style: primaryTextStyle(color: white)),
                       ],
                     ),
                   ).onTap(() {
@@ -166,40 +230,36 @@ class _JTProductDetailState extends State<JTProductDetail> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Deliver to', style: primaryTextStyle()),
+                      Text('Deliver from ' + widget.location,
+                          style: primaryTextStyle()),
                       10.width,
-                      Text(
-                              mSelectedAddress != null
-                                  ? mSelectedAddress!.name.validate()
-                                  : 'John Doe',
-                              style: boldTextStyle())
-                          .expand(),
+                      // Text(
+                      //         mSelectedAddress != null
+                      //             ? mSelectedAddress!.name.validate()
+                      //             : 'John Doe',
+                      //         style: boldTextStyle())
+                      //     .expand(),
                     ],
                   ).expand(),
-                  Container(
-                    padding: EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: appColorPrimary),
-                        borderRadius: BorderRadius.circular(3)),
-                    child: Text('Change', style: primaryTextStyle()),
-                  ).onTap(() async {
-                    var res = await JTAddressScreen().launch(context);
-                    if (res is DTAddressListModel) {
-                      mSelectedAddress = res;
+                  // Container(
+                  //   padding: EdgeInsets.all(4),
+                  //   decoration: BoxDecoration(
+                  //       border: Border.all(color: appColorPrimary),
+                  //       borderRadius: BorderRadius.circular(3)),
+                  //   child: Text('Change', style: primaryTextStyle()),
+                  // ).onTap(() async {
+                  //   var res = await JTAddressScreen().launch(context);
+                  //   if (res is DTAddressListModel) {
+                  //     mSelectedAddress = res;
 
-                      toast('Address Updated');
-                    }
+                  //     toast('Address Updated');
+                  //   }
 
-                    setState(() {});
-                  }),
+                  //   setState(() {});
+                  // }
+                  // ),
                 ],
               ),
-              4.height,
-              Text(
-                  mSelectedAddress != null
-                      ? mSelectedAddress!.addressLine1.validate()
-                      : '4683 Stadium Drive, Cambridge, MA',
-                  style: secondaryTextStyle()),
               16.height,
               Divider(height: 0),
             ],
@@ -238,8 +298,9 @@ class _JTProductDetailState extends State<JTProductDetail> {
               children: [
                 Container(
                     height: context.height() * 0.45,
-                    child: Image.asset(
-                      'images/dashboard/ic_chair2.jpg',
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/img/" +
+                          widget.productphoto,
                       fit: BoxFit.fitHeight,
                       height: 180,
                       width: context.width(),
@@ -276,7 +337,8 @@ class _JTProductDetailState extends State<JTProductDetail> {
                       height: context.height() * 0.45,
                       margin: EdgeInsets.all(8),
                       child: Image.network(
-                        widget.productModel!.image!,
+                        "https://jobtune.ai/gig/JobTune/assets/img/" +
+                            widget.productphoto,
                         width: context.width(),
                         fit: BoxFit.fitHeight,
                       ),
@@ -303,12 +365,12 @@ class _JTProductDetailState extends State<JTProductDetail> {
             ],
           ),
           16.height,
-          widget.productModel != null
-              ? Text('${widget.productModel!.name.validate()} Reviews',
-                      style: boldTextStyle())
-                  .paddingAll(16)
-              : SizedBox(),
-          JTReviewWidget(list: getReviewList()),
+          // widget.productModel != null
+          //     ? Text('${widget.productModel!.name.validate()} Reviews',
+          //             style: boldTextStyle())
+          //         .paddingAll(16)
+          //     : SizedBox(),
+          // JTReviewWidget(list: getReviewList()),
         ],
       );
     }

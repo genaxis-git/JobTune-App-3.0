@@ -150,7 +150,7 @@ class CartListViewState extends State<CartListView> {
           DTProductModel data1 = data[index];
 
           return itemCart(data1, index).onTap(() {
-            JTProductDetail(productModel: data1).launch(context);
+            // JTProductDetail(productModel: data1).launch(context);
           });
         },
         shrinkWrap: true,
@@ -182,17 +182,17 @@ class CartListViewState extends State<CartListView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                totalAmountWidget(subTotal, shippingCharges, totalAmount)
-                    .visible(widget.mIsEditable!),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(12),
-                  decoration: boxDecorationRoundedWithShadow(8,
-                      backgroundColor: appColorPrimary),
-                  child: Text('Checkout', style: boldTextStyle(color: white)),
-                ).onTap(() {
-                  DTOrderSummaryScreen(data).launch(context);
-                }).visible(widget.mIsEditable!),
+                // totalAmountWidget(subTotal, shippingCharges, totalAmount)
+                //     .visible(widget.mIsEditable!),
+                // Container(
+                //   alignment: Alignment.center,
+                //   padding: EdgeInsets.all(12),
+                //   decoration: boxDecorationRoundedWithShadow(8,
+                //       backgroundColor: appColorPrimary),
+                //   child: Text('Checkout', style: boldTextStyle(color: white)),
+                // ).onTap(() {
+                //   DTOrderSummaryScreen(data).launch(context);
+                // }).visible(widget.mIsEditable!),
               ],
             ),
           ).expand(flex: 40).visible(!widget.isOrderSummary!),

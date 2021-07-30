@@ -6,11 +6,13 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../main.dart';
 
-Widget priceWidget(int? price, {bool applyStrike = false, double? fontSize, Color? textColor}) {
+Widget priceWidget(int? price,
+    {bool applyStrike = false, double? fontSize, Color? textColor}) {
   return Text(
-    applyStrike ? '$price' : '\$$price',
+    applyStrike ? '$price' : '\RM $price',
     style: TextStyle(
-      decoration: applyStrike ? TextDecoration.lineThrough : TextDecoration.none,
+      decoration:
+          applyStrike ? TextDecoration.lineThrough : TextDecoration.none,
       color: textColor != null
           ? textColor
           : applyStrike
@@ -46,7 +48,9 @@ Gradient defaultThemeGradient() {
   );
 }
 
-Widget errorWidget(BuildContext context, String image, String title, String desc, {bool showRetry = false, Function? onRetry}) {
+Widget errorWidget(
+    BuildContext context, String image, String title, String desc,
+    {bool showRetry = false, Function? onRetry}) {
   return Container(
     constraints: dynamicBoxConstraints(),
     height: context.height(),
@@ -63,7 +67,9 @@ Widget errorWidget(BuildContext context, String image, String title, String desc
           left: 20,
           right: 20,
           child: Container(
-            decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.isDarkModeOn ? Colors.black26 : Colors.white70),
+            decoration: boxDecorationRoundedWithShadow(8,
+                backgroundColor:
+                    appStore.isDarkModeOn ? Colors.black26 : Colors.white70),
             padding: EdgeInsets.all(8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,19 +78,24 @@ Widget errorWidget(BuildContext context, String image, String title, String desc
               children: [
                 Text(title, style: boldTextStyle(size: 24)),
                 4.height,
-                Text(desc, style: secondaryTextStyle(size: 14), textAlign: TextAlign.center).paddingOnly(left: 20, right: 20),
+                Text(desc,
+                        style: secondaryTextStyle(size: 14),
+                        textAlign: TextAlign.center)
+                    .paddingOnly(left: 20, right: 20),
                 Column(
                   children: [
                     30.height,
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
                         primary: white,
                       ),
                       onPressed: () {
                         onRetry!();
                       },
-                      child: Text('RETRY', style: primaryTextStyle(color: textPrimaryColor)),
+                      child: Text('RETRY',
+                          style: primaryTextStyle(color: textPrimaryColor)),
                     )
                   ],
                 ).visible(showRetry),
@@ -151,27 +162,53 @@ class ChatMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          isMe.validate() ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
           margin: isMe.validate()
-              ? EdgeInsets.only(top: 3.0, bottom: 3.0, right: 0, left: (dynamicWidth(context) * 0.25).toDouble())
-              : EdgeInsets.only(top: 4.0, bottom: 4.0, left: 0, right: (dynamicWidth(context) * 0.25).toDouble()),
+              ? EdgeInsets.only(
+                  top: 3.0,
+                  bottom: 3.0,
+                  right: 0,
+                  left: (dynamicWidth(context) * 0.25).toDouble())
+              : EdgeInsets.only(
+                  top: 4.0,
+                  bottom: 4.0,
+                  left: 0,
+                  right: (dynamicWidth(context) * 0.25).toDouble()),
           decoration: BoxDecoration(
             color: !isMe ? appColorPrimary : appStore.appBarColor,
             boxShadow: defaultBoxShadow(),
             borderRadius: isMe.validate()
-                ? BorderRadius.only(bottomLeft: Radius.circular(10), topLeft: Radius.circular(10), bottomRight: Radius.circular(0), topRight: Radius.circular(10))
-                : BorderRadius.only(bottomLeft: Radius.circular(0), topLeft: Radius.circular(10), bottomRight: Radius.circular(10), topRight: Radius.circular(10)),
-            border: Border.all(color: isMe ? Theme.of(context).dividerColor : Colors.transparent),
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(0),
+                    topRight: Radius.circular(10))
+                : BorderRadius.only(
+                    bottomLeft: Radius.circular(0),
+                    topLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+            border: Border.all(
+                color:
+                    isMe ? Theme.of(context).dividerColor : Colors.transparent),
           ),
           child: Column(
-            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(child: Text(data.msg!, style: primaryTextStyle(color: !isMe ? white : appStore.textPrimaryColor))),
-              Text(data.time!, style: secondaryTextStyle(color: !isMe ? white : appStore.textSecondaryColor, size: 12))
+              Flexible(
+                  child: Text(data.msg!,
+                      style: primaryTextStyle(
+                          color: !isMe ? white : appStore.textPrimaryColor))),
+              Text(data.time!,
+                  style: secondaryTextStyle(
+                      color: !isMe ? white : appStore.textSecondaryColor,
+                      size: 12))
             ],
           ),
         ),
