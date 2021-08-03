@@ -15,10 +15,11 @@ import '../../../JTDrawerWidget.dart';
 class JTBookingFormScreen extends StatefulWidget {
   const JTBookingFormScreen({
     Key? key,
-    required
-    this.id,
+    required this.id,
+    required this.proid,
   }) : super(key: key);
   final String id;
+  final String proid;
   @override
   _JTBookingFormScreenState createState() => _JTBookingFormScreenState();
 }
@@ -38,9 +39,6 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   int shippingCharges = 0;
   int mainCount = 0;
 
-  String? name = 'Austin';
-  String? address = '381, Shirley St. Munster, New York';
-  String? address2 = 'United States - 10005';
 
   // function starts //
   List profile = [];
@@ -107,6 +105,28 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
     }
   }
 
+  List provider = [];
+  String proname = "";
+  String proemail = "";
+  String protel = "";
+  Future<void> readProvider() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + widget.proid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      provider = json.decode(response.body);
+    });
+
+    setState(() {
+      proname = provider[0]["name"];
+      proemail = provider[0]["email"];
+      protel = provider[0]["phone_no"];
+    });
+  }
+
   List packs = [];
   List<String> listOfPackage = ['Choose package..'];
   String? selectedIndexPackage = 'Choose package..';
@@ -126,13 +146,53 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
     }
   }
 
+  String book = "";
+  Future<void> sendBooking(starts,ends,quantity,desc,names,total) async {
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertbooking&serviceid=" + widget.id
+                + "&client=" + email
+                + "&starts=" + starts
+                + "&ends=" + ends.toString()
+                + "&quantity=" + quantity
+                + "&address=" + userloc
+                + "&desc=" + desc
+                + "names=" + names
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectmaxbooking&lgid=" + email),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      book = response.body;
+    });
+
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertpayment&id=" + book
+                + "&total=" + total
+                + "&type=gig-service"
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    toast("Booking Success!");
+  }
 
   @override
   void initState() {
     super.initState();
     this.readProfile();
+    this.readProvider();
     this.readService();
   }
+
+  // functions ends //
 
   TimeOfDay selectedTimeIN = TimeOfDay.now();
   DateTime selectedDate = DateTime.now();
@@ -159,6 +219,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
       setState(() {
         print(picked);
         selectedDate = picked;
+        print(selectedTimeIN);
       });
   }
 
@@ -226,49 +287,6 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
           Divider().expand(),
         ],
       );
-    }
-
-    Widget deliveryDateAndPayBtn() {
-      return Column(
-        children: [
-          20.height,
-          Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.all(12),
-            decoration: boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xFF0A79DF)),
-            child: Text('Checkout', style: boldTextStyle(color: white)),
-          ).onTap(() {
-//              Navigator.of(context).push(MaterialPageRoute(
-//                  builder: (BuildContext context) => WebviewPayment(
-////                    postid: widget.id.toString(),
-////                    nilaidb: total.toString(),
-////                    fullname: Uri.encodeComponent(fullname.toString()),
-////                    email: email.toString(),
-////                    telno: Uri.encodeComponent(telno.toString()),
-////                    platformdb: platformfee.toString(),
-////                    proid: email.toString(),
-////                    empid: empid.toString(),
-////                    emprid: emprid.toString(),
-////                    timein: timein.toString(),
-////                    date: date.toString(),
-////                    address: address.toString(),
-////                    describe: Uri.encodeComponent(describe.toString()),
-////                    timeout: timeout.toString(),
-////                    input: input.toString(),
-////                    service: Uri.encodeComponent(service.toString()),
-////                    proname: Uri.encodeComponent(proname.toString()),
-////                    hr: hr.toString(),
-////                    emailid: emailid.toString(),
-////                    protel: Uri.encodeComponent(protel.toString()),
-////                    package: Uri.encodeComponent(package.toString()),
-////                    insurancedb: insurance.toString(),
-////                    adminfeedb: adminfee.toString(),
-//                  )
-//              ));
-//            }
-          }),
-        ],
-      ).paddingAll(8);
     }
 
     Widget mobileWidget() {
@@ -557,7 +575,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                     borderSide: BorderSide(
                         color: appStore.textSecondaryColor!)),
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
             ),
             30.height,
@@ -599,7 +617,69 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                   decoration: boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xFF0A79DF)),
                   child: Text('Checkout', style: boldTextStyle(color: white)),
                 ).onTap(() {
-
+                  if(by == "Hour " || by == "Hour") {
+                    var pickedhr = int.parse(selectedIndexQty.toString());
+                    var pickedtime = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
+                    var quantity = selectedIndexQty.toString();
+                    var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
+                    var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
+                    var ends = selectedDate.toString().split(" ")[0] + " " + addinghrs.hour.toString() + ":" + addinghrs.minute.toString() + ":00";
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => WebviewPayment(
+                          postid: widget.id,
+                          clientid: email,
+                          starts: starts.toString(),
+                          ends: ends.toString(),
+                          quantity: quantity.toString(),
+                          address: userloc,
+                          desc: detail.text,
+                          type: "gig-service",
+                          total: total.toString(),
+                          packname: servicename,
+                          username: fullname,
+                          teluser: usercall,
+                          proname: proname,
+                          proemail: proemail,
+                          protel: protel,
+                          servicename: servicename,
+                        )
+                    ));
+                  }
+                  else {
+                    var pickedhr = int.parse(selectedIndexPackage.toString().split(" | ")[2].split(" ")[1]);
+                    var pickedtime = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
+                    var quantity = selectedIndexPackage.toString().split(" | ")[2].split(" ")[1];
+                    var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
+                    var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
+                    var ends = selectedDate.toString().split(" ")[0] + " " + addinghrs.hour.toString() + ":" + addinghrs.minute.toString() + ":00";
+                    var pickedpack = selectedIndexPackage.toString().split(" | ")[0];
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => WebviewPayment(
+                          postid: widget.id,
+                          clientid: email,
+                          starts: starts.toString(),
+                          ends: ends.toString(),
+                          quantity: quantity.toString(),
+                          address: userloc,
+                          desc: detail.text,
+                          type: "gig-service",
+                          total: total.toString(),
+                          packname: pickedpack.toString(),
+                          username: fullname,
+                          teluser: usercall,
+                          proname: proname,
+                          proemail: proemail,
+                          protel: protel,
+                          servicename: servicename,
+                        )
+                    ));
+                  }
+//                  if(by == "Hour " || by == "Hour") {
+//                    sendBooking(starts,ends,quantity,detail.text,servicename,total);
+//                  }
+//                  else{
+//                    sendBooking(starts,ends,quantity,detail.text,selectedIndexPackage.toString().split(" | ")[0],total);
+//                  }
                 }),
               ],
             ).paddingAll(8)
@@ -662,7 +742,23 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                   ],
                 ),
                 Divider(height: 20),
-                deliveryDateAndPayBtn(),
+                Column(
+                  children: [
+                    20.height,
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(12),
+                      decoration: boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xFF0A79DF)),
+                      child: Text('Checkout', style: boldTextStyle(color: white)),
+                    ).onTap(() {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => WebviewPayment(
+
+                          )
+                      ));
+                    }),
+                  ],
+                ).paddingAll(8),
               ],
             ),
           ).expand(flex: 40),

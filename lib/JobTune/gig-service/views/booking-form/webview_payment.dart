@@ -3,35 +3,45 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'JTConfirmationScreen.dart';
+
 
 class WebviewPayment extends StatefulWidget {
   var postid;
-  var nilaidb;
-  var fullname;
-  var email;
-  var telno;
-  var platformdb;
-  var proid;
-  var empid;
-  var emprid;
-  var timein;
-  var date;
+  var clientid;
+  var starts;
+  var ends;
+  var quantity;
   var address;
-  var describe;
-  var timeout;
-  var input;
-  var service;
+  var desc;
+  var type;
+  var total;
+
+  var packname;
+  var username;
+  var teluser;
   var proname;
-  var hr;
-  var emailid;
+  var proemail;
   var protel;
-  var package;
-  var insurancedb;
-  var adminfeedb;
+  var servicename;
 
   WebviewPayment({
-    this.postid, this.nilaidb, this.fullname, this.email, this.telno, this.platformdb, this.proid, this.empid, this.emprid, this.timein, this.date, this.address, this.describe,
-    this.timeout, this.input, this.service, this.proname, this.hr, this.emailid, this.protel, this.package, this.insurancedb, this.adminfeedb,
+    this.postid,
+    this.clientid,
+    this.starts,
+    this.ends,
+    this.quantity,
+    this.address,
+    this.desc,
+    this.type,
+    this.total,
+    this.packname,
+    this.username,
+    this.teluser,
+    this.proname,
+    this.proemail,
+    this.protel,
+    this.servicename,
   });
 
   @override
@@ -39,14 +49,14 @@ class WebviewPayment extends StatefulWidget {
 }
 
 class _WebviewPaymentState extends State<WebviewPayment> {
-//  WebViewController _controller;
+  WebViewController? _controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Payment"),
+        title: Text("Checkout Information"),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 2,
@@ -55,13 +65,14 @@ class _WebviewPaymentState extends State<WebviewPayment> {
         padding: EdgeInsets.all(16),
         child: WebView(
 
-          initialUrl: 'https://jobtune.ai/gig/JobTune/Provider/checkoutSenangPayMobile.php?name='+widget.fullname+'&package='+widget.package+'&email='+widget.email+'&phone='+widget.telno+'&amount='+widget.nilaidb+
-          '&detail='+widget.postid+'&proid='+widget.proid+'&jempid='+widget.empid+'&jemprid='+widget.emprid+'&timein='+widget.timein+'&timeout='+widget.timeout+'&dayin='+widget.date+
-          '&dayout='+widget.date+'&address='+widget.address+'&desc='+widget.describe+'&user_id='+widget.input+'&platformfee='+widget.platformdb+'&servicename='+widget.service+
-          '&proname='+widget.proname+'&hours='+widget.hr+'&proemail='+widget.emailid+'&protel='+widget.protel+'&insurance='+widget.insurancedb+'&adminfee='+widget.adminfeedb,
+          initialUrl: 'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Provider/newcheckoutSenangPayMobile.php?name='+widget.username+
+          '&package='+widget.packname+'&email='+widget.clientid+'&phone='+widget.teluser+'&amount='+widget.total+
+          '&detail='+widget.postid+'&proid='+widget.proemail+'&jempid=&jemprid=&timein='+widget.starts+'&timeout='+widget.ends+
+          '&dayin=&dayout=&address='+widget.address+'&desc='+widget.desc+'&user_id='+widget.clientid+'&platformfee=&servicename='+widget.servicename+
+          '&proname='+widget.proname+'&hours='+widget.quantity+'&proemail='+widget.proemail+'&protel='+widget.protel+'&insurance=&adminfee=',
 
           onWebViewCreated: (WebViewController webViewController) {
-//            _controller = webViewController;
+            _controller = webViewController;
           },
           javascriptMode: JavascriptMode.unrestricted,
           navigationDelegate: (request) {
@@ -80,13 +91,13 @@ class _WebviewPaymentState extends State<WebviewPayment> {
   }
 
   _closeWebview(paymentMessage){
-//    Navigator.of(context).push(
-//      MaterialPageRoute(
-//        builder: (BuildContext context) => ConfirmationScreen(
-//          message: paymentMessage,
-//        )
-//      )
-//    );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => ConfirmationScreen(
+          message: paymentMessage,
+        )
+      )
+    );
   }
 }
 
