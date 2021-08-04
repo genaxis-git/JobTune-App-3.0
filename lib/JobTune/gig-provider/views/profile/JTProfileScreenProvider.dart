@@ -38,6 +38,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
   String banktype = " ";
   String bankno = " ";
   String desc = " ";
+  String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -61,6 +62,13 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
       address = profile[0]["address"];
       banktype = profile[0]["bank_type"];
       bankno = profile[0]["bank_acc_no"];
+
+      if(profile[0]["profile_pic"] != "") {
+        img = profile[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
+      }
     });
   }
 
@@ -202,7 +210,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: AssetImage("images/dashboard/db_profile.jpeg"),
+                          backgroundImage: NetworkImage("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img),
                           radius: 50,
                         ),
                       ),

@@ -5,7 +5,9 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/clocking/JTClockingScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
@@ -31,6 +33,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
   List profile = [];
   String email = " ";
   String names = " ";
+  String img = "no profile.png";
   Future<void> checkProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -72,19 +75,17 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
     });
 
     setState(() {
+
       email = lgid;
       names = profile[0]["name"];
-    });
 
-    if(profile[0]["name"] != ""){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => JTAddPost()),
-      );
-    }
-    else {
-      // alert: profile not ready
-    }
+      if(profile[0]["profile_pic"] != "") {
+        img = profile[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
+      }
+    });
   }
 
   @override
@@ -109,7 +110,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         children: [
           Row(
             children: [
-              Image.asset(profileImage,
+              Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
                       height: 70, width: 70, fit: BoxFit.cover)
                   .cornerRadiusWithClipRRect(40),
               16.width,
@@ -144,7 +145,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
 //            DTNotificationSettingScreen().launch(context);
           }, leading: Icon(MaterialIcons.work_outline), detail: SizedBox()),
           settingItem(context, 'Clocking', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTClockingScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
           settingItem(context, 'Service History', onTap: () {
 //            DTNotificationSettingScreen().launch(context);
@@ -189,7 +190,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           ),
           onPressed: () {
             // toast('Icon with Label Fab');
-            readProfile();
+            checkProfile();
           });
     }
 
