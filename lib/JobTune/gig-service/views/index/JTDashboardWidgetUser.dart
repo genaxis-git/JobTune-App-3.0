@@ -652,7 +652,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                       children: [
                         (servicelist[index]["name"] != "0" || servicelist[index]["name"] != "0 ")
                         ? JTpriceWidget(double.parse(double.parse(servicelist[index]["rate"]).toStringAsFixed(2)))
-                        : JTpriceWidget(0),
+                        : JTpriceWidget(10),
                       ],
                     ),
                   ],
