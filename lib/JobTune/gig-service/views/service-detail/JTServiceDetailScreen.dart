@@ -78,6 +78,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   String days = "";
   String hours = "";
   String location = "";
+  String proid = "";
   String by = "Package";
   Future<void> readService() async {
     http.Response response = await http.get(
@@ -92,6 +93,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
 
     setState(() {
       servicename = info[0]["name"];
+      proid = info[0]["provider_id"];
       rate = double.parse(info[0]["rate"]).toStringAsFixed(2);
       desc = info[0]["description"];
       category = info[0]["category"];
@@ -212,6 +214,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
           MaterialPageRoute(
               builder: (context) => JTBookingFormScreen(
                 id: widget.id,
+                proid: proid,
               ),
         ));
 //        showModalBottomSheet(
@@ -508,8 +511,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                 children: [
                   Container(
                     height: context.height() * 0.45,
-                    child: Image.asset(
-                      "images/dashboard/ic_chair3.jpeg",
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/img/shah.jpg",
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
