@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,6 +13,7 @@ import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidget
 
 import '../../../../main.dart';
 import 'JTProfileSettingWidgetUser.dart';
+import 'JTUploadImage.dart';
 
 class JTPersonalScreenUser extends StatefulWidget {
   @override
@@ -39,9 +43,10 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   // functions starts //
 
   List profile = [];
-  String email = " ";
-  String dbgender = " ";
-  String dbrace = " ";
+  String email = "";
+  String dbgender = "";
+  String dbrace = "";
+  String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -75,6 +80,13 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
       }
       else{
         selectedIndexRace = profile[0]["race"];
+      }
+
+      if(profile[0]["profile_pic"] != "") {
+        img = profile[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
       }
     });
   }
@@ -112,6 +124,35 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     //alert: update success
   }
 
+  PickedFile? _image;
+  File? _showimg;
+//  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/mobile_uploadPhoto_user.php';
+  final String uploadUrl = 'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/jtnew_uploadPhoto_user.php';
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async{
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = pickedFile;
+      _showimg = File(pickedFile!.path);
+    });
+    print(_image!.path);
+    print(uploadUrl);
+    await uploadImage(_image!.path, uploadUrl);
+  }
+
+  uploadImage(filepath, url) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+    final snackBar = SnackBar(content: Text('Profile Picture Changed!'));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.fields['lgid'] = lgid;
+    request.files.add(await http.MultipartFile.fromPath('image', filepath));
+    var res = await request.send();
+    return res.reasonPhrase;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -119,7 +160,6 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   }
 
   // functions ends //
-
 
   @override
   void setState(fn) {
@@ -160,7 +200,55 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       16.height,
-                      Image.asset("images/dashboard/db_profile.jpeg", height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                      (_image == null)
+                      ? Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Positioned(
+                            top: 80,
+                            right: 0,
+                            child: ClipOval(
+                              child: Material(
+                                color: Colors.blue, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    _pickImage();
+//                                    Navigator.push(
+//                                      context,
+//                                      MaterialPageRoute(builder: (context) => UploadPhoto()),
+//                                    );
+                                  },
+                                  child: SizedBox(width: 30, height: 30, child: Icon(Icons.photo_camera, color: Colors.white, size: 15)),
+                                ),
+                              ),
+                            ),//CircularAvatar
+                          ),
+                        ],
+                      )
+                      : Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.file(_showimg!, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Positioned(
+                            top: 80,
+                            right: 0,
+                            child: ClipOval(
+                              child: Material(
+                                color: Colors.blue, // Button color
+                                child: InkWell(
+                                  splashColor: Colors.green, // Splash color
+                                  onTap: () {
+                                    _pickImage();
+                                  },
+                                  child: SizedBox(width: 30, height: 30, child: Icon(Icons.photo_camera, color: Colors.white, size: 15)),
+                                ),
+                              ),
+                            ),//CircularAvatar
+                          ),
+                        ],
+                      ),
                       30.height,
                       TextFormField(
                         controller: fname,
@@ -312,14 +400,14 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
-                      ).onTap(() {
-                        if(selectedIndexGender.toString() != 'Choose Gender..'){
-                          pickedgender = selectedIndexGender.toString();
-                        }
-                        if(selectedIndexRace.toString() != 'Choose Race'){
-                          pickedrace = selectedIndexRace.toString();
-                        }
-                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
+                      ).onTap(() async {
+//                        if(selectedIndexGender.toString() != 'Choose Gender..'){
+//                          pickedgender = selectedIndexGender.toString();
+//                        }
+//                        if(selectedIndexRace.toString() != 'Choose Race'){
+//                          pickedrace = selectedIndexRace.toString();
+//                        }
+//                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
                       }),
                       20.height,
                     ],
