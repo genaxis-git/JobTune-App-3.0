@@ -12,8 +12,13 @@ import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import '../../../../main.dart';
 import 'CartListView.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
+
 // import '../JTDrawerWidget.dart';
 
 // ignore: must_be_immutable
@@ -68,9 +73,27 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
   int shippingCharges = 0;
   int mainCount = 0;
 
+  // int totalHarga = widget.price.toInt() + widget.additionalfee.toInt();
+
   String? name = 'Austin';
   String? address = '381, Shirley St. Munster, New York';
   String? address2 = 'United States - 10005';
+
+  Future<void> insertBooking() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final jobtuneUser = prefs.getString('user');
+    final jobtuneUser = "hafeezhanapiah@gmail.com";
+
+    http.get(
+        Uri.parse(server.server +
+            "jtnew_product_insertbooking&j_productid=" +
+            widget.productid +
+            "&j_userid=" +
+            jobtuneUser),
+        headers: {"Accept": "application/json"});
+
+    toast("Purchased successfully");
+  }
 
   @override
   void initState() {
@@ -80,26 +103,12 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
 
   init() async {
     DateTime dateTime = DateTime.now();
+    DateTime expectedTime =
+        dateTime.add(Duration(days: widget.expected.toInt()));
+
     expectedDelivery =
-        '${dateTime.day} ${getMonth(dateTime.month)}, ${dateTime.year}';
-
-    // calculate();
+        '${expectedTime.day} ${getMonth(expectedTime.month)}, ${expectedTime.year}';
   }
-
-  // calculate() async {
-  //   subTotal = 0;
-  //   shippingCharges = 0;
-  //   totalAmount = 0;
-
-  //   widget.data.forEach((element) {
-  //     subTotal += (element.discountPrice ?? element.price)! * element.qty!;
-  //   });
-
-  //   shippingCharges = (subTotal * 10).toInt() ~/ 100;
-  //   totalAmount = subTotal + shippingCharges;
-
-  //   setState(() {});
-  // }
 
   @override
   void setState(fn) {
@@ -209,36 +218,6 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
                   ],
                 ),
                 8.height,
-                // Container(
-                //   decoration: boxDecorationWithRoundedCorners(
-                //     borderRadius: BorderRadius.circular(4),
-                //     backgroundColor: appColorPrimaryDark,
-                //   ),
-                //   padding: EdgeInsets.all(4),
-                //   child: Row(
-                //     mainAxisSize: MainAxisSize.min,
-                //     children: [
-                //       Icon(Icons.remove, color: whiteColor).onTap(() {
-                //         var qty = data.qty!;
-                //         if (qty <= 1) return;
-                //         var q = qty - 1;
-                //         data.qty = q;
-
-                //         calculate();
-                //       }),
-                //       6.width,
-                //       Text(data.qty.toString(),
-                //           style: boldTextStyle(color: whiteColor)),
-                //       6.width,
-                //       Icon(Icons.add, color: whiteColor).onTap(() {
-                //         mainCount = data.qty! + 1;
-                //         data.qty = mainCount;
-
-                //         calculate();
-                //       }),
-                //     ],
-                //   ),
-                // ).visible(widget.mIsEditable.validate(value: true)),
               ],
             ).expand(),
           ],
@@ -266,7 +245,7 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
                 backgroundColor: appColorPrimary),
             child: Text('Continue to Pay', style: boldTextStyle(color: white)),
           ).onTap(() {
-            DTPaymentScreen().launch(context);
+            insertBooking();
           }),
         ],
       ).paddingAll(8);
@@ -289,8 +268,10 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
             ).paddingAll(8),
             itemView(),
             20.height,
-            totalAmountWidget(widget.price.toInt(),
-                widget.additionalfee.toInt(), widget.totalprice.toInt()),
+            totalAmountWidget(
+                widget.price.toInt(),
+                widget.additionalfee.toInt(),
+                widget.price.toInt() + widget.additionalfee.toInt()),
             Divider(height: 20),
             deliveryDateAndPayBtn(),
           ],

@@ -612,9 +612,11 @@ class _JTProductListState extends State<JTProductList> {
                     width: 126,
                     child: Stack(
                       children: [
-                        Image.network(
-                          "https://jobtune.ai/gig/JobTune/assets/img/" +
-                              productlist[index]["product_photo"],
+                        Image.asset(
+                          'images/JobTune/banner/dt_advertise1.jpg',
+                          // Image.network(
+                          //   "https://jobtune.ai/gig/JobTune/assets/img/" +
+                          //       productlist[index]["product_photo"],
                           fit: BoxFit.cover,
                           height: 110,
                           width: 126,

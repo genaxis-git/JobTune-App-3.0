@@ -251,7 +251,7 @@ class _PostProductState extends State<PostProduct> {
       expectedDayData, priceData, deliveryFeeData) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final jobtuneUser = prefs.getString('user');
-    final jobtuneUser = "syeeraayeem@gmail.com";
+    final jobtuneUser = "shahirah0397@gmail.com";
 
     http.get(
         Uri.parse(server.server +
