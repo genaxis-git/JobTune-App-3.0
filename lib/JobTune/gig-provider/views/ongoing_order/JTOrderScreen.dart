@@ -72,154 +72,153 @@ class DTCartScreenState extends State<DTCartScreen> {
     }
 
     Widget mobileWidget() {
-      return Container(
-        decoration: boxDecorationRoundedWithShadow(8,
-            backgroundColor: appStore.appBarColor!),
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(8),
-        child: ListView.builder(
-            itemCount: orderlist == null ? 0 : orderlist.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    child: Image.asset(
-                      'images/JobTune/banner/dt_advertise1.jpg',
-                      fit: BoxFit.cover,
+      return ListView.builder(
+          itemCount: orderlist == null ? 0 : orderlist.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+                decoration: boxDecorationRoundedWithShadow(8,
+                    backgroundColor: appStore.appBarColor!),
+                margin: EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
                       height: 100,
                       width: 100,
-                    ).cornerRadiusWithClipRRect(8),
-                  ),
-                  12.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(orderlist[index]["name"],
-                          style: primaryTextStyle(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      4.height,
-                      Row(
-                        children: [
-                          priceWidget(10),
-                          // 8.width,
-                          // priceWidget(data.price, applyStrike: true),
-                        ],
-                      ),
-                      8.height,
-                      Text('Delivery date : 28/7/2021',
-                          style: primaryTextStyle(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      4.height,
-                      Text('Status : Pending',
-                          style: primaryTextStyle(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      4.height,
-                      Text('Co-De : None',
-                          style: primaryTextStyle(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      8.height,
-                      Row(
-                        children: [
-                          Container(
-                            decoration: boxDecorationWithRoundedCorners(
-                              borderRadius: BorderRadius.circular(4),
-                              backgroundColor: appColorPrimaryDark,
-                            ),
-                            padding: EdgeInsets.all(4),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Icon(Icons.remove, color: whiteColor).onTap(() {
-                                //   var qty = data.qty!;
-                                //   if (qty <= 1) return;
-                                //   var q = qty - 1;
-                                //   data.qty = q;
+                      child: Image.asset(
+                        'images/JobTune/banner/dt_advertise1.jpg',
+                        fit: BoxFit.cover,
+                        height: 100,
+                        width: 100,
+                      ).cornerRadiusWithClipRRect(8),
+                    ),
+                    12.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(orderlist[index]["name"],
+                            style: primaryTextStyle(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        4.height,
+                        Row(
+                          children: [
+                            priceWidget(10),
+                            // 8.width,
+                            // priceWidget(data.price, applyStrike: true),
+                          ],
+                        ),
+                        8.height,
+                        Text('Delivery date : 28/7/2021',
+                            style: primaryTextStyle(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        4.height,
+                        Text('Status : Pending',
+                            style: primaryTextStyle(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        4.height,
+                        Text('Co-De : None',
+                            style: primaryTextStyle(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        8.height,
+                        Row(
+                          children: [
+                            Container(
+                              decoration: boxDecorationWithRoundedCorners(
+                                borderRadius: BorderRadius.circular(4),
+                                backgroundColor: appColorPrimaryDark,
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Icon(Icons.remove, color: whiteColor).onTap(() {
+                                  //   var qty = data.qty!;
+                                  //   if (qty <= 1) return;
+                                  //   var q = qty - 1;
+                                  //   data.qty = q;
 
-                                //   calculate();
-                                // }),
-                                6.width,
-                                Text('Co-De',
-                                    style: boldTextStyle(color: whiteColor)),
-                                6.width,
-                                Icon(Icons.add, color: whiteColor).onTap(() {
-                                  // mainCount = data.qty! + 1;
-                                  // data.qty = mainCount;
+                                  //   calculate();
+                                  // }),
+                                  6.width,
+                                  Text('Co-De',
+                                      style: boldTextStyle(color: whiteColor)),
+                                  6.width,
+                                  Icon(Icons.add, color: whiteColor).onTap(() {
+                                    // mainCount = data.qty! + 1;
+                                    // data.qty = mainCount;
 
-                                  // calculate();
-                                }),
-                              ],
-                            ),
-                          ).onTap(() async {
-                            // DTAddressListModel? model = await showInDialog(context,
-                            //     child: AddAddressDialog(),
-                            //     backgroundColor: Colors.transparent,
-                            //     contentPadding: EdgeInsets.all(0));
+                                    // calculate();
+                                  }),
+                                ],
+                              ),
+                            ).onTap(() async {
+                              // DTAddressListModel? model = await showInDialog(context,
+                              //     child: AddAddressDialog(),
+                              //     backgroundColor: Colors.transparent,
+                              //     contentPadding: EdgeInsets.all(0));
 
-                            // if (model != null) {
-                            //   list.add(model);
+                              // if (model != null) {
+                              //   list.add(model);
 
-                            //   setState(() {});
-                            // }
-                          }),
-                          8.width,
-                          Container(
-                            decoration: boxDecorationWithRoundedCorners(
-                              borderRadius: BorderRadius.circular(4),
-                              backgroundColor: appColorPrimaryDark,
-                            ),
-                            padding: EdgeInsets.all(4),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Icon(Icons.remove, color: whiteColor).onTap(() {
-                                //   var qty = data.qty!;
-                                //   if (qty <= 1) return;
-                                //   var q = qty - 1;
-                                //   data.qty = q;
+                              //   setState(() {});
+                              // }
+                            }),
+                            8.width,
+                            Container(
+                              decoration: boxDecorationWithRoundedCorners(
+                                borderRadius: BorderRadius.circular(4),
+                                backgroundColor: appColorPrimaryDark,
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // Icon(Icons.remove, color: whiteColor).onTap(() {
+                                  //   var qty = data.qty!;
+                                  //   if (qty <= 1) return;
+                                  //   var q = qty - 1;
+                                  //   data.qty = q;
 
-                                //   calculate();
-                                // }),
-                                6.width,
-                                Text('Status',
-                                    style: boldTextStyle(color: whiteColor)),
-                                6.width,
-                                Icon(Icons.edit_outlined, color: whiteColor)
-                                    .onTap(() {
-                                  // mainCount = data.qty! + 1;
-                                  // data.qty = mainCount;
+                                  //   calculate();
+                                  // }),
+                                  6.width,
+                                  Text('Status',
+                                      style: boldTextStyle(color: whiteColor)),
+                                  6.width,
+                                  Icon(Icons.edit_outlined, color: whiteColor)
+                                      .onTap(() {
+                                    // mainCount = data.qty! + 1;
+                                    // data.qty = mainCount;
 
-                                  // calculate();
-                                }),
-                              ],
-                            ),
-                          ).onTap(() async {
-                            // DTAddressListModel? model = await showInDialog(context,
-                            //     child: UpdateStatusDialog(),
-                            //     backgroundColor: Colors.transparent,
-                            //     contentPadding: EdgeInsets.all(0));
+                                    // calculate();
+                                  }),
+                                ],
+                              ),
+                            ).onTap(() async {
+                              // DTAddressListModel? model = await showInDialog(context,
+                              //     child: UpdateStatusDialog(),
+                              //     backgroundColor: Colors.transparent,
+                              //     contentPadding: EdgeInsets.all(0));
 
-                            // if (model != null) {
-                            //   list.add(model);
+                              // if (model != null) {
+                              //   list.add(model);
 
-                            //   setState(() {});
-                            // }
-                          }),
-                        ],
-                      ),
-                    ],
-                  ).expand(),
-                ],
-              );
-            }),
-      );
+                              //   setState(() {});
+                              // }
+                            }),
+                          ],
+                        ),
+                      ],
+                    ).expand(),
+                  ],
+                ));
+          });
     }
 
     Widget webWidget() {

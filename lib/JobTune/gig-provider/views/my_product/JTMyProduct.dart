@@ -16,29 +16,30 @@ import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
-class DTCartScreen extends StatefulWidget {
+class JTMyProduct extends StatefulWidget {
   static String tag = '/DTCartScreen';
 
   @override
-  DTCartScreenState createState() => DTCartScreenState();
+  JTMyProductState createState() => JTMyProductState();
 }
 
-class DTCartScreenState extends State<DTCartScreen> {
-  List orderlist = [];
+class JTMyProductState extends State<JTMyProduct> {
+  List productlist = [];
+  bool isSwitched = false;
 
-  Future<void> getOrder() async {
+  Future<void> getProduct() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final jobtuneUser = prefs.getString('user');
-    final jobtuneUser = "hafeezhanapiah@gmail.com";
+    final jobtuneUser = "syeeraayeem@gmail.com";
 
     http.Response response = await http.get(
         Uri.parse(server.server +
-            "jtnew_product_selectbooking&j_userid=" +
+            "jtnew_product_selectmyproduct&j_providerid=" +
             jobtuneUser),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-      orderlist = json.decode(response.body);
+      productlist = json.decode(response.body);
     });
   }
 
@@ -49,7 +50,7 @@ class DTCartScreenState extends State<DTCartScreen> {
   }
 
   init() async {
-    getOrder();
+    getProduct();
   }
 
   @override
@@ -73,7 +74,7 @@ class DTCartScreenState extends State<DTCartScreen> {
 
     Widget mobileWidget() {
       return ListView.builder(
-          itemCount: orderlist == null ? 0 : orderlist.length,
+          itemCount: productlist == null ? 0 : productlist.length,
           itemBuilder: (BuildContext context, int index) {
             return Container(
                 decoration: boxDecorationRoundedWithShadow(8,
@@ -98,7 +99,7 @@ class DTCartScreenState extends State<DTCartScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(orderlist[index]["name"],
+                        Text(productlist[index]["name"],
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
@@ -111,74 +112,31 @@ class DTCartScreenState extends State<DTCartScreen> {
                           ],
                         ),
                         8.height,
-                        Text('Delivery date : 28/7/2021',
-                            style: primaryTextStyle(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                        4.height,
-                        Text('Status : Shipped',
-                            style: primaryTextStyle(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                        8.height,
-                        Row(
-                          children: [
-                            Container(
-                              decoration: boxDecorationWithRoundedCorners(
-                                borderRadius: BorderRadius.circular(4),
-                                backgroundColor: appColorPrimaryDark,
-                              ),
-                              padding: EdgeInsets.all(4),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Icon(Icons.remove, color: whiteColor).onTap(() {
-                                  //   var qty = data.qty!;
-                                  //   if (qty <= 1) return;
-                                  //   var q = qty - 1;
-                                  //   data.qty = q;
-
-                                  //   calculate();
-                                  // }),
-                                  6.width,
-                                  Text('Receive Order',
-                                      style: boldTextStyle(color: whiteColor)),
-                                  6.width,
-                                  Icon(Icons.assignment_turned_in_outlined,
-                                          color: whiteColor)
-                                      .onTap(() {
-                                    // mainCount = data.qty! + 1;
-                                    // data.qty = mainCount;
-
-                                    // calculate();
-                                  }),
-                                ],
-                              ),
-                            ).onTap(() async {
-                              showInDialog(context,
-                                  child: UpdateStatusDialog(),
-                                  backgroundColor: Colors.transparent,
-                                  contentPadding: EdgeInsets.all(0));
-                              // DTAddressListModel? model = await showInDialog(
-                              //     context,
-                              //     child: UpdateStatusDialog(),
-                              //     backgroundColor: Colors.transparent,
-                              //     contentPadding: EdgeInsets.all(0));
-
-                              // if (model != null) {
-                              //   list.add(model);
-
-                              //   setState(() {});
-                              // }
-                            }),
-                          ],
+                        // Text('Delivery date : 28/7/2021',
+                        //     style: primaryTextStyle(),
+                        //     maxLines: 1,
+                        //     overflow: TextOverflow.ellipsis),
+                        // 4.height,
+                        Transform.scale(
+                          scale: 1.2,
+                          child: Switch(
+                            value: isSwitched,
+                            onChanged: (value) {
+                              setState(() {
+                                isSwitched = value;
+                                print(isSwitched);
+                              });
+                            },
+                            activeTrackColor: Colors.lightGreenAccent,
+                            activeColor: Colors.green,
+                          ),
                         ),
+                        8.height,
                       ],
                     ).expand(),
                   ],
                 ));
           });
-      // });
     }
 
     Widget webWidget() {
@@ -190,9 +148,9 @@ class DTCartScreenState extends State<DTCartScreen> {
       // drawer: DTDrawerWidget(),
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
-        title: appBarTitleWidget(context, 'My Order'),
+        title: appBarTitleWidget(context, 'My Product'),
       ),
-      drawer: JTDrawerWidgetProduct(),
+      // drawer: JTDrawerWidgetProduct(),
       body: ContainerX(
         mobile: mobileWidget(),
         web: webWidget(),
