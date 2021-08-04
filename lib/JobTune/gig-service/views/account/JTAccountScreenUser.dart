@@ -32,6 +32,7 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
   List profile = [];
   String email = " ";
   String fullname = " ";
+  String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -49,6 +50,13 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
     setState(() {
       email = lgid;
       fullname = profile[0]["first_name"] + " " + profile[0]["last_name"];
+
+      if(profile[0]["profile_pic"] != "") {
+        img = profile[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
+      }
     });
   }
 
@@ -74,7 +82,7 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
         children: [
           Row(
             children: [
-              Image.asset("images/dashboard/db_profile.jpeg",
+              Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
                   height: 70, width: 70, fit: BoxFit.cover)
                   .cornerRadiusWithClipRRect(40),
               16.width,

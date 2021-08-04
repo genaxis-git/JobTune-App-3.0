@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTAddressScreenUser.dart';
@@ -39,6 +40,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
   String address = " ";
   String ecname = " ";
   String ecno = " ";
+  String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -65,6 +67,13 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
       address = profile[0]["address"] ;
       ecname = profile[0]["ec_name"] ;
       ecno = profile[0]["ec_phone_no"] ;
+
+      if(profile[0]["profile_pic"] != "") {
+        img = profile[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
+      }
     });
   }
 
@@ -88,7 +97,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => JTAccountScreenUsers()),
+                MaterialPageRoute(builder: (context) => JTAccountScreenUser()),
               );
             }
         ),
@@ -204,7 +213,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       margin: EdgeInsets.symmetric(horizontal: 16.0),
                       alignment: FractionalOffset.center,
                       child: CircleAvatar(
-                        backgroundImage: AssetImage("images/dashboard/db_profile.jpeg"),
+                        backgroundImage: NetworkImage("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img),
                         radius: 50,
                       ),
                     ),
