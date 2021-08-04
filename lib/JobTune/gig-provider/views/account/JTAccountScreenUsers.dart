@@ -21,6 +21,7 @@ import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetPro
 import '../ongoing_order/JTOrderScreen.dart';
 import '../co_de_booking/JTCoDeBookingScreen.dart';
 import '../add_post/add_post.dart';
+import '../my_product/JTMyProduct.dart';
 
 class JTAccountScreenUsers extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
@@ -40,19 +41,26 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
-        headers: {"Accept": "application/json"}
-    );
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" +
+                lgid),
+        headers: {"Accept": "application/json"});
 
     this.setState(() {
       profile = json.decode(response.body);
     });
 
-    if(profile[0]["name"] == "" || profile[0]["industry_type"] == "" || profile[0]["phone_no"] == "" || profile[0]["address"] == "" || profile[0]["city"] == "" || profile[0]["state"] == "" || profile[0]["postcode"] == "0" || profile[0]["country"] == "" || profile[0]["profile_pic"] == "") {
+    if (profile[0]["name"] == "" ||
+        profile[0]["industry_type"] == "" ||
+        profile[0]["phone_no"] == "" ||
+        profile[0]["address"] == "" ||
+        profile[0]["city"] == "" ||
+        profile[0]["state"] == "" ||
+        profile[0]["postcode"] == "0" ||
+        profile[0]["country"] == "" ||
+        profile[0]["profile_pic"] == "") {
       // alert:  please update
       print("update profile");
-    }
-    else{
+    } else {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => JTAddPost()),
@@ -66,23 +74,21 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
-        headers: {"Accept": "application/json"}
-    );
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" +
+                lgid),
+        headers: {"Accept": "application/json"});
 
     this.setState(() {
       profile = json.decode(response.body);
     });
 
     setState(() {
-
       email = lgid;
       names = profile[0]["name"];
 
-      if(profile[0]["profile_pic"] != "") {
+      if (profile[0]["profile_pic"] != "") {
         img = profile[0]["profile_pic"];
-      }
-      else {
+      } else {
         img = "no profile.png";
       }
     });
@@ -110,8 +116,12 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         children: [
           Row(
             children: [
-              Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
-                      height: 70, width: 70, fit: BoxFit.cover)
+              Image.network(
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" +
+                          img,
+                      height: 70,
+                      width: 70,
+                      fit: BoxFit.cover)
                   .cornerRadiusWithClipRRect(40),
               16.width,
               Column(
@@ -164,7 +174,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
             JTProfileScreenProvider().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'My Product', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTMyProduct().launch(context);
           }, leading: Icon(MaterialIcons.inventory), detail: SizedBox()),
           settingItem(context, 'Ongoing Order', onTap: () {
             DTCartScreen().launch(context);
