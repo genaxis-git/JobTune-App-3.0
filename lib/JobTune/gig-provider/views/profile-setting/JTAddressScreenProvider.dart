@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -64,6 +65,10 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
+    List<Location> locations = await locationFromAddress(full);
+    var latitude = locations[0].toString().split(",")[0].split(": ")[1];
+    var longitude = locations[0].toString().split(",")[1].split(": ")[1];
+
     http.get(
         Uri.parse(
             "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updateprofile&id=" + lgid
@@ -78,8 +83,8 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                 + "&country=" + country
                 + "&banktype=" + profile[0]["bank_type"]
                 + "&bankno=" + profile[0]["bank_acc_no"]
-                + "&lat=" + profile[0]["location_latitude"]
-                + "&long=" + profile[0]["location_longitude"]
+                + "&lat=" + latitude.toString()
+                + "&long=" + longitude.toString()
         ),
         headers: {"Accept": "application/json"}
     );
