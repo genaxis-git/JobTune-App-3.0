@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/theme4/models/T4Models.dart';
 import 'package:prokit_flutter/theme4/utils/T4Constant.dart';
@@ -163,12 +165,31 @@ class _ClockingListingState extends State<ClockingListing> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  Text(
-                                      clocking[index]["address"].replaceAll(",",",\n"),
+                                  InkWell(
+                                    onTap: () async {
+                                      List<Location> locations = await locationFromAddress(clocking[index]["location"]);
+//                                      var first = addresses.first;
+                                      print("coordinate: ");
+                                      print(locations[0].toString().split(",")[0].split(": ")[1]);
+                                      print(locations[0].toString().split(",")[1].split(": ")[1]);
+//                                      var coordinate = first.coordinates;
+                                      var latitude = locations[0].toString().split(",")[0].split(": ")[1];
+                                      var longitude = locations[0].toString().split(",")[1].split(": ")[1];
+
+                                      String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                      if (await canLaunch(googleUrl)) {
+                                      await launch(googleUrl);
+                                      } else {
+                                      throw 'Could not open the map.';
+                                      }
+                                    },
+                                    child: Text(
+                                      clocking[index]["location"].replaceAll(",",",\n"),
                                       style: TextStyle(
                                         fontSize: textSizeSMedium,
                                         color: Colors.blueAccent,
                                       ),
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 10,
@@ -182,16 +203,42 @@ class _ClockingListingState extends State<ClockingListing> {
                                   ),
                                   Row(
                                     children: [
-                                      Icon(Icons.directions_walk_outlined,size: textSizeSMedium,color: Colors.blueAccent,),
+                                      (clocking[index]["clock_in"] == "0000-00-00 00:00:00")
+                                      ? Icon(Icons.directions_walk_outlined,size: textSizeSMedium,color: Colors.blueAccent,)
+                                      : (clocking[index]["in_status"] != "")
+                                      ? Icon(Icons.check_circle,size: textSizeSMedium,color: Colors.green,)
+                                      : Icon(Icons.check_circle_outline,size: textSizeSMedium,color: Colors.orangeAccent,),
                                       text(" " + clocking[index]["service_start"].split(" ")[1],
                                           fontSize: textSizeSMedium, maxLine: 3),
+                                      (clocking[index]["in_status"] != "")
+                                      ? Text(
+                                          clocking[index]["in_status"],
+                                          style: TextStyle(
+                                            fontSize: textSizeSMedium,
+                                            color: Colors.green
+                                          )
+                                      )
+                                      : Text(""),
                                     ],
                                   ),
                                   Row(
                                     children: [
-                                      Icon(Icons.logout_rounded,size: textSizeSMedium,color: Colors.blueAccent,),
+                                      (clocking[index]["clock_out"] == "0000-00-00 00:00:00")
+                                      ? Icon(Icons.logout_rounded,size: textSizeSMedium,color: Colors.blueAccent,)
+                                      : (clocking[index]["out_status"] != "")
+                                      ? Icon(Icons.check_circle,size: textSizeSMedium,color: Colors.green,)
+                                      : Icon(Icons.check_circle_outline,size: textSizeSMedium,color: Colors.orangeAccent,),
                                       text(" " + clocking[index]["service_end"].split(" ")[1],
                                           fontSize: textSizeSMedium, maxLine: 3),
+                                      (clocking[index]["out_status"] != "")
+                                      ? Text(
+                                            clocking[index]["out_status"],
+                                            style: TextStyle(
+                                                fontSize: textSizeSMedium,
+                                                color: Colors.green
+                                            )
+                                        )
+                                      : Text(""),
                                     ],
                                   ),
                                 ],

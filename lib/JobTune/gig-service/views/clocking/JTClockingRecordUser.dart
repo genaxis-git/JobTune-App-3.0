@@ -122,7 +122,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
 
     setState(() {
       displaytimeout = timein;
-      displaypicinout = img;
+      displaypicout = img;
     });
   }
 
@@ -172,6 +172,12 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
           appBar: AppBar(
             backgroundColor: appStore.appBarColor,
             title: appBarTitleWidget(context, 'Clocking'),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () {
+                  Navigator.pop(context);
+                }
+            ),
             bottom: TabBar(
               onTap: (index) {
                 print(index);
