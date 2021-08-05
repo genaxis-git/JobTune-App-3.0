@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -102,9 +103,6 @@ class _ClockingListingState extends State<ClockingListing> {
       clocking = json.decode(response.body);
     });
 
-    setState(() {
-      img = clocking[0]["profile_pic"];
-    });
   }
 
   @override
@@ -135,10 +133,10 @@ class _ClockingListingState extends State<ClockingListing> {
                       ClipRRect(
                         child: CachedNetworkImage(
                           placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
-                          imageUrl: "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
+                          imageUrl: "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + clocking[index]["profile_pic"],
                           width: width / 4,
                           height: width / 4.2,
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -165,6 +163,16 @@ class _ClockingListingState extends State<ClockingListing> {
                                   SizedBox(
                                     height: 10,
                                   ),
+                                  Text(
+                                      clocking[index]["address"].replaceAll(",",",\n"),
+                                      style: TextStyle(
+                                        fontSize: textSizeSMedium,
+                                        color: Colors.blueAccent,
+                                      ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Row(
                                     children: [
                                       Icon(Icons.calendar_today_outlined,size: textSizeSMedium,color: Colors.blueAccent,),
@@ -186,9 +194,6 @@ class _ClockingListingState extends State<ClockingListing> {
                                           fontSize: textSizeSMedium, maxLine: 3),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 4,
-                                  ),
                                 ],
                               ),
                             )
@@ -205,6 +210,7 @@ class _ClockingListingState extends State<ClockingListing> {
                                     timeout: clocking[index]["clock_out"],
                                     imgin: clocking[index]["evidence_in"],
                                     imgout: clocking[index]["evidence_out"],
+                                    bookid: clocking[index]["booking_id"],
                                   )),
                             );
                           },
