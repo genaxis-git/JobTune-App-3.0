@@ -95,6 +95,8 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
+    print(fname+lname+nric+gender+race+desc+dob);
+
     http.get(
         Uri.parse(
             "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updateprofile&id=" + lgid
@@ -401,13 +403,13 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() async {
-//                        if(selectedIndexGender.toString() != 'Choose Gender..'){
-//                          pickedgender = selectedIndexGender.toString();
-//                        }
-//                        if(selectedIndexRace.toString() != 'Choose Race'){
-//                          pickedrace = selectedIndexRace.toString();
-//                        }
-//                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
+                        if(selectedIndexGender.toString() != 'Choose Gender..'){
+                          pickedgender = selectedIndexGender.toString();
+                        }
+                        if(selectedIndexRace.toString() != 'Choose Race'){
+                          pickedrace = selectedIndexRace.toString();
+                        }
+                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
                       }),
                       20.height,
                     ],

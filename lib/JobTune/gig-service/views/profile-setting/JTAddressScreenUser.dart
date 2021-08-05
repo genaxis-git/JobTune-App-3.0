@@ -58,7 +58,7 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
       country = TextEditingController(text: profile[0]["country"]);
 
       if(profile[0]["state"] == ""){
-        selectedIndexState = 'Choose Gender..';
+        selectedIndexState = 'Choose State..';
       }
       else{
         selectedIndexState = profile[0]["state"];
