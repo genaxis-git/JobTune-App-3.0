@@ -127,20 +127,33 @@ class _PostServiceState extends State<PostService> {
 
   Future<void> insertPackage(serviceid) async {
 
-    for(var a=0;a<packagearr.length;a++) {
-      var name = packagearr[a].toString().split(" | ")[0];
-      var price = packagearr[a].toString().split(" | ")[1];
-      var time = packagearr[a].toString().split(" | ")[2].split(" ")[1];
-
+    if(packagearr.length == 0) {
       http.get(
           Uri.parse(
               "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertpackage&serviceid=" + serviceid
-                  + "&name=" + name
-                  + "&rate=" + price
-                  + "&time=" + time
+                  + "&name=" + packnameCont.text
+                  + "&rate=" + double.parse(priceCont.text).toStringAsFixed(2)
+                  + "&time=" + timeCont.text
           ),
           headers: {"Accept": "application/json"}
       );
+    }
+    else {
+      for(var a=0;a<packagearr.length;a++) {
+        var name = packagearr[a].toString().split(" | ")[0];
+        var price = packagearr[a].toString().split(" | ")[1].split(" ")[1];
+        var time = packagearr[a].toString().split(" | ")[2].split(" ")[1];
+
+        http.get(
+            Uri.parse(
+                "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertpackage&serviceid=" + serviceid
+                    + "&name=" + name
+                    + "&rate=" + price
+                    + "&time=" + time
+            ),
+            headers: {"Accept": "application/json"}
+        );
+      }
     }
 
     // alert: post success
@@ -842,6 +855,7 @@ class _PostServiceState extends State<PostService> {
               16.height,
               GestureDetector(
                  onTap: () {
+                   choosenday = [];
                    if(isChecked1 == true){
                      choosenday.add("Monday");
                    }
@@ -893,10 +907,36 @@ class _PostServiceState extends State<PostService> {
 
                    stringList = choosenday.join(",");
 
-                   print(selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00");
-                   print(selectedTimeOUT.hour.toString()+":"+selectedTimeOUT.minute.toString()+":00");
-                   var starts = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
-                   var ends = selectedTimeOUT.hour.toString()+":"+selectedTimeOUT.minute.toString()+":00";
+                   String hrin = "";
+                   String hrout = "";
+                   String minin = "";
+                   String minout = "";
+                   if(selectedTimeIN.hour<10){
+                     hrin = "0" + selectedTimeIN.hour.toString();
+                   }
+                   else {
+                     hrin = selectedTimeIN.hour.toString();
+                   }
+                   if(selectedTimeOUT.hour<10){
+                     hrout = "0" + selectedTimeOUT.hour.toString();
+                   }
+                   else {
+                     hrout = selectedTimeOUT.hour.toString();
+                   }
+                   if(selectedTimeIN.minute<10){
+                     minin = "0" + selectedTimeIN.minute.toString();
+                   }
+                   else {
+                     minin = selectedTimeIN.minute.toString();
+                   }
+                   if(selectedTimeOUT.minute<10){
+                     minout = "0" + selectedTimeOUT.minute.toString();
+                   }
+                   else {
+                     minout = selectedTimeOUT.minute.toString();
+                   }
+                   var starts = hrin +":"+minin+":00";
+                   var ends = hrout+":"+minout+":00";
 
                    if(selectedTimeOUT.hour > selectedTimeIN.hour) {
                      if(titleCont.text == "" || descCont.text == "" || locationCont.text == "" || stringList == "") {
