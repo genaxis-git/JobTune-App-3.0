@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
@@ -35,6 +36,8 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   List<CategoryModel> categories = [];
 
   int selectedIndex = 0;
+  var formKey = GlobalKey<FormState>();
+  var searchCont = TextEditingController();
 
   // functions starts //
 
@@ -274,30 +277,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                   Column(
                     children: [
                       10.height,
-                      searchTxt(),
-//                      Container(
-//                        margin: EdgeInsets.all(8),
-//                        height: 230,
-//                        child: Stack(
-//                          alignment: Alignment.bottomCenter,
-//                          children: [
-//                            PageView(
-//                              controller: pageController,
-//                              scrollDirection: Axis.horizontal,
-//                              children: pages,
-//                              onPageChanged: (index) {
-//                                selectedIndex = index;
-//                                setState(() {});
-//                              },
-//                            ).cornerRadiusWithClipRRect(8),
-//                            DotIndicator(
-//                              pages: pages,
-//                              indicatorColor: appColorPrimary,
-//                              pageController: pageController,
-//                            ),
-//                          ],
-//                        ),
-//                      ),
+
                     ],
                   ),
                 ],
@@ -401,7 +381,6 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Image.asset('images/app/app_icon.png', height: 100),
-                  searchTxt().expand(),
                   25.width,
                   Container(
                     padding: EdgeInsets.only(top: 8, left: 16, right: 16, bottom: 8),
@@ -500,7 +479,37 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                     Column(
                       children: [
                         10.height,
-                        searchTxt(),
+                        Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Form(
+                            key: formKey,
+                            child: TextFormField(
+                              controller: searchCont,
+                              style: primaryTextStyle(),
+                              decoration: InputDecoration(
+                                labelText: 'Search',
+                                suffixIcon: IconButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => JTSearchingResultUser(
+                                        searchkey: searchCont.text,
+                                      )),
+                                    );
+                                  },
+                                  icon: Icon(Icons.search),
+                                ),
+                                contentPadding: EdgeInsets.all(16),
+                                labelStyle: secondaryTextStyle(),
+                                border: OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                              ),
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],
