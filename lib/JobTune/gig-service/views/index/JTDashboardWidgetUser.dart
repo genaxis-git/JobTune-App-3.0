@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
@@ -633,7 +634,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   child: Stack(
                     children: [
                       Image.network(
-                        "https://jobtune.ai/gig/JobTune/assets/img/shah.jpg",
+                        "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
                         fit: BoxFit.cover,
                         height: 110,
                         width: 126,
@@ -648,13 +649,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   children: [
                     Text(servicelist[index]["name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
                     4.height,
-                    Row(
-                      children: [
-                        (servicelist[index]["name"] != "0" || servicelist[index]["name"] != "0 ")
-                        ? JTpriceWidget(double.parse(double.parse(servicelist[index]["rate"]).toStringAsFixed(2)))
-                        : JTpriceWidget(10),
-                      ],
-                    ),
+                    DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
                   ],
                 ).paddingAll(8).expand(),
               ],
@@ -662,6 +657,91 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
           ),
         );
       }
+    );
+  }
+}
+
+class DisplayRate extends StatefulWidget {
+  const DisplayRate({
+    Key? key,
+    required this.id,
+    required this.rate,
+  }) : super(key: key);
+  final String id;
+  final String rate;
+  @override
+  _DisplayRateState createState() => _DisplayRateState();
+}
+
+class _DisplayRateState extends State<DisplayRate> {
+
+  // function starts //
+
+  List servicelist = [];
+  List numbers = [];
+  double max = 0;
+  double min = 0;
+  Future<void> readPackage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+
+    for(var m=0;m<servicelist.length;m++) {
+      numbers.add(servicelist[m]["package_rate"]);
+    }
+
+    min = double.parse(servicelist[0]["package_rate"]);
+    for(var m=0;m<servicelist.length;m++) {
+      if(double.parse(servicelist[m]["package_rate"])>max){
+        max = double.parse(servicelist[m]["package_rate"]);
+      }
+      if(double.parse(servicelist[m]["package_rate"])<min){
+        min = double.parse(servicelist[m]["package_rate"]);
+      }
+    }
+
+    setState(() {
+      print("result:" + min.toString()+" "+max.toString());
+      min = min;
+      max = max;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.readPackage();
+  }
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        (widget.rate != "0.00")
+        ? JTpriceWidget(double.parse(double.parse(widget.rate).toStringAsFixed(2)))
+        : (min != max)
+        ? Row(
+          children: [
+            JTpriceWidget(min),
+            Text(
+              " to ",
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            JTpriceWidget(max),
+          ],
+        )
+        : JTpriceWidget(double.parse(min.toStringAsFixed(2))),
+      ],
     );
   }
 }
