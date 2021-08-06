@@ -8,31 +8,40 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
+
 import '../../../../main.dart';
 // import 'DTOrderSummaryScreen.dart';
 // import 'DTProductDetailScreen.dart';
 
 // ignore: must_be_immutable
-class CartListView extends StatefulWidget {
+class BrowseCoDeBooking extends StatefulWidget {
   static String tag = '/CartListView';
 
   bool? mIsEditable;
   bool? isOrderSummary;
 
-  CartListView({this.mIsEditable, this.isOrderSummary});
+  BrowseCoDeBooking({this.mIsEditable, this.isOrderSummary});
 
   @override
-  CartListViewState createState() => CartListViewState();
+  BrowseCoDeBookingState createState() => BrowseCoDeBookingState();
 }
 
-class CartListViewState extends State<CartListView> {
-  List<DTProductModel> data = getCartProducts();
-  List<DTAddressListModel> list = getAddressList();
+class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
+  List codebookinglist = [];
 
-  int subTotal = 0;
-  int totalAmount = 0;
-  int shippingCharges = 0;
-  int mainCount = 0;
+  Future<void> getCoDeRequest() async {
+    http.Response response = await http.get(
+        Uri.parse(server.server + "jtnew_product_selectcodebooking"),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      codebookinglist = json.decode(response.body);
+    });
+  }
 
   @override
   void initState() {
@@ -41,22 +50,7 @@ class CartListViewState extends State<CartListView> {
   }
 
   init() async {
-    calculate();
-  }
-
-  calculate() async {
-    subTotal = 0;
-    shippingCharges = 0;
-    totalAmount = 0;
-
-    data.forEach((element) {
-      subTotal += (element.discountPrice ?? element.price)! * element.qty!;
-    });
-
-    shippingCharges = (subTotal * 10).toInt() ~/ 100;
-    totalAmount = subTotal + shippingCharges;
-
-    setState(() {});
+    getCoDeRequest();
   }
 
   @override
@@ -66,128 +60,105 @@ class CartListViewState extends State<CartListView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget itemCart(DTProductModel data, int index) {
-      return Container(
-        decoration: boxDecorationRoundedWithShadow(8,
-            backgroundColor: appStore.appBarColor!),
-        margin: EdgeInsets.all(8),
-        padding: EdgeInsets.all(8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 100,
-              width: 100,
-              child: Image.asset(
-                'images/defaultTheme/walkthrough1.png',
-                fit: BoxFit.cover,
-                height: 100,
-                width: 100,
-              ).cornerRadiusWithClipRRect(8),
-            ),
-            12.width,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Kap Kap Shahirah Thai',
-                    style: primaryTextStyle(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                4.height,
-                Row(
-                  children: [],
-                ),
-                8.height,
-                Text('Delivery date : 28/7/2021',
-                    style: primaryTextStyle(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
-                8.height,
-                Row(
-                  children: [
-                    Container(
-                      decoration: boxDecorationWithRoundedCorners(
-                        borderRadius: BorderRadius.circular(4),
-                        backgroundColor: appColorPrimaryDark,
-                      ),
-                      padding: EdgeInsets.all(4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Accept',
-                              style: boldTextStyle(color: whiteColor)),
-                          6.width,
-                          Icon(Icons.check_rounded, color: whiteColor)
-                              .onTap(() {}),
-                        ],
-                      ),
-                    ).onTap(() async {}),
-                  ],
-                ),
-              ],
-            ).expand(),
-          ],
-        ),
-      );
-    }
-
-    Widget cartItemList() {
-      return ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (_, index) {
-          DTProductModel data1 = data[index];
-
-          return itemCart(data1, index).onTap(() {
-            // DTProductDetailScreen(productModel: data1).launch(context);
-          });
-        },
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-      );
-    }
-
-    return ContainerX(
-      mobile: Column(
-        children: [
-          // totalItemCountWidget(data.length),
-          SingleChildScrollView(child: cartItemList()),
-          20.height,
-          // totalAmountWidget(subTotal, shippingCharges, totalAmount),
-        ],
-      ),
-      web: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return ListView.builder(
+        itemCount: codebookinglist == null ? 0 : codebookinglist.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            decoration: boxDecorationRoundedWithShadow(8,
+                backgroundColor: appStore.appBarColor!),
             margin: EdgeInsets.all(8),
-            child: SingleChildScrollView(child: cartItemList()),
-          ).expand(flex: 60),
-          Container(
-            margin: EdgeInsets.all(16),
             padding: EdgeInsets.all(8),
-            decoration: boxDecoration(
-                showShadow: true, bgColor: appStore.scaffoldBackground),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                totalAmountWidget(subTotal, shippingCharges, totalAmount)
-                    .visible(widget.mIsEditable!),
                 Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(12),
-                  decoration: boxDecorationRoundedWithShadow(8,
-                      backgroundColor: appColorPrimary),
-                  child: Text('Checkout', style: boldTextStyle(color: white)),
-                ).onTap(() {
-                  // DTOrderSummaryScreen(data).launch(context);
-                }).visible(widget.mIsEditable!),
+                  height: 100,
+                  width: 100,
+                  child: Image.asset(
+                    'images/defaultTheme/walkthrough1.png',
+                    fit: BoxFit.cover,
+                    height: 100,
+                    width: 100,
+                  ).cornerRadiusWithClipRRect(8),
+                ),
+                12.width,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(codebookinglist[index]["name"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    4.height,
+                    Row(
+                      children: [
+                        Text(
+                          '\RM ' + codebookinglist[index]["payment"],
+                          style: TextStyle(
+                            decoration: TextDecoration.none,
+                            color: appStore.textPrimaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    8.height,
+                    Text('Date : ' + codebookinglist[index]["start_date"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    8.height,
+                    Row(
+                      children: [
+                        Container(
+                          decoration: boxDecorationWithRoundedCorners(
+                            borderRadius: BorderRadius.circular(4),
+                            backgroundColor: appColorPrimaryDark,
+                          ),
+                          padding: EdgeInsets.all(4),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Icon(Icons.remove, color: whiteColor).onTap(() {
+                              //   var qty = data.qty!;
+                              //   if (qty <= 1) return;
+                              //   var q = qty - 1;
+                              //   data.qty = q;
+
+                              //   calculate();
+                              // }),
+                              6.width,
+                              Text('Accept',
+                                  style: boldTextStyle(color: whiteColor)),
+                              6.width,
+                              Icon(Icons.check_rounded, color: whiteColor)
+                                  .onTap(() {}),
+                            ],
+                          ),
+                        ).onTap(() async {
+                          var bookingid =
+                              codebookinglist[index]["co_de_booking_id"];
+                          showInDialog(context,
+                              child: AcceptRequestDialog(bookingid: bookingid),
+                              backgroundColor: Colors.transparent,
+                              contentPadding: EdgeInsets.all(0));
+
+                          // if (model != null) {
+                          //   list.add(model);
+
+                          //   setState(() {});
+                          // }
+                        }),
+                      ],
+                    ),
+                  ],
+                ).expand(),
               ],
             ),
-          ).expand(flex: 40).visible(!widget.isOrderSummary!),
-        ],
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -339,57 +310,35 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
   }
 }
 
-class AddAddressDialog extends StatefulWidget {
+class AcceptRequestDialog extends StatefulWidget {
+  var bookingid;
+
+  AcceptRequestDialog({this.bookingid});
+
   @override
-  _AddAddressDialogState createState() => _AddAddressDialogState();
+  _AcceptRequestDialogState createState() => _AcceptRequestDialogState();
 }
 
-class _AddAddressDialogState extends State<AddAddressDialog> {
-  List<String> listOfCategory = [
-    'Co-De',
-    'It',
-    'Computer Science',
-    'Business',
-    'Data Science',
-    'Infromation Technologies',
-    'Health',
-    'Physics'
-  ];
-  String? selectedIndexCategory = 'Co-De';
-  String? dropdownNames;
-  String? dropdownScrollable = 'I';
-
-  var nameCont = TextEditingController();
-  var addressLine1Cont = TextEditingController();
-  var addressLine2Cont = TextEditingController();
-  var typeCont = TextEditingController();
-  var mobileCont = TextEditingController();
-
-  var addressLine1Focus = FocusNode();
-  var addressLine2Focus = FocusNode();
-  var typeFocus = FocusNode();
-  var mobileFocus = FocusNode();
+class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
   var autoValidate = false;
   var formKey = GlobalKey<FormState>();
 
-  validate() {
-    if (formKey.currentState!.validate()) {
-      hideKeyboard(context);
-      toast('Adding Successfully');
-      formKey.currentState!.save();
+  Future<void> acceptRequest() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jobtuneUser = prefs.getString('email');
+    // final jobtuneUser = "shahirah0397@gmail.com";
 
-      var addressData = DTAddressListModel();
-      addressData.name = nameCont.text.validate();
-      addressData.addressLine1 = addressLine1Cont.text.validate();
-      addressData.addressLine2 = addressLine2Cont.text.validate();
-      addressData.phoneNo = mobileCont.text.validate();
-      addressData.type = 'Office';
+    http.get(
+        Uri.parse(server.server +
+            "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
+            widget.bookingid +
+            "&j_codeid=" +
+            jobtuneUser.toString()),
+        headers: {"Accept": "application/json"});
 
-      finish(context, addressData);
-    } else {
-      autoValidate = true;
-    }
-    setState(() {});
+    Navigator.pop(context);
+
+    toast("Request accepted successfully");
   }
 
   @override
@@ -438,7 +387,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                         flex: 2,
                         child: GestureDetector(
                           onTap: () {
-                            validate();
+                            acceptRequest();
                           },
                           child: Container(
                             // width: MediaQuery.of(context).size.width,
@@ -458,7 +407,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                       flex: 2,
                       child: GestureDetector(
                         onTap: () {
-                          validate();
+                          Navigator.pop(context);
                         },
                         child: Container(
                           // width: MediaQuery.of(context).size.width,

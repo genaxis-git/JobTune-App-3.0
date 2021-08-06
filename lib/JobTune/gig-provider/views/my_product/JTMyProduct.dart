@@ -29,13 +29,13 @@ class JTMyProductState extends State<JTMyProduct> {
 
   Future<void> getProduct() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final jobtuneUser = prefs.getString('user');
-    final jobtuneUser = "syeeraayeem@gmail.com";
+    final jobtuneUser = prefs.getString('email');
+    // final jobtuneUser = "syeeraayeem@gmail.com";
 
     http.Response response = await http.get(
         Uri.parse(server.server +
             "jtnew_product_selectmyproduct&j_providerid=" +
-            jobtuneUser),
+            jobtuneUser.toString()),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -106,12 +106,20 @@ class JTMyProductState extends State<JTMyProduct> {
                         4.height,
                         Row(
                           children: [
-                            priceWidget(10),
+                            Text(
+                              '\RM ' + productlist[index]["price"],
+                              style: TextStyle(
+                                decoration: TextDecoration.none,
+                                color: appStore.textPrimaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
                             // 8.width,
                             // priceWidget(data.price, applyStrike: true),
                           ],
                         ),
-                        8.height,
+                        4.height,
                         // Text('Delivery date : 28/7/2021',
                         //     style: primaryTextStyle(),
                         //     maxLines: 1,

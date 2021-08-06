@@ -79,7 +79,7 @@ class CartListViewState extends State<CartListView> {
               height: 100,
               width: 100,
               child: Image.asset(
-                'images/defaultTheme/walkthrough1.png',
+                'images/JobTune/banner/dt_advertise1.jpg',
                 fit: BoxFit.cover,
                 height: 100,
                 width: 100,
@@ -90,16 +90,30 @@ class CartListViewState extends State<CartListView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Kap Kap Shahirah Thai',
+                Text(data.name!,
                     style: primaryTextStyle(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
                 4.height,
                 Row(
-                  children: [],
+                  children: [
+                    priceWidget(data.discountPrice),
+                    8.width,
+                    priceWidget(data.price, applyStrike: true),
+                  ],
                 ),
                 8.height,
                 Text('Delivery date : 28/7/2021',
+                    style: primaryTextStyle(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                4.height,
+                Text('Status : Pending',
+                    style: primaryTextStyle(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                4.height,
+                Text('Co-De : None',
                     style: primaryTextStyle(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -115,14 +129,81 @@ class CartListViewState extends State<CartListView> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Accept',
+                          // Icon(Icons.remove, color: whiteColor).onTap(() {
+                          //   var qty = data.qty!;
+                          //   if (qty <= 1) return;
+                          //   var q = qty - 1;
+                          //   data.qty = q;
+
+                          //   calculate();
+                          // }),
+                          6.width,
+                          Text('Co-De',
                               style: boldTextStyle(color: whiteColor)),
                           6.width,
-                          Icon(Icons.check_rounded, color: whiteColor)
-                              .onTap(() {}),
+                          Icon(Icons.add, color: whiteColor).onTap(() {
+                            mainCount = data.qty! + 1;
+                            data.qty = mainCount;
+
+                            calculate();
+                          }),
                         ],
                       ),
-                    ).onTap(() async {}),
+                    ).onTap(() async {
+                      DTAddressListModel? model = await showInDialog(context,
+                          child: AddAddressDialog(),
+                          backgroundColor: Colors.transparent,
+                          contentPadding: EdgeInsets.all(0));
+
+                      if (model != null) {
+                        list.add(model);
+
+                        setState(() {});
+                      }
+                    }),
+                    8.width,
+                    Container(
+                      decoration: boxDecorationWithRoundedCorners(
+                        borderRadius: BorderRadius.circular(4),
+                        backgroundColor: appColorPrimaryDark,
+                      ),
+                      padding: EdgeInsets.all(4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Icon(Icons.remove, color: whiteColor).onTap(() {
+                          //   var qty = data.qty!;
+                          //   if (qty <= 1) return;
+                          //   var q = qty - 1;
+                          //   data.qty = q;
+
+                          //   calculate();
+                          // }),
+                          6.width,
+                          Text('Status',
+                              style: boldTextStyle(color: whiteColor)),
+                          6.width,
+                          Icon(Icons.edit_outlined, color: whiteColor)
+                              .onTap(() {
+                            mainCount = data.qty! + 1;
+                            data.qty = mainCount;
+
+                            calculate();
+                          }),
+                        ],
+                      ),
+                    ).onTap(() async {
+                      DTAddressListModel? model = await showInDialog(context,
+                          child: UpdateStatusDialog(),
+                          backgroundColor: Colors.transparent,
+                          contentPadding: EdgeInsets.all(0));
+
+                      if (model != null) {
+                        list.add(model);
+
+                        setState(() {});
+                      }
+                    }),
                   ],
                 ),
               ],
@@ -421,7 +502,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Accept Request', style: boldTextStyle(size: 18)),
+                    Text('Add Co-De', style: boldTextStyle(size: 18)),
                     IconButton(
                       icon: Icon(Icons.close, color: appStore.iconColor),
                       onPressed: () {
@@ -430,51 +511,86 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                     )
                   ],
                 ),
-                Text('Are you sure you want to accept this Co-De request?'),
+                8.height,
+                DropdownButtonFormField(
+                  style: primaryTextStyle(),
+                  decoration: InputDecoration(
+                    // labelText: 'Co-De',
+                    contentPadding: EdgeInsets.all(16),
+                    labelStyle: secondaryTextStyle(),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(color: appColorPrimary)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide:
+                            BorderSide(color: appStore.textSecondaryColor!)),
+                  ),
+                  isExpanded: true,
+                  dropdownColor: appStore.appBarColor,
+                  value: selectedIndexCategory,
+                  icon: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: appStore.iconColor,
+                  ),
+                  onChanged: (dynamic newValue) {
+                    setState(() {
+                      toast(newValue);
+                      selectedIndexCategory = newValue;
+                    });
+                  },
+                  items: listOfCategory.map((category) {
+                    return DropdownMenuItem(
+                      child: Text(category, style: primaryTextStyle())
+                          .paddingLeft(8),
+                      value: category,
+                    );
+                  }).toList(),
+                ),
+                8.height,
+                TextFormField(
+                  controller: mobileCont,
+                  focusNode: mobileFocus,
+                  style: primaryTextStyle(),
+                  decoration: InputDecoration(
+                    labelText: 'Payment',
+                    contentPadding: EdgeInsets.all(16),
+                    labelStyle: secondaryTextStyle(),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(color: appColorPrimary)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide:
+                            BorderSide(color: appStore.textSecondaryColor!)),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(),
+                  validator: (s) {
+                    if (s!.trim().isEmpty) return errorThisFieldRequired;
+                    if (!s.trim().validatePhone()) return 'Mobile is invalid';
+                    return null;
+                  },
+                  onFieldSubmitted: (s) =>
+                      FocusScope.of(context).requestFocus(addressLine1Focus),
+                  textInputAction: TextInputAction.next,
+                ),
                 16.height,
-                Row(
-                  children: [
-                    Expanded(
-                        flex: 2,
-                        child: GestureDetector(
-                          onTap: () {
-                            validate();
-                          },
-                          child: Container(
-                            // width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                                color: appColorPrimary,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                            child: Center(
-                              child: Text("Yes",
-                                  style: boldTextStyle(color: white)),
-                            ),
-                          ),
-                        )),
-                    8.width,
-                    Expanded(
-                      flex: 2,
-                      child: GestureDetector(
-                        onTap: () {
-                          validate();
-                        },
-                        child: Container(
-                          // width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: redColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5))),
-                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Center(
-                            child:
-                                Text("No", style: boldTextStyle(color: white)),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    validate();
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: appColorPrimary,
+                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Center(
+                      child: Text("Submit", style: boldTextStyle(color: white)),
+                    ),
+                  ),
                 ),
                 16.height,
               ],

@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 import 'CartListView.dart';
+import 'JTAddCoDe.dart';
 // import 'DTDrawerWidget.dart';
 // import 'DTOrderSummaryScreen.dart';
 
@@ -25,11 +26,23 @@ class DTCartScreen extends StatefulWidget {
 
 class DTCartScreenState extends State<DTCartScreen> {
   List orderlist = [];
+  List codelist = [];
+
+  Future<void> getCoDeData(productbookingid) async {
+    http.Response response = await http.get(
+        Uri.parse(server.server +
+            "jtnew_product_selectcode&j_productbookingid=" +
+            productbookingid),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      codelist = json.decode(response.body);
+    });
+  }
 
   Future<void> getOngoingOrder() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('email').toString();
-    // final jobtuneUser = "shahirah@gmail.com";
 
     http.Response response = await http.get(
         Uri.parse(server.server +
@@ -49,6 +62,7 @@ class DTCartScreenState extends State<DTCartScreen> {
   }
 
   init() async {
+    // getCoDeData();
     getOngoingOrder();
   }
 
@@ -121,10 +135,16 @@ class DTCartScreenState extends State<DTCartScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         4.height,
-                        Text('Co-De : None',
+
+                        Text('Co-De : ',
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
+
+                        // Text('Co-De : None',
+                        //     style: primaryTextStyle(),
+                        //     maxLines: 1,
+                        //     overflow: TextOverflow.ellipsis),
                         8.height,
                         Row(
                           children: [
@@ -158,10 +178,13 @@ class DTCartScreenState extends State<DTCartScreen> {
                                 ],
                               ),
                             ).onTap(() async {
-                              // DTAddressListModel? model = await showInDialog(context,
-                              //     child: AddAddressDialog(),
-                              //     backgroundColor: Colors.transparent,
-                              //     contentPadding: EdgeInsets.all(0));
+                              var bookingid = orderlist[index]["booking_id"];
+                              showInDialog(context,
+                                  child: AddCoDeDialog(
+                                    productbookingid: bookingid,
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                  contentPadding: EdgeInsets.all(0));
 
                               // if (model != null) {
                               //   list.add(model);
@@ -201,10 +224,10 @@ class DTCartScreenState extends State<DTCartScreen> {
                                 ],
                               ),
                             ).onTap(() async {
-                              // DTAddressListModel? model = await showInDialog(context,
-                              //     child: UpdateStatusDialog(),
-                              //     backgroundColor: Colors.transparent,
-                              //     contentPadding: EdgeInsets.all(0));
+                              showInDialog(context,
+                                  child: UpdateStatusDialog(),
+                                  backgroundColor: Colors.transparent,
+                                  contentPadding: EdgeInsets.all(0));
 
                               // if (model != null) {
                               //   list.add(model);
