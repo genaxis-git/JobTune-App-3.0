@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -80,7 +81,9 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   String location = "";
   String proid = "";
   String by = "Package";
+  String id = "";
   Future<void> readService() async {
+    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + widget.id);
     http.Response response = await http.get(
         Uri.parse(
             "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + widget.id),
@@ -94,6 +97,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     setState(() {
       servicename = info[0]["name"];
       proid = info[0]["provider_id"];
+      id = info[0]["service_id"];
       rate = double.parse(info[0]["rate"]).toStringAsFixed(2);
       desc = info[0]["description"];
       category = info[0]["category"];
@@ -103,6 +107,66 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       by = info[0]["rate_by"];
     });
 
+    readProvider(info[0]["provider_id"],info[0]["service_id"]);
+  }
+
+  String img = "no profile.png";
+  List provider = [];
+  Future<void> readProvider(a,b) async {
+    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + a);
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + a),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      provider = json.decode(response.body);
+    });
+
+    setState(() {
+      if(provider[0]["profile_pic"] != "") {
+        img = provider[0]["profile_pic"];
+      }
+      else {
+        img = "no profile.png";
+      }
+    });
+
+    readPackage(b);
+  }
+
+  List servicelist = [];
+  List numbers = [];
+  double max = 0;
+  double min = 0;
+  Future<void> readPackage(b) async {
+    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + b);
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + b),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+
+    min = double.parse(servicelist[0]["package_rate"]);
+    for(var m=0;m<servicelist.length;m++) {
+      if(double.parse(servicelist[m]["package_rate"])>max){
+        max = double.parse(servicelist[m]["package_rate"]);
+      }
+      if(double.parse(servicelist[m]["package_rate"])<min){
+        min = double.parse(servicelist[m]["package_rate"]);
+      }
+    }
+
+    setState(() {
+      print("result:" + min.toString()+" "+max.toString());
+      min = min;
+      max = max;
+    });
   }
 
   @override
@@ -497,7 +561,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         ],
       );
     }
-
+    print(proid);
     return Scaffold(
       appBar: JTappBar(context, 'Detail'),
       drawer: JTDrawerWidgetUser(),
@@ -512,7 +576,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                   Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/img/shah.jpg",
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
@@ -530,34 +594,49 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           ),
                           10.height,
                           Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              JTpriceWidget(double.parse(rate), fontSize: 28, textColor: Color(0xFF0A79DF)),
-                            ],
-                          ),
-                          10.height,
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                                padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.star_border, color: Colors.white, size: 14),
-                                    8.width,
-                                    Text(4.5.toString(), style: primaryTextStyle(color: white)),
-                                  ],
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            (rate != "0.00")
+                            ? JTpriceWidget(double.parse(rate), fontSize: 28, textColor: Color(0xFF0A79DF))
+                            : (min != max)
+                            ? Row(
+                              children: [
+                                JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                                Text(
+                                  " to ",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ).onTap(() {
-                                JTReviewScreenUser().launch(context);
-                              }),
-                              8.width,
-                              Text('10 ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                                JTReviewScreenUser().launch(context);
-                              }),
-                            ],
-                          ),
-                        ],
+                                JTpriceWidget(max, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                              ],
+                            )
+                            : JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                          ],
+                        ),
+                        10.height,
+                        Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.star_border, color: Colors.white, size: 14),
+                                  8.width,
+                                  Text(4.5.toString(), style: primaryTextStyle(color: white)),
+                                ],
+                              ),
+                            ).onTap(() {
+                              JTReviewScreenUser().launch(context);
+                            }),
+                            8.width,
+                            Text('10 ratings', style: secondaryTextStyle(size: 16)).onTap(() {
+                              JTReviewScreenUser().launch(context);
+                            }),
+                          ],
+                        ),
+                      ],
                       ).paddingAll(16),
                       Divider(height: 20),
                       Column(
@@ -732,6 +811,103 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     );
   }
 }
+
+class DisplayRate extends StatefulWidget {
+  const DisplayRate({
+    Key? key,
+    required this.id,
+    required this.rate,
+  }) : super(key: key);
+  final String id;
+  final String rate;
+  @override
+  _DisplayRateState createState() => _DisplayRateState();
+}
+
+class _DisplayRateState extends State<DisplayRate> {
+
+  // function starts //
+
+  List servicelist = [];
+  List numbers = [];
+  double max = 0;
+  double min = 0;
+  Future<void> readPackage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+
+    for(var m=0;m<servicelist.length;m++) {
+      numbers.add(servicelist[m]["package_rate"]);
+    }
+
+    print(numbers);
+    numbers.sort();
+    var largest = numbers.last;
+    var smallest = numbers.first;
+
+    setState(() {
+      min = double.parse(smallest);
+      max = double.parse(largest);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.readPackage();
+  }
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        (widget.rate != "0.00")
+        ? JTpriceWidget(double.parse(widget.rate), fontSize: 28, textColor: Color(0xFF0A79DF))
+        : Row(
+          children: [
+            JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
+            Text(
+              " to ",
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            JTpriceWidget(max, fontSize: 28, textColor: Color(0xFF0A79DF)),
+          ],
+        ),
+      ],
+    );
+//    return Row(
+//      children: [
+//        (widget.rate != "0.00")
+//            ? JTpriceWidget(double.parse(double.parse(widget.rate).toStringAsFixed(2)))
+//            : Row(
+//          children: [
+//            JTpriceWidget(min),
+//            Text(
+//              " to ",
+//              style: TextStyle(
+//                fontSize: 18,
+//              ),
+//            ),
+//            JTpriceWidget(max),
+//          ],
+//        ),
+//      ],
+//    );
+  }
+}
+
 
 void locationAvailable(BuildContext aContext) {
   showModalBottomSheet(
