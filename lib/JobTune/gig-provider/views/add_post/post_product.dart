@@ -242,13 +242,14 @@ class _PostProductState extends State<PostProduct> {
     var expectedDayData = expectedDayField.text;
     var priceData = priceField.text;
     var deliveryFeeData = deliveryFeeField.text;
+    var totalPrice = priceData.toDouble() + deliveryFeeData.toDouble();
 
     addProduct(availableDay, titleData, descData, locationData, expectedDayData,
-        priceData, deliveryFeeData);
+        priceData, deliveryFeeData, totalPrice);
   }
 
   Future<void> addProduct(availableDay, titleData, descData, locationData,
-      expectedDayData, priceData, deliveryFeeData) async {
+      expectedDayData, priceData, deliveryFeeData, totalPrice) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final jobtuneUser = prefs.getString('user');
     final jobtuneUser = "shahirah0397@gmail.com";
@@ -271,6 +272,8 @@ class _PostProductState extends State<PostProduct> {
             priceData +
             "&j_deliveryfee=" +
             deliveryFeeData +
+            "&j_totalprice=" +
+            totalPrice.toString() +
             "&j_availability=" +
             availableDay),
         headers: {"Accept": "application/json"});

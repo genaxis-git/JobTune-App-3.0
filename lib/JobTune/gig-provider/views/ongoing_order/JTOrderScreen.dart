@@ -59,12 +59,12 @@ class DTCartScreenState extends State<DTCartScreen> {
   @override
   void initState() {
     super.initState();
-    init();
+    initOngoingOrder();
   }
 
-  init() async {
-    // getCoDeData();
+  initOngoingOrder() async {
     getOngoingOrder();
+    // getCoDeData();
   }
 
   @override
@@ -88,6 +88,7 @@ class DTCartScreenState extends State<DTCartScreen> {
 
     Widget mobileWidget() {
       return ListView.builder(
+          physics: ScrollPhysics(),
           itemCount: orderlist == null ? 0 : orderlist.length,
           itemBuilder: (BuildContext context, int index) {
             return Container(
@@ -139,16 +140,33 @@ class DTCartScreenState extends State<DTCartScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         4.height,
+                        Text(
+                            'Location : ' +
+                                orderlist[index]["delivery_location"],
+                            style: primaryTextStyle(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        4.height,
                         Text('Status : ' + orderlist[index]["booking_status"],
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         4.height,
 
-                        Text('Co-De : ',
-                            style: primaryTextStyle(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
+                        ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: codelist == null ? 0 : codelist.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Text(
+                                  'Co-De : ' +
+                                      codelist[index]["code_count"] +
+                                      " " +
+                                      codelist[index]["role"],
+                                  style: primaryTextStyle(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis);
+                            }),
 
                         // Text('Co-De : None',
                         //     style: primaryTextStyle(),
@@ -197,6 +215,8 @@ class DTCartScreenState extends State<DTCartScreen> {
                                         orderlist[index]["booking_id"];
                                     var productid =
                                         orderlist[index]["product_id"];
+                                    Navigator.pushNamed(context, '/page2')
+                                        .then((_) => setState(() {}));
                                     showInDialog(context,
                                         child: AddCoDeDialog(
                                             productbookingid: bookingid,

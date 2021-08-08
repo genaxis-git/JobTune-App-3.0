@@ -118,7 +118,9 @@ class DTCartScreenState extends State<DTCartScreen> {
                           ],
                         ),
                         8.height,
-                        Text('Expected delivery : 28/7/2021',
+                        Text(
+                            'Expected: ' +
+                                orderlist[index]["expected_delivery_start"],
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
