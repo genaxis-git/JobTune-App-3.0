@@ -100,6 +100,8 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     // final jobtuneUser = prefs.getString('user');
     final jobtuneUser = "hafeezhanapiah@gmail.com";
+    final addressUser = userlist[0]["address"];
+    final expectedDeliveryUser = expectedDelivery;
 
     http.get(
         Uri.parse(server.server +
@@ -108,7 +110,11 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
             "&j_providerid=" +
             widget.providerid +
             "&j_userid=" +
-            jobtuneUser),
+            jobtuneUser +
+            "&j_location=" +
+            addressUser +
+            "&j_expecteddelivery=" +
+            expectedDeliveryUser),
         headers: {"Accept": "application/json"});
 
     toast("Purchased successfully");
@@ -126,7 +132,7 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
         dateTime.add(Duration(days: widget.expected.toInt()));
 
     expectedDelivery =
-        '${expectedTime.day} ${getMonth(expectedTime.month)}, ${expectedTime.year}';
+        '${expectedTime.day} ${getMonth(expectedTime.month)} ${expectedTime.year}';
 
     getUser();
   }
@@ -181,26 +187,26 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
                       ],
                     ),
                     Text(userlist[index]["address"], style: primaryTextStyle()),
-                    Text(
-                        userlist[index]["postcode"] +
-                            " " +
-                            userlist[index]["city"] +
-                            ", " +
-                            userlist[index]["state"],
-                        style: primaryTextStyle()),
+                    // Text(
+                    //     userlist[index]["postcode"] +
+                    //         " " +
+                    //         userlist[index]["city"] +
+                    //         ", " +
+                    //         userlist[index]["state"],
+                    //     style: primaryTextStyle()),
                     6.height,
-                    Text('Change', style: secondaryTextStyle()).onTap(() async {
-                      // DTAddressListModel? data =
-                      //     await DTAddressScreen().launch(context);
+                    // Text('Change', style: secondaryTextStyle()).onTap(() async {
+                    //   // DTAddressListModel? data =
+                    //   //     await DTAddressScreen().launch(context);
 
-                      // if (data != null) {
-                      //   name = data.name;
-                      //   address = data.addressLine1;
-                      //   address2 = data.addressLine2;
+                    //   // if (data != null) {
+                    //   //   name = data.name;
+                    //   //   address = data.addressLine1;
+                    //   //   address2 = data.addressLine2;
 
-                      //   setState(() {});
-                      // }
-                    }),
+                    //   //   setState(() {});
+                    //   // }
+                    // }),
                   ],
                 );
               }));
