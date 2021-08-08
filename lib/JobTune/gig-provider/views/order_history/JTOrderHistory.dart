@@ -10,44 +10,28 @@ import 'package:http/http.dart' as http;
 
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
-import 'CartListView.dart';
-import 'JTAddCoDe.dart';
-import 'JTUpdateOrder.dart';
 // import 'DTDrawerWidget.dart';
 // import 'DTOrderSummaryScreen.dart';
 
 import '../../../../main.dart';
 
-class DTCartScreen extends StatefulWidget {
+class JTOrderHistory extends StatefulWidget {
   static String tag = '/DTCartScreen';
 
   @override
-  DTCartScreenState createState() => DTCartScreenState();
+  JTOrderHistoryState createState() => JTOrderHistoryState();
 }
 
-class DTCartScreenState extends State<DTCartScreen> {
+class JTOrderHistoryState extends State<JTOrderHistory> {
   List orderlist = [];
-  List codelist = [];
 
-  Future<void> getCoDeData(productbookingid) async {
-    http.Response response = await http.get(
-        Uri.parse(server.server +
-            "jtnew_product_selectcode&j_productbookingid=" +
-            productbookingid),
-        headers: {"Accept": "application/json"});
-
-    this.setState(() {
-      codelist = json.decode(response.body);
-    });
-  }
-
-  Future<void> getOngoingOrder() async {
+  Future<void> getOrderHistory() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('email').toString();
 
     http.Response response = await http.get(
         Uri.parse(server.server +
-            "jtnew_product_selectbookingprovider&j_providerid=" +
+            "jtnew_product_selectorderhistory&j_providerid=" +
             jobtuneUser),
         headers: {"Accept": "application/json"});
 
@@ -64,7 +48,7 @@ class DTCartScreenState extends State<DTCartScreen> {
 
   init() async {
     // getCoDeData();
-    getOngoingOrder();
+    getOrderHistory();
   }
 
   @override
@@ -162,61 +146,6 @@ class DTCartScreenState extends State<DTCartScreen> {
                                 borderRadius: BorderRadius.circular(4),
                                 backgroundColor: (orderlist[index]
                                             ["booking_status"] ==
-                                        "Pending")
-                                    ? appColorPrimaryDark
-                                    : Colors.grey,
-                              ),
-                              padding: EdgeInsets.all(4),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Icon(Icons.remove, color: whiteColor).onTap(() {
-                                  //   var qty = data.qty!;
-                                  //   if (qty <= 1) return;
-                                  //   var q = qty - 1;
-                                  //   data.qty = q;
-
-                                  //   calculate();
-                                  // }),
-                                  6.width,
-                                  Text('Co-De',
-                                      style: boldTextStyle(color: whiteColor)),
-                                  6.width,
-                                  Icon(Icons.add, color: whiteColor).onTap(() {
-                                    // mainCount = data.qty! + 1;
-                                    // data.qty = mainCount;
-
-                                    // calculate();
-                                  }),
-                                ],
-                              ),
-                            ).onTap((orderlist[index]["booking_status"] ==
-                                    "Pending")
-                                ? () async {
-                                    var bookingid =
-                                        orderlist[index]["booking_id"];
-                                    var productid =
-                                        orderlist[index]["product_id"];
-                                    showInDialog(context,
-                                        child: AddCoDeDialog(
-                                            productbookingid: bookingid,
-                                            productid: productid),
-                                        backgroundColor: Colors.transparent,
-                                        contentPadding: EdgeInsets.all(0));
-
-                                    // if (model != null) {
-                                    //   list.add(model);
-
-                                    //   setState(() {});
-                                    // }
-                                  }
-                                : () async {}),
-                            8.width,
-                            Container(
-                              decoration: boxDecorationWithRoundedCorners(
-                                borderRadius: BorderRadius.circular(4),
-                                backgroundColor: (orderlist[index]
-                                            ["booking_status"] ==
                                         "Received")
                                     ? Colors.lightGreen
                                     : (orderlist[index]["booking_status"] ==
@@ -248,24 +177,7 @@ class DTCartScreenState extends State<DTCartScreen> {
                                           color: whiteColor),
                                 ],
                               ),
-                            ).onTap((orderlist[index]["booking_status"] ==
-                                    "Pending")
-                                ? () async {
-                                    var bookingid =
-                                        orderlist[index]["booking_id"];
-                                    showInDialog(context,
-                                        child: UpdateOrderDialog(
-                                            bookingid: bookingid),
-                                        backgroundColor: Colors.transparent,
-                                        contentPadding: EdgeInsets.all(0));
-
-                                    // if (model != null) {
-                                    //   list.add(model);
-
-                                    //   setState(() {});
-                                    // }
-                                  }
-                                : () async {}),
+                            ),
                           ],
                         ),
                       ],
@@ -275,16 +187,12 @@ class DTCartScreenState extends State<DTCartScreen> {
           });
     }
 
-    Widget webWidget() {
-      return CartListView(mIsEditable: true, isOrderSummary: false);
-    }
-
     return Scaffold(
       // appBar: appBar(context, 'Cart'),
       // drawer: DTDrawerWidget(),
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
-        title: appBarTitleWidget(context, 'Ongoing Order'),
+        title: appBarTitleWidget(context, 'Order History'),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
@@ -297,7 +205,6 @@ class DTCartScreenState extends State<DTCartScreen> {
       ),
       body: ContainerX(
         mobile: mobileWidget(),
-        web: webWidget(),
       ),
     );
   }

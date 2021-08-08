@@ -56,7 +56,7 @@ List<ListModel> getDrawerItemsProduct() {
   List<ListModel> drawerItems = [];
 
   drawerItems.add(ListModel(name: 'My Order', widget: DTCartScreen()));
-  drawerItems.add(ListModel(name: 'Order History', widget: DTSignUpScreen()));
+  // drawerItems.add(ListModel(name: 'Order History', widget: DTSignUpScreen()));
   drawerItems
       .add(ListModel(name: 'Provider Account', widget: JTAccountScreenUsers()));
 

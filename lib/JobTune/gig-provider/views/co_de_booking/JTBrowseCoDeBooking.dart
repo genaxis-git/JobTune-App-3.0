@@ -72,21 +72,26 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset(
-                    'images/defaultTheme/walkthrough1.png',
-                    fit: BoxFit.cover,
-                    height: 100,
-                    width: 100,
-                  ).cornerRadiusWithClipRRect(8),
-                ),
+                    height: 80,
+                    width: 80,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          server.image + codebookinglist[index]["profile_pic"]),
+                      // radius: 35,
+                    )
+                    // child: Image.network(
+                    //   server.image + codebookinglist[index]["profile_pic"],
+                    //   fit: BoxFit.cover,
+                    //   height: 100,
+                    //   width: 100,
+                    // ).cornerRadiusWithClipRRect(8),
+                    ),
                 12.width,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(codebookinglist[index]["name"],
+                    Text(codebookinglist[index]["role"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -105,7 +110,19 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
                       ],
                     ),
                     8.height,
+                    Text('Provider : ' + codebookinglist[index]["name"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    8.height,
                     Text('Date : ' + codebookinglist[index]["start_date"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    8.height,
+                    Text(
+                        'Description : ' +
+                            codebookinglist[index]["job_description"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),

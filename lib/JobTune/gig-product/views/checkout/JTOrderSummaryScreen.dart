@@ -75,9 +75,26 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
 
   // int totalHarga = widget.price.toInt() + widget.additionalfee.toInt();
 
-  String? name = 'Austin';
-  String? address = '381, Shirley St. Munster, New York';
-  String? address2 = 'United States - 10005';
+  String? name;
+  String? address;
+  String? address2;
+
+  List userlist = [];
+
+  Future<void> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jobtuneUser = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(server.server +
+            "jtnew_user_selectprofile&lgid=" +
+            jobtuneUser.toString()),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      userlist = json.decode(response.body);
+    });
+  }
 
   Future<void> insertBooking() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -88,6 +105,8 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
         Uri.parse(server.server +
             "jtnew_product_insertbooking&j_productid=" +
             widget.productid +
+            "&j_providerid=" +
+            widget.providerid +
             "&j_userid=" +
             jobtuneUser),
         headers: {"Accept": "application/json"});
@@ -108,6 +127,8 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
 
     expectedDelivery =
         '${expectedTime.day} ${getMonth(expectedTime.month)}, ${expectedTime.year}';
+
+    getUser();
   }
 
   @override
@@ -119,53 +140,70 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
   Widget build(BuildContext context) {
     Widget addressView() {
       return Container(
-        padding: EdgeInsets.all(8),
-        decoration: boxDecorationRoundedWithShadow(8,
-            backgroundColor: appStore.appBarColor!),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+          padding: EdgeInsets.all(8),
+          decoration: boxDecorationRoundedWithShadow(8,
+              backgroundColor: appStore.appBarColor!),
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              padding: EdgeInsets.all(8),
+              itemCount: userlist == null ? 0 : userlist.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name!, style: boldTextStyle(size: 18)),
-                    10.width,
-                    Container(
-                      child: Text('Home', style: secondaryTextStyle()),
-                      padding: EdgeInsets.only(left: 8, right: 8),
-                      decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).dividerColor.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(8)),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                                userlist[index]["first_name"] +
+                                    " " +
+                                    userlist[index]["last_name"],
+                                style: boldTextStyle(size: 18)),
+                            10.width,
+                            Container(
+                              child: Text('Home', style: secondaryTextStyle()),
+                              padding: EdgeInsets.only(left: 8, right: 8),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .dividerColor
+                                      .withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                          ],
+                        ),
+                        // Icon(Icons.phone, color: appColorPrimary).onTap(() {
+                        //   launch('tel:+913972847376');
+                        // }),
+                      ],
                     ),
+                    Text(userlist[index]["address"], style: primaryTextStyle()),
+                    Text(
+                        userlist[index]["postcode"] +
+                            " " +
+                            userlist[index]["city"] +
+                            ", " +
+                            userlist[index]["state"],
+                        style: primaryTextStyle()),
+                    6.height,
+                    Text('Change', style: secondaryTextStyle()).onTap(() async {
+                      // DTAddressListModel? data =
+                      //     await DTAddressScreen().launch(context);
+
+                      // if (data != null) {
+                      //   name = data.name;
+                      //   address = data.addressLine1;
+                      //   address2 = data.addressLine2;
+
+                      //   setState(() {});
+                      // }
+                    }),
                   ],
-                ),
-                // Icon(Icons.phone, color: appColorPrimary).onTap(() {
-                //   launch('tel:+913972847376');
-                // }),
-              ],
-            ),
-            Text(address!, style: primaryTextStyle()),
-            Text(address2!, style: primaryTextStyle()),
-            6.height,
-            Text('Change', style: secondaryTextStyle()).onTap(() async {
-              DTAddressListModel? data =
-                  await DTAddressScreen().launch(context);
-
-              if (data != null) {
-                name = data.name;
-                address = data.addressLine1;
-                address2 = data.addressLine2;
-
-                setState(() {});
-              }
-            }),
-          ],
-        ),
-      );
+                );
+              }));
     }
 
     Widget itemTitle() {
@@ -193,8 +231,7 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
               height: 100,
               width: 100,
               child: Image.network(
-                "https://jobtune.ai/gig/JobTune/assets/img/" +
-                    widget.productphoto,
+                server.productImage + widget.productphoto,
                 fit: BoxFit.fitHeight,
                 height: 180,
                 width: context.width(),
@@ -253,6 +290,7 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
 
     Widget mobileWidget() {
       return SingleChildScrollView(
+        physics: ScrollPhysics(),
         padding: EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

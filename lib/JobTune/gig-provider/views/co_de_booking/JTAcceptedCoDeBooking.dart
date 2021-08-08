@@ -77,21 +77,26 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 100,
-                  width: 100,
-                  child: Image.asset(
-                    'images/defaultTheme/walkthrough1.png',
-                    fit: BoxFit.cover,
-                    height: 100,
-                    width: 100,
-                  ).cornerRadiusWithClipRRect(8),
+                  height: 80,
+                  width: 80,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        server.image + codebookinglist[index]["profile_pic"]),
+                    // radius: 35,
+                  ),
+                  // child: Image.network(
+                  //   server.image + codebookinglist[index]["profile_pic"],
+                  //   fit: BoxFit.cover,
+                  //   height: 100,
+                  //   width: 100,
+                  // ).cornerRadiusWithClipRRect(8),
                 ),
                 12.width,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(codebookinglist[index]["name"],
+                    Text(codebookinglist[index]["role"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -110,7 +115,19 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                       ],
                     ),
                     8.height,
+                    Text('Provider : ' + codebookinglist[index]["name"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    8.height,
                     Text('Date : ' + codebookinglist[index]["start_date"],
+                        style: primaryTextStyle(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                    8.height,
+                    Text(
+                        'Description : ' +
+                            codebookinglist[index]["job_description"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -120,7 +137,10 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                         Container(
                           decoration: boxDecorationWithRoundedCorners(
                             borderRadius: BorderRadius.circular(4),
-                            backgroundColor: appColorPrimaryDark,
+                            backgroundColor:
+                                (codebookinglist[index]["status"] == "verified")
+                                    ? Colors.lightGreen
+                                    : appColorPrimaryDark,
                           ),
                           padding: EdgeInsets.all(4),
                           child: Row(
@@ -135,21 +155,37 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                               //   calculate();
                               // }),
                               6.width,
-                              Text('Completed',
-                                  style: boldTextStyle(color: whiteColor)),
+                              (codebookinglist[index]["status"] == "verified")
+                                  ? Text('Verified',
+                                      style: boldTextStyle(color: whiteColor))
+                                  : (codebookinglist[index]["status"] ==
+                                          "completed")
+                                      ? Text('Completed',
+                                          style:
+                                              boldTextStyle(color: whiteColor))
+                                      : Text('Pending',
+                                          style:
+                                              boldTextStyle(color: whiteColor)),
                               6.width,
-                              Icon(Icons.check_rounded, color: whiteColor)
-                                  .onTap(() {}),
+                              (codebookinglist[index]["status"] == "accepted")
+                                  ? Icon(Icons.edit_outlined, color: whiteColor)
+                                  : Icon(Icons.check_rounded,
+                                      color: whiteColor),
                             ],
                           ),
-                        ).onTap(() async {
-                          var bookingid =
-                              codebookinglist[index]["co_de_booking_id"];
-                          showInDialog(context,
-                              child: UpdateStatusDialog(bookingid: bookingid),
-                              backgroundColor: Colors.transparent,
-                              contentPadding: EdgeInsets.all(0));
-                        }),
+                        ).onTap((codebookinglist[index]["status"] == "verified")
+                            ? () async {}
+                            : (codebookinglist[index]["status"] == "completed")
+                                ? () async {}
+                                : () async {
+                                    var bookingid = codebookinglist[index]
+                                        ["co_de_booking_id"];
+                                    showInDialog(context,
+                                        child: UpdateStatusDialog(
+                                            bookingid: bookingid),
+                                        backgroundColor: Colors.transparent,
+                                        contentPadding: EdgeInsets.all(0));
+                                  }),
                       ],
                     ),
                   ],
@@ -198,7 +234,7 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
 
       Navigator.pop(context);
 
-      toast("Your work will be verified soon");
+      toast("Co-De verified successfully");
     }
   }
 

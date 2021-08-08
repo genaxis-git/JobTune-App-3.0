@@ -16,10 +16,12 @@ import '../../../../main.dart';
 
 class AddCoDeDialog extends StatefulWidget {
   final String productbookingid;
+  final String productid;
 
   const AddCoDeDialog({
     Key? key,
     required this.productbookingid,
+    required this.productid,
   });
 
   @override
@@ -98,11 +100,13 @@ class _AddCoDeDialogState extends State<AddCoDeDialog> {
         "${selectedTime.hour < 10 ? "0${selectedTime.hour}" : "${selectedTime.hour}"}:${selectedTime.minute < 10 ? "0${selectedTime.minute}" : "${selectedTime.minute}"}:00";
     var dateTimeData = dateData + " " + timeData;
     var bookingid = widget.productbookingid;
+    var productid = widget.productid;
 
-    addCoDe(bookingid, paymentData, dateTimeData, descData);
+    addCoDe(bookingid, productid, paymentData, dateTimeData, descData);
   }
 
-  Future<void> addCoDe(bookingid, paymentData, dateTimeData, descData) async {
+  Future<void> addCoDe(
+      bookingid, productid, paymentData, dateTimeData, descData) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('email');
 
@@ -110,6 +114,8 @@ class _AddCoDeDialogState extends State<AddCoDeDialog> {
         Uri.parse(server.server +
             "jtnew_product_insertcodebooking&j_productbookingid=" +
             bookingid +
+            "&j_productid=" +
+            productid +
             "&j_providerid=" +
             jobtuneUser.toString() +
             "&j_role=" +

@@ -22,6 +22,8 @@ import '../ongoing_order/JTOrderScreen.dart';
 import '../co_de_booking/JTCoDeBookingScreen.dart';
 import '../add_post/add_post.dart';
 import '../my_product/JTMyProduct.dart';
+import '../co_de_product/JTCoDeBookingScreen.dart';
+import '../order_history/JTOrderHistory.dart';
 
 class JTAccountScreenUsers extends StatefulWidget {
   static String tag = '/JTAccountScreenUsers';
@@ -180,8 +182,11 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
             DTCartScreen().launch(context);
           }, leading: Icon(MaterialIcons.bookmark_border), detail: SizedBox()),
           settingItem(context, 'Order History', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            JTOrderHistory().launch(context);
           }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          settingItem(context, 'Co-De', onTap: () {
+            JTCoDeProduct().launch(context);
+          }, leading: Icon(MaterialIcons.people_outline), detail: SizedBox()),
         ],
       );
     }

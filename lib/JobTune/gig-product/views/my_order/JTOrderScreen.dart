@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'CartListView.dart';
+import 'JTConfirmOrder.dart';
 // import 'DTDrawerWidget.dart';
 // import 'DTOrderSummaryScreen.dart';
 
@@ -86,8 +87,8 @@ class DTCartScreenState extends State<DTCartScreen> {
                     Container(
                       height: 100,
                       width: 100,
-                      child: Image.asset(
-                        'images/JobTune/banner/dt_advertise1.jpg',
+                      child: Image.network(
+                        server.productImage + orderlist[index]["product_photo"],
                         fit: BoxFit.cover,
                         height: 100,
                         width: 100,
@@ -105,18 +106,24 @@ class DTCartScreenState extends State<DTCartScreen> {
                         4.height,
                         Row(
                           children: [
-                            priceWidget(10),
-                            // 8.width,
-                            // priceWidget(data.price, applyStrike: true),
+                            Text(
+                              '\RM ' + orderlist[index]["price"],
+                              style: TextStyle(
+                                decoration: TextDecoration.none,
+                                color: appStore.textPrimaryColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         8.height,
-                        Text('Delivery date : 28/7/2021',
+                        Text('Expected delivery : 28/7/2021',
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
                         4.height,
-                        Text('Status : Shipped',
+                        Text('Status : ' + orderlist[index]["booking_status"],
                             style: primaryTextStyle(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis),
@@ -126,7 +133,14 @@ class DTCartScreenState extends State<DTCartScreen> {
                             Container(
                               decoration: boxDecorationWithRoundedCorners(
                                 borderRadius: BorderRadius.circular(4),
-                                backgroundColor: appColorPrimaryDark,
+                                backgroundColor: (orderlist[index]
+                                            ["booking_status"] ==
+                                        "Received")
+                                    ? Colors.lightGreen
+                                    : (orderlist[index]["booking_status"] ==
+                                            "Shipped")
+                                        ? appColorPrimaryDark
+                                        : Colors.grey,
                               ),
                               padding: EdgeInsets.all(4),
                               child: Row(
@@ -141,8 +155,14 @@ class DTCartScreenState extends State<DTCartScreen> {
                                   //   calculate();
                                   // }),
                                   6.width,
-                                  Text('Receive Order',
-                                      style: boldTextStyle(color: whiteColor)),
+                                  (orderlist[index]["booking_status"] ==
+                                          "Received")
+                                      ? Text('Order Received',
+                                          style:
+                                              boldTextStyle(color: whiteColor))
+                                      : Text('Receive Order',
+                                          style:
+                                              boldTextStyle(color: whiteColor)),
                                   6.width,
                                   Icon(Icons.assignment_turned_in_outlined,
                                           color: whiteColor)
@@ -154,23 +174,18 @@ class DTCartScreenState extends State<DTCartScreen> {
                                   }),
                                 ],
                               ),
-                            ).onTap(() async {
-                              showInDialog(context,
-                                  child: UpdateStatusDialog(),
-                                  backgroundColor: Colors.transparent,
-                                  contentPadding: EdgeInsets.all(0));
-                              // DTAddressListModel? model = await showInDialog(
-                              //     context,
-                              //     child: UpdateStatusDialog(),
-                              //     backgroundColor: Colors.transparent,
-                              //     contentPadding: EdgeInsets.all(0));
-
-                              // if (model != null) {
-                              //   list.add(model);
-
-                              //   setState(() {});
-                              // }
-                            }),
+                            ).onTap((orderlist[index]["booking_status"] ==
+                                    "Shipped")
+                                ? () async {
+                                    var bookingid =
+                                        orderlist[index]["booking_id"];
+                                    showInDialog(context,
+                                        child: ConfirmOrderDialog(
+                                            bookingid: bookingid),
+                                        backgroundColor: Colors.transparent,
+                                        contentPadding: EdgeInsets.all(0));
+                                  }
+                                : () async {}),
                           ],
                         ),
                       ],

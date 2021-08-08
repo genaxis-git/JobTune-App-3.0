@@ -69,6 +69,23 @@ class _JTProductDetailState extends State<JTProductDetail> {
 
   DTAddressListModel? mSelectedAddress;
 
+  List userlist = [];
+
+  Future<void> getUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final jobtuneUser = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(server.server +
+            "jtnew_user_selectprofile&lgid=" +
+            jobtuneUser.toString()),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      userlist = json.decode(response.body);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -76,19 +93,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
   }
 
   init() async {
-    // if (widget.productModel != null) {
-    //   if (widget.productModel!.price.validate() >
-    //       widget.productModel!.discountPrice.validate()) {
-    //     double mrp = widget.productModel!.price.validate().toDouble();
-    //     double discountPrice =
-    //         widget.productModel!.discountPrice.validate().toDouble();
-    //     discount = (((mrp - discountPrice) / mrp) * 100);
-
-    //     setState(() {});
-    //   }
-    // } else {
-    //   widget.productModel = getProducts()[2];
-    // }
+    getUser();
   }
 
   @override
@@ -299,8 +304,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
                 Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/img/" +
-                          widget.productphoto,
+                      server.productImage + widget.productphoto,
                       fit: BoxFit.fitHeight,
                       height: 180,
                       width: context.width(),

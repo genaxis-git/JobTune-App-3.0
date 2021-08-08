@@ -25,7 +25,31 @@ class JTMyProduct extends StatefulWidget {
 
 class JTMyProductState extends State<JTMyProduct> {
   List productlist = [];
-  bool isSwitched = false;
+  List<bool> isSwitched = [false];
+
+  Future<void> jobActive(productid) async {
+    http.get(
+        Uri.parse(server.server +
+            "jtnew_product_updatestatusactive&j_productid=" +
+            productid),
+        headers: {"Accept": "application/json"});
+
+    setState(() {
+      init();
+    });
+  }
+
+  Future<void> jobInactive(productid) async {
+    http.get(
+        Uri.parse(server.server +
+            "jtnew_product_updatestatusinactive&j_productid=" +
+            productid),
+        headers: {"Accept": "application/json"});
+
+    setState(() {
+      init();
+    });
+  }
 
   Future<void> getProduct() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -87,8 +111,9 @@ class JTMyProductState extends State<JTMyProduct> {
                     Container(
                       height: 100,
                       width: 100,
-                      child: Image.asset(
-                        'images/JobTune/banner/dt_advertise1.jpg',
+                      child: Image.network(
+                        server.productImage +
+                            productlist[index]["product_photo"],
                         fit: BoxFit.cover,
                         height: 100,
                         width: 100,
@@ -128,12 +153,21 @@ class JTMyProductState extends State<JTMyProduct> {
                         Transform.scale(
                           scale: 1.2,
                           child: Switch(
-                            value: isSwitched,
-                            onChanged: (value) {
-                              setState(() {
-                                isSwitched = value;
-                                print(isSwitched);
-                              });
+                            value: (productlist[index]["status"] == "1")
+                                ? true
+                                : false,
+                            onChanged: (bool state) {
+                              // setState(() {
+                              //   state = !state;
+                              // });
+
+                              if (state == false) {
+                                jobInactive(productlist[index]["product_id"]
+                                    .toString());
+                              } else {
+                                jobActive(productlist[index]["product_id"]
+                                    .toString());
+                              }
                             },
                             activeTrackColor: Colors.lightGreenAccent,
                             activeColor: Colors.green,
