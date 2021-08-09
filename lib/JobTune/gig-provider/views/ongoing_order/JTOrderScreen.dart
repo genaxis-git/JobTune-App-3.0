@@ -215,8 +215,8 @@ class DTCartScreenState extends State<DTCartScreen> {
                                         orderlist[index]["booking_id"];
                                     var productid =
                                         orderlist[index]["product_id"];
-                                    Navigator.pushNamed(context, '/page2')
-                                        .then((_) => setState(() {}));
+                                    // Navigator.pushNamed(context, '/page2')
+                                    //     .then((_) => setState(() {}));
                                     showInDialog(context,
                                         child: AddCoDeDialog(
                                             productbookingid: bookingid,
