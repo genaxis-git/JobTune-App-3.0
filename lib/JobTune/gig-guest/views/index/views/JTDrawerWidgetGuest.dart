@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
@@ -117,7 +118,11 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    JTDashboardScreenNomad().launch(context, isNewTask: true);
+                    // JTDashboardScreenNomad().launch(context, isNewTask: true);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
+                    );
                   }),
                   Container(
                     padding: EdgeInsets.all(16),

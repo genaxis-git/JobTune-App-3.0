@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
@@ -128,7 +129,11 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
 
                     if (isMobile) {
 //                      ProKitLauncher().launch(context, isNewTask: true);
-                      JTDashboardScreenNomad().launch(context, isNewTask: true);
+//                       JTDashboardScreenNomad().launch(context, isNewTask: true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
+                      );
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }

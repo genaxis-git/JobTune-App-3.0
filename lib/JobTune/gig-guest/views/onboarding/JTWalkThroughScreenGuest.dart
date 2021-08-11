@@ -47,7 +47,7 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/services.jpg', height: context.height() * 0.45),
-            Text('Gig - Service', style: boldTextStyle(size: 20)),
+            Text('Gig Service', style: boldTextStyle(size: 20)),
             Text("Enabling gig economists to showcase their skills and turn their skills into a service that is able to generate side income. And at the same time, users also get an advantage in lightening the load of their daily routine.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),
@@ -58,7 +58,7 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/product.jpg', height: context.height() * 0.45),
-            Text('Gig - Product', style: boldTextStyle(size: 20)),
+            Text('Gig Product', style: boldTextStyle(size: 20)),
             Text("We also invite small businesses to be in our family. Here. you may now showcase products you are selling.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),
@@ -69,7 +69,7 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/nomad.jpg', height: context.height() * 0.45),
-            Text('Gig - Nomad', style: boldTextStyle(size: 20)),
+            Text('Gig Nomad', style: boldTextStyle(size: 20)),
             Text("The world is getting increasingly advanced, everything is at your fingertips. You can now create job vacancy advertisements, and wait for job applications to come in your line.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),

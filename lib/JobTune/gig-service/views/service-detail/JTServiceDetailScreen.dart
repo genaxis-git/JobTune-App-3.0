@@ -107,6 +107,11 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       by = info[0]["rate_by"];
     });
 
+    var res = info[0]["location"].split(",");
+    for(var m = 0; m<res.length; m++) {
+      _locatioanavailable(res[m]);
+    }
+
     readProvider(info[0]["provider_id"],info[0]["service_id"]);
   }
 
@@ -138,6 +143,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
 
   List servicelist = [];
   List numbers = [];
+  String packagelist = "";
   double max = 0;
   double min = 0;
   Future<void> readPackage(b) async {
@@ -154,6 +160,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
 
     min = double.parse(servicelist[0]["package_rate"]);
     for(var m=0;m<servicelist.length;m++) {
+      packagelist = servicelist[m]["package_name"] + " (RM " + servicelist[m]["package_rate"] + ") est: " + servicelist[m]["package_time"] + " Hrs.";
+      _packagename(packagelist);
       if(double.parse(servicelist[m]["package_rate"])>max){
         max = double.parse(servicelist[m]["package_rate"]);
       }
@@ -246,6 +254,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   int _hourController = 1;
   int _count = 0;
   List<Widget> _children = [];
+  List<Widget> _package = [];
+  List<Widget> _location = [];
 
   void _add(a) {
     _children =
@@ -275,6 +285,46 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       )
       );
     setState(() => ++_count);
+  }
+
+  void _packagename(a){
+    _package =
+    List.from(_package)
+      ..add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+            10.width,
+            Text(
+              a,
+              style: boldTextStyle(size: 15),
+              maxLines: 2,
+            ),
+            25.height,
+          ],
+        ),
+      );
+  }
+
+  void _locatioanavailable(a){
+    _location =
+    List.from(_location)
+      ..add(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
+            10.width,
+            Text(
+              a,
+              style: boldTextStyle(size: 15),
+              maxLines: 2,
+            ),
+            25.height,
+          ],
+        ),
+      );
   }
 
   @override
@@ -821,38 +871,35 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                               child: Container(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    16.height,
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
-                                        10.width,
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              location,
-                                              style: boldTextStyle(size: 15),
-                                              maxLines: 2,
-                                            ),
-                                            4.height,
-                                          ],
-                                        ).expand()
-                                      ],
-                                    ),
-                                  ],
+                                  children: _location,
                                 ),
                               ),
                             );
                           },
                         );
                       }),
-                      // (by == "Package" || by == "Package ")
-                      // ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
-                      //   packagesAvailable(context);
-                      // })
-                      // : Container(),
+                      (by == "Package" || by == "Package ")
+                      ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: appStore.scaffoldBackground,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+                          ),
+                          builder: (builder) {
+                            return SingleChildScrollView(
+                              padding: EdgeInsets.all(16),
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: _package,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      })
+                      : Container(),
                     ],
                   ),
                 ],
