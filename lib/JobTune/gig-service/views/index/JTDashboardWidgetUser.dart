@@ -657,7 +657,9 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(servicelist[index]["name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    4.height,
+                    3.height,
+                    DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                    15.height,
                     DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
                   ],
                 ).paddingAll(8).expand(),
@@ -700,6 +702,8 @@ class _DisplayRateState extends State<DisplayRate> {
     this.setState(() {
       servicelist = json.decode(response.body);
     });
+
+    print(servicelist[0]["package_rate"]);
 
     for(var m=0;m<servicelist.length;m++) {
       numbers.add(servicelist[m]["package_rate"]);
@@ -749,7 +753,124 @@ class _DisplayRateState extends State<DisplayRate> {
             JTpriceWidget(max),
           ],
         )
-        : JTpriceWidget(double.parse(min.toStringAsFixed(2))),
+        : JTpriceWidget(min),
+      ],
+    );
+  }
+}
+
+class DisplayRating extends StatefulWidget {
+  const DisplayRating({
+    Key? key,
+    required this.id,
+    required this.rate,
+  }) : super(key: key);
+  final String id;
+  final String rate;
+  @override
+  _DisplayRatingState createState() => _DisplayRatingState();
+}
+
+class _DisplayRatingState extends State<DisplayRating> {
+
+  // functions starts //
+
+  String averagerate = "0.0";
+  Future<void> readAverage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    setState(() {
+      averagerate = response.body;
+    });
+
+    showRating(averagerate);
+  }
+
+  List<Widget> _children = [];
+  void showRating(a){
+    _children =
+        List.from(_children)
+        ..add(
+          Row(
+            children: [
+              IgnorePointer(
+                child: RatingBar(
+                  onRatingChanged: (r) {},
+                  filledIcon: Icons.star,
+                  emptyIcon: Icons.star_border,
+                  initialRating: double.parse(double.parse(a).toStringAsFixed(1)),
+                  maxRating: 5,
+                  filledColor: Colors.yellow,
+                  size: 14,
+                ),
+              ),
+              5.width,
+              Text('${double.parse(double.parse(a).toStringAsFixed(1))}', style: secondaryTextStyle(size: 12)),
+            ],
+          )
+        );
+  }
+
+  @override
+  void initState() {
+    this.readAverage();
+    super.initState();
+  }
+
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _children,
+    );
+  }
+}
+
+class ShowsRating extends StatefulWidget {
+  const ShowsRating({
+    Key? key,
+    required this.show,
+  }) : super(key: key);
+  final String show;
+  @override
+  _ShowsRatingState createState() => _ShowsRatingState();
+}
+
+class _ShowsRatingState extends State<ShowsRating> {
+
+  // functions starts //
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IgnorePointer(
+          child: RatingBar(
+            onRatingChanged: (r) {},
+            filledIcon: Icons.star,
+            emptyIcon: Icons.star_border,
+            initialRating: double.parse(double.parse(widget.show).toStringAsFixed(1)),
+            maxRating: 5,
+            filledColor: Colors.yellow,
+            size: 14,
+          ),
+        ),
+        5.width,
+        Text('${double.parse(double.parse(widget.show).toStringAsFixed(1))}', style: secondaryTextStyle(size: 12)),
       ],
     );
   }

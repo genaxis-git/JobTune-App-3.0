@@ -650,7 +650,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                         10.height,
                         Row(
                           children: [
-                            Container(
+                            (double.parse(averagerate).toStringAsFixed(1) != "0.0")
+                            ? Container(
                               decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
                               padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
                               child: Row(
@@ -666,15 +667,28 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => JTReviewScreenUser(id: widget.id)),
                               );
-                            }),
+                            })
+                            : Container(
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.star_border, color: Colors.white, size: 14),
+                                  8.width,
+                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                                ],
+                              ),
+                            ),
                             8.width,
-                            Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
+                            (totalrating != "0")
+                            ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => JTReviewScreenUser(id: widget.id)),
                               );
-                            }),
+                            })
+                            : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
                           ],
                         ),
                       ],
