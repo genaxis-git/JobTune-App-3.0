@@ -1,11 +1,14 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
+import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/dashboard/model/db1/Db1Model.dart';
 import 'package:prokit_flutter/dashboard/utils/DbDataGenerator.dart';
@@ -25,6 +28,7 @@ import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 import 'JTDashboardScreenGuest.dart';
 import 'JTProductDetailScreenGuest.dart';
+import 'JTServiceListCategory.dart';
 
 class JTDashboardWidgetGuest extends StatefulWidget {
   static String tag = '/JTDashboardWidgetGuest';
@@ -43,10 +47,32 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   late List<NewVacancies> mListings3;
 
+  // functions starts //
+
+  List category = [];
+  Future<void> readCategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+
+    for(var m=0;m<category.length;m++) {
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+    }
+  }
+
+  // functions ends //
+
   @override
   void initState() {
     super.initState();
     mListings3 = getJobList();
+    this.readCategory();
     init();
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
       if (_currentPage < 3) {
@@ -64,26 +90,26 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   }
 
   init() async {
-    categories.add(CategoryModel(name: 'Baby Sitting', icon: 'images/defaultTheme/category/kids.png'));
-    categories.add(CategoryModel(name: 'Mobile Salon', icon: 'images/defaultTheme/category/women.png'));
-    categories.add(CategoryModel(name: 'Home Tuition/ Tutor', icon: 'images/defaultTheme/category/furniture.png'));
-    categories.add(CategoryModel(name: 'Languages', icon: 'images/defaultTheme/category/Tv.png'));
-    categories.add(CategoryModel(name: 'Religious', icon: 'images/defaultTheme/category/stationary.png'));
-    categories.add(CategoryModel(name: 'Kitchen Assistance', icon: 'images/defaultTheme/category/electronics.png'));
-    categories.add(CategoryModel(name: 'Runner', icon: 'images/defaultTheme/category/Man.png'));
-    categories.add(CategoryModel(name: 'Server', icon: 'images/defaultTheme/category/women.png'));
-    categories.add(CategoryModel(name: 'Data Entry', icon: 'images/defaultTheme/category/Tv.png'));
-    categories.add(CategoryModel(name: 'Personal Shopper', icon: 'images/defaultTheme/category/fashion.png'));
-    categories.add(CategoryModel(name: 'Lawn Mowing', icon: 'images/defaultTheme/category/Shoes.png'));
-    categories.add(CategoryModel(name: 'Photographer', icon: 'images/defaultTheme/category/Man.png'));
-    categories.add(CategoryModel(name: 'Personal Care', icon: 'images/defaultTheme/category/jewelry.png'));
-    categories.add(CategoryModel(name: 'Coaching/ Training', icon: 'images/defaultTheme/category/sports.png'));
+    // categories.add(CategoryModel(name: 'Baby Sitting', icon: 'images/defaultTheme/category/kids.png'));
+    // categories.add(CategoryModel(name: 'Mobile Salon', icon: 'images/defaultTheme/category/women.png'));
+    // categories.add(CategoryModel(name: 'Home Tuition/ Tutor', icon: 'images/defaultTheme/category/furniture.png'));
+    // categories.add(CategoryModel(name: 'Languages', icon: 'images/defaultTheme/category/Tv.png'));
+    // categories.add(CategoryModel(name: 'Religious', icon: 'images/defaultTheme/category/stationary.png'));
+    // categories.add(CategoryModel(name: 'Kitchen Assistance', icon: 'images/defaultTheme/category/electronics.png'));
+    // categories.add(CategoryModel(name: 'Runner', icon: 'images/defaultTheme/category/Man.png'));
+    // categories.add(CategoryModel(name: 'Server', icon: 'images/defaultTheme/category/women.png'));
+    // categories.add(CategoryModel(name: 'Data Entry', icon: 'images/defaultTheme/category/Tv.png'));
+    // categories.add(CategoryModel(name: 'Personal Shopper', icon: 'images/defaultTheme/category/fashion.png'));
+    // categories.add(CategoryModel(name: 'Lawn Mowing', icon: 'images/defaultTheme/category/Shoes.png'));
+    // categories.add(CategoryModel(name: 'Photographer', icon: 'images/defaultTheme/category/Man.png'));
+    // categories.add(CategoryModel(name: 'Personal Care', icon: 'images/defaultTheme/category/jewelry.png'));
+    // categories.add(CategoryModel(name: 'Coaching/ Training', icon: 'images/defaultTheme/category/sports.png'));
 
     pages = [
-      Container(child: Image.asset('images/JobTune/banner/dt_advertise1.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.asset('images/JobTune/banner/dt_advertise2.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.asset('images/JobTune/banner/dt_advertise3.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.asset('images/JobTune/banner/dt_advertise4.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
+      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Mobile Salon.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
+      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Kitchen Assistant.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
+      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Religious.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
+      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Data Entry.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
     ];
 
     setState(() {});
@@ -330,24 +356,24 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                 ],
               ),
               15.height,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
-                  Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
-                ],
-              ),
-              10.height,
-              SizedBox(
-                height: width * 0.55,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: mListings3.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Recommended(mListings3[index], index);
-                    }),
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
+              //     Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+              //   ],
+              // ),
+              // 10.height,
+              // SizedBox(
+              //   height: width * 0.55,
+              //   child: ListView.builder(
+              //       scrollDirection: Axis.horizontal,
+              //       itemCount: mListings3.length,
+              //       shrinkWrap: true,
+              //       itemBuilder: (context, index) {
+              //         return Recommended(mListings3[index], index);
+              //       }),
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -529,8 +555,142 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
     return Scaffold(
       body: ContainerX(
-        mobile: mobileWidget(),
-        web: webWidget(),
+        mobile: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        color: appColorPrimary,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                      ),
+                    ).visible(false),
+                    Column(
+                      children: [
+                        15.height,
+//                      searchTxt(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
+                                Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
+                                  appStore.setDrawerItemIndex(-1);
+
+                                  if (isMobile) {
+                                    JTDashboardSreenUser().launch(context, isNewTask: true);
+                                  } else {
+//                                  DTDashboardScreen().launch(context, isNewTask: true);
+                                  }
+                                }),
+                              ],
+                            ),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.only(right: 8, top: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: categories.map((e) {
+                                  return Container(
+                                    width: isMobile ? 100 : 120,
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(8),
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
+                                          child: Image.asset(e.icon!, height: 30, width: 30, color: white),
+                                        ),
+                                        4.height,
+                                        Text(
+                                            e.name!,
+                                            style: primaryTextStyle(size: 12),
+                                            maxLines: 1,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis
+                                        ),
+                                      ],
+                                    ),
+                                  ).onTap(() {
+                                    // JTServiceListCategory().launch(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => JTServiceListCategory(
+                                        searchkey: e.name!,
+                                      )),
+                                    );
+                                  });
+                                }).toList(),
+                              ),
+                            ),
+                            20.height,
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.all(8),
+                          height: 200,
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              PageView(
+                                controller: pageController,
+                                scrollDirection: Axis.horizontal,
+                                children: pages,
+                                onPageChanged: (index) {
+                                  selectedIndex = index;
+                                  setState(() {});
+                                },
+                              ).cornerRadiusWithClipRRect(8),
+                              DotIndicator(
+                                pages: pages,
+                                indicatorColor: appColorPrimary,
+                                pageController: pageController,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                15.height,
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
+                //     Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+                //   ],
+                // ),
+                // 10.height,
+                // SizedBox(
+                //   height: width * 0.55,
+                //   child: ListView.builder(
+                //       scrollDirection: Axis.horizontal,
+                //       itemCount: mListings3.length,
+                //       shrinkWrap: true,
+                //       itemBuilder: (context, index) {
+                //         return Recommended(mListings3[index], index);
+                //       }),
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
+                    Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+                  ],
+                ),
+                Container(height: 500, child: JTProductList()),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
