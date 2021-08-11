@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/service-manage/JTManageServiceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/clocking/JTClockingScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
@@ -154,7 +155,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
 //            DTNotificationSettingScreen().launch(context);
           }, leading: Icon(MaterialIcons.event), detail: SizedBox()),
           settingItem(context, 'My Service', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            ServiceScreen().launch(context);
           }, leading: Icon(MaterialIcons.work_outline), detail: SizedBox()),
           settingItem(context, 'Clocking', onTap: () {
             JTClockingScreenUser().launch(context);
