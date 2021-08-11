@@ -18,9 +18,25 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
   List<Widget>  pages = [];
   var selectedIndex = 0;
 
+  Image? img1;
+  Image? img2;
+  Image? img3;
+
   @override
   void initState() {
+    img1 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/services.jpg');
+    img2 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/product.jpg');
+    img3 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/nomad.jpg');
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    precacheImage(img1!.image, context);
+    precacheImage(img2!.image, context);
+    precacheImage(img3!.image, context);
   }
 
   init() async {
@@ -30,9 +46,9 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('images/defaultTheme/walkthrough1.png', height: context.height() * 0.45),
-            Text('Title', style: boldTextStyle(size: 20)),
-            Text(lipsum.createSentence(), textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
+            Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/services.jpg', height: context.height() * 0.45),
+            Text('Gig - Service', style: boldTextStyle(size: 20)),
+            Text("Enabling gig economists to showcase their skills and turn their skills into a service that is able to generate side income. And at the same time, users also get an advantage in lightening the load of their daily routine.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),
       ),
@@ -41,9 +57,9 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('images/defaultTheme/walkthrough1.png', height: context.height() * 0.45),
-            Text('Title', style: boldTextStyle(size: 20)),
-            Text(lipsum.createSentence(), textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
+            Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/product.jpg', height: context.height() * 0.45),
+            Text('Gig - Product', style: boldTextStyle(size: 20)),
+            Text("We also invite small businesses to be in our family. Here. you may now showcase products you are selling.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),
       ),
@@ -52,9 +68,9 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('images/defaultTheme/walkthrough1.png', height: context.height() * 0.45),
-            Text('Title', style: boldTextStyle(size: 20)),
-            Text(lipsum.createSentence(), textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
+            Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/nomad.jpg', height: context.height() * 0.45),
+            Text('Gig - Nomad', style: boldTextStyle(size: 20)),
+            Text("The world is getting increasingly advanced, everything is at your fingertips. You can now create job vacancy advertisements, and wait for job applications to come in your line.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
           ],
         ),
       )
@@ -72,7 +88,6 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
     init();
 
     return Scaffold(
-      appBar: JTappBar(context, 'WalkThrough'),
       body: Container(
         child: Stack(
           children: [

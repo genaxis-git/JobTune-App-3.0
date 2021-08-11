@@ -1,4 +1,4 @@
-package com.iqonic.prokit_flutter
+package com.bobdomo.jobtuneai
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

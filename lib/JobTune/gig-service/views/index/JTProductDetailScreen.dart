@@ -475,11 +475,19 @@ class _JTProductDetailState extends State<JTProductDetail> {
                       ],
                     ),
                   ).onTap(() {
-                    JTReviewScreenUser().launch(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => JTReviewScreenUser(id: "18")),
+                    );
                   }),
                   8.width,
                   Text('${Random.secure().nextInt(100).toString()} ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                    JTReviewScreenUser().launch(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => JTReviewScreenUser(id: "18")),
+                    );
                   }),
                 ],
               ),
@@ -693,7 +701,7 @@ class _JTProductDetailState extends State<JTProductDetail> {
           ),
           16.height,
           widget.productModel != null ? Text('${widget.productModel!.name.validate()} Reviews', style: boldTextStyle()).paddingAll(16) : SizedBox(),
-          JTReviewWidget(list: getReviewList()),
+          JTReviewWidget(id: "18"),
         ],
       );
     }

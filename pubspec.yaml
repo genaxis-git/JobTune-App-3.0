@@ -119,6 +119,7 @@ flutter:
     - assets/medium/
     - images/smartDeck/images/
     - images/JobTune/banner/
+    - images/JobTune/onboard/
     - images/smartDeck/images/sdchats.png
     - images/smartDeck/images/sdupdate.png
     - images/Reaction/images/

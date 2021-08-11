@@ -169,11 +169,44 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     });
   }
 
+  String averagerate = "0.0";
+  Future<void> readAverage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      averagerate = response.body;
+    });
+  }
+
+  String totalrating = "0";
+  List ratinglist = [];
+  Future<void> readTotal() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selecttotalrate&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      ratinglist = json.decode(response.body);
+    });
+
+    setState(() {
+      totalrating = ratinglist.length.toString();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     this.readService();
     this.readProfile();
+    this.readAverage();
+    this.readTotal();
   }
 
   // function ends //
@@ -624,15 +657,23 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                 children: [
                                   Icon(Icons.star_border, color: Colors.white, size: 14),
                                   8.width,
-                                  Text(4.5.toString(), style: primaryTextStyle(color: white)),
+                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
                                 ],
                               ),
                             ).onTap(() {
-                              JTReviewScreenUser().launch(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
                             }),
                             8.width,
-                            Text('10 ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                              JTReviewScreenUser().launch(context);
+                            Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
                             }),
                           ],
                         ),
@@ -793,11 +834,11 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           },
                         );
                       }),
-                      (by == "Package" || by == "Package ")
-                      ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
-                        packagesAvailable(context);
-                      })
-                      : Container(),
+                      // (by == "Package" || by == "Package ")
+                      // ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
+                      //   packagesAvailable(context);
+                      // })
+                      // : Container(),
                     ],
                   ),
                 ],
@@ -873,6 +914,39 @@ void locationAvailable(BuildContext aContext) {
   );
 }
 
+
+class DisplayPackage extends StatefulWidget {
+  const DisplayPackage({Key? key, required this.searchkey}) : super(key: key);
+  final String searchkey;
+  @override
+  _DisplayPackageState createState() => _DisplayPackageState();
+}
+
+class _DisplayPackageState extends State<DisplayPackage> {
+
+  // functions starts //
+
+  List category = [];
+  Future<void> readCategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+  }
+
+  // functions ends //
+
+  @override
+  Widget build(BuildContext aContext) {
+    return Container();
+  }
+}
+
 void packagesAvailable(BuildContext aContext) {
   showModalBottomSheet(
     context: aContext,
@@ -898,44 +972,6 @@ void packagesAvailable(BuildContext aContext) {
                     children: [
                       Text(
                         "Jamuan Hari Jadi (100 pax) RM 500",
-                        style: boldTextStyle(size: 15),
-                        maxLines: 2,
-                      ),
-                      4.height,
-                    ],
-                  ).expand()
-                ],
-              ),
-              16.height,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
-                  10.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Jamuan Akikah (100 pax) RM 600",
-                        style: boldTextStyle(size: 15),
-                        maxLines: 2,
-                      ),
-                      4.height,
-                    ],
-                  ).expand()
-                ],
-              ),
-              16.height,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(MaterialCommunityIcons.arrow_right, color: Color(0xFF0A79DF)),
-                  10.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Jamuan Doa Selamat (100 pax) RM 300",
                         style: boldTextStyle(size: 15),
                         maxLines: 2,
                       ),

@@ -1,5 +1,7 @@
 import 'dart:math';
-
+import 'dart:convert';
+import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -15,6 +17,9 @@ import 'JTReviewWidget.dart';
 class JTReviewScreenUser extends StatefulWidget {
   static String tag = '/JTReviewScreenUser';
 
+  const JTReviewScreenUser({Key? key, required this.id}) : super(key: key);
+  final String id;
+
   @override
   _JTReviewScreenUserState createState() => _JTReviewScreenUserState();
 }
@@ -23,15 +28,92 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
   List<DTReviewModel> list = getReviewList();
   var scrollController = ScrollController();
 
-  @override
-  void initState() {
-    super.initState();
-    init();
+  // functions starts //
+
+  String averagerate = "0.0";
+  Future<void> readAverage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      averagerate = response.body;
+    });
   }
 
-  init() async {
-    //
+  String totalrating = "0";
+  List ratinglist = [];
+  Future<void> readTotal() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selecttotalrate&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      ratinglist = json.decode(response.body);
+    });
+
+    setState(() {
+      totalrating = ratinglist.length.toString();
+    });
   }
+
+  List countrate = [];
+  double zero = 0.0;
+  double one = 0.0;
+  double two = 0.0;
+  double three = 0.0;
+  double four = 0.0;
+  double five = 0.0;
+  Future<void> readRatings() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_countrating&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      countrate = json.decode(response.body);
+    });
+
+    setState(() {
+      for(var m =0;m<countrate.length;m++) {
+        if(countrate[m]["amount"] == "0.0") {
+          zero = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+        else if(countrate[m]["amount"] == "1.0") {
+          one = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+        else if(countrate[m]["amount"] == "2.0") {
+          two = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+        else if(countrate[m]["amount"] == "3.0") {
+          three = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+        else if(countrate[m]["amount"] == "4.0") {
+          four = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+        else if(countrate[m]["amount"] == "5.0") {
+          five = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        }
+      }
+
+
+    });
+  }
+
+  @override
+  void initState() {
+    this.readTotal();
+    this.readAverage();
+    this.readRatings();
+    super.initState();
+  }
+
+  // function ends //
 
   @override
   void setState(fn) {
@@ -40,8 +122,9 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
 
   @override
   Widget build(BuildContext context) {
+    print(five);
     Widget reviewListing() {
-      return JTReviewWidget(list: list);
+      return JTReviewWidget(id:widget.id);
     }
 
     Widget mobileWidget() {
@@ -297,8 +380,106 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
       appBar: JTappBar(context, 'Review & Rating'),
       drawer: JTDrawerWidgetUser(),
       body: JTContainerX(
-        mobile: mobileWidget(),
-        web: webWidget(),
+        mobile: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: 200,
+                decoration: BoxDecoration(gradient: JTdefaultThemeGradient()),
+                alignment: Alignment.center,
+                child: ConstrainedBox(
+                  constraints: JTdynamicBoxConstraints(),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FittedBox(child: Text(double.parse(averagerate).toStringAsFixed(1), style: boldTextStyle(size: 40, color: white))),
+                          IgnorePointer(
+                            child: RatingBar(
+                              onRatingUpdate: (r) {},
+                              itemSize: 14.0,
+                              itemBuilder: (context, _) => Icon(Icons.star_border, color: Colors.amber),
+                              initialRating: double.parse(double.parse(averagerate).toStringAsFixed(1)),
+                            ),
+                          ),
+                          10.height,
+                          FittedBox(child: Text(totalrating, style: boldTextStyle(color: white))),
+                        ],
+                      ).paddingOnly(left: 8, right: 8).expand(flex: 1),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              Text('5', style: primaryTextStyle(color: white)),
+                              10.width,
+                              LinearProgressIndicator(
+                                value: five,
+                                backgroundColor: white.withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                              ).expand(),
+                              10.width,
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text('4', style: primaryTextStyle(color: white)),
+                              10.width,
+                              LinearProgressIndicator(
+                                value: four,
+                                backgroundColor: white.withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                              ).expand(),
+                              10.width,
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text('3', style: primaryTextStyle(color: white)),
+                              10.width,
+                              LinearProgressIndicator(
+                                value: three,
+                                backgroundColor: white.withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                              ).expand(),
+                              10.width,
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text('2', style: primaryTextStyle(color: white)),
+                              10.width,
+                              LinearProgressIndicator(
+                                value: two,
+                                backgroundColor: white.withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                              ).expand(),
+                              10.width,
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text('1', style: primaryTextStyle(color: white)),
+                              10.width,
+                              LinearProgressIndicator(
+                                value: one,
+                                backgroundColor: white.withOpacity(0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(white),
+                              ).expand(),
+                              10.width,
+                            ],
+                          ),
+                        ],
+                      ).expand(flex: 2),
+                    ],
+                  ),
+                ),
+              ),
+              reviewListing(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -418,3 +599,4 @@ class WriteReviewDialog extends StatelessWidget {
     );
   }
 }
+

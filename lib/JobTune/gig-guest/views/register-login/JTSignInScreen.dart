@@ -36,6 +36,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
 
   List user = [];
   double newcount = 0.0;
+  double newprovider = 0.0;
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
@@ -51,6 +52,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
         if(user[0]["status"] == "confirmed") {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           final String lgcount = prefs.getString('logincount').toString();
+          final String lgprovider = prefs.getString('loginprovider').toString();
           if(lgcount == "null") {
             newcount = 1.0;
           }
@@ -58,7 +60,15 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
             newcount = double.parse(lgcount) + 1;
           }
 
+          if(lgprovider == "null") {
+            newprovider = 1.0;
+          }
+          else {
+            newprovider = double.parse(lgcount) + 1;
+          }
+
           prefs.setString('logincount', newcount.toString());
+          prefs.setString('loginprovider', newprovider.toString());
           prefs.setString('email', email);
 
           if(newcount > 1) {

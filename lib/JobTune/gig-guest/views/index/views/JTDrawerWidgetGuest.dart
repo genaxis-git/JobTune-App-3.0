@@ -47,7 +47,8 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
 
   Future<void> logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    await prefs.remove('email');
+    // await prefs.clear();
 
     JTDashboardScreenGuest().launch(context, isNewTask: true);
   }
@@ -149,29 +150,29 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                   : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            child: Text('Provider', style: boldTextStyle(color: Colors.black)),
-                          ).onTap(() {
-                            appStore.setDrawerItemIndex(-1);
-                            if(loginstat == 0){
-                              JTOnboardingScreenProvider().launch(context, isNewTask: true);
-                            }
-                            else{
-                              JTAccountScreen().launch(context, isNewTask: true);
-                            }
-                          }),
-                          SizedBox(width:150),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 15,
-                          ),
-                          SizedBox(width:0),
-                        ],
-                      ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Container(
+                      //       padding: EdgeInsets.all(16),
+                      //       child: Text('Provider', style: boldTextStyle(color: Colors.black)),
+                      //     ).onTap(() {
+                      //       appStore.setDrawerItemIndex(-1);
+                      //       if(loginstat == 0){
+                      //         JTOnboardingScreenProvider().launch(context, isNewTask: true);
+                      //       }
+                      //       else{
+                      //         JTAccountScreen().launch(context, isNewTask: true);
+                      //       }
+                      //     }),
+                      //     SizedBox(width:150),
+                      //     Icon(
+                      //       Icons.arrow_forward_ios,
+                      //       size: 15,
+                      //     ),
+                      //     SizedBox(width:0),
+                      //   ],
+                      // ),
                       Container(
                         padding: EdgeInsets.all(16),
                         child: Text('Logout', style: boldTextStyle(color: Colors.black)),
