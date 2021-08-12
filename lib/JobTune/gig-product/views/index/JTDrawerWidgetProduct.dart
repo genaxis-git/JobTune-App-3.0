@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-product/models/JTNavBarProduct.dart';
@@ -72,8 +73,8 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                     appStore.setDrawerItemIndex(-1);
 
                     if (isMobile) {
-                      ProKitLauncher().launch(context, isNewTask: true);
-//                      JTDashboardScreenGuest().launch(context, isNewTask: true);
+                      // ProKitLauncher().launch(context, isNewTask: true);
+                     JTDashboardScreenGuest().launch(context, isNewTask: true);
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }

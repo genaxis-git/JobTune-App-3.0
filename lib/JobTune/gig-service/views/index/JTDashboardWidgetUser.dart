@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTServiceListCategory.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
@@ -146,7 +147,12 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                 ],
               ),
             ).onTap(() {
-              DTCategoryDetailScreen().launch(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => JTServiceListCategory(
+                  searchkey: e.name!,
+                )),
+              );
             });
           }).toList(),
         ),

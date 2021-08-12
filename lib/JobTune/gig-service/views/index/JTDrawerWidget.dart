@@ -3,6 +3,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -102,8 +103,8 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                     appStore.setDrawerItemIndex(-1);
 
                     if (isMobile) {
-                      ProKitLauncher().launch(context, isNewTask: true);
-//                      JTDashboardScreenGuest().launch(context, isNewTask: true);
+                      // ProKitLauncher().launch(context, isNewTask: true);
+                     JTDashboardScreenGuest().launch(context, isNewTask: true);
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
