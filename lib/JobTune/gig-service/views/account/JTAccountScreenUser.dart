@@ -60,6 +60,14 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
     });
   }
 
+  Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('email');
+    // await prefs.clear();
+
+    JTDashboardScreenGuest().launch(context, isNewTask: true);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -110,17 +118,17 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
           settingItem(context, 'My Profile', onTap: () {
             JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
-          settingItem(context, 'Timetable', onTap: () {
-            JTScheduleScreenUser().launch(context);
-          }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
+          // settingItem(context, 'Timetable', onTap: () {
+          //   JTScheduleScreenUser().launch(context);
+          // }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
           settingItem(context, 'Change Password', onTap: () {
             JTChangePasswordScreen().launch(context);
           }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
-          settingItem(context, 'Notifications', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
-          },
-              leading: Icon(MaterialIcons.notifications_none),
-              detail: SizedBox()),
+//           settingItem(context, 'Notifications', onTap: () {
+// //            DTNotificationSettingScreen().launch(context);
+//           },
+//               leading: Icon(MaterialIcons.notifications_none),
+//               detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -133,14 +141,14 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
                   )),
             ],
           ),
-          settingItem(context, 'Help', onTap: () {
-            launch('https://www.google.com');
-          }, leading: Icon(MaterialIcons.help_outline), detail: SizedBox()),
-          settingItem(context, 'About', onTap: () {
-            DTAboutScreen().launch(context);
-          }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
+          // settingItem(context, 'Help', onTap: () {
+          //   launch('https://www.google.com');
+          // }, leading: Icon(MaterialIcons.help_outline), detail: SizedBox()),
+          // settingItem(context, 'About', onTap: () {
+          //   DTAboutScreen().launch(context);
+          // }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
           settingItem(context, 'Logout', onTap: () {
-//            DTNotificationSettingScreen().launch(context);
+            logout();
           }, leading: Icon(MaterialIcons.logout), detail: SizedBox()),
         ],
       );

@@ -17,6 +17,7 @@ import '../index/JTAddressScreen.dart';
 import '../index/JTProductDetailWidget.dart';
 import '../index/JTReviewScreenUser.dart';
 import '../index/JTReviewWidget.dart';
+import 'JTCheckSlotScreen.dart';
 
 bool package = true;
 
@@ -340,7 +341,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       ).onTap(() {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => JTScheduleScreenUser()),
+          MaterialPageRoute(builder: (context) => WebViewCalendar(id:proid)),
         );
         // Do your logic
       });

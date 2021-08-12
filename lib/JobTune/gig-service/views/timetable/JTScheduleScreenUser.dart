@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/integrations/screens/flutterCalender/CleanCalendar.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -14,8 +17,39 @@ class _JTScheduleScreenUserState extends State<JTScheduleScreenUser> {
   late List _selectedEvents;
   DateTime _selectedDay = DateTime.now();
 
-  // List of the event on particular date.
+// List of the event on particular date.
   Map<DateTime, List> _events = Map<DateTime, List>();
+  // function starts //
+
+  List timetable = [];
+  Future<void> readProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectschedule&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      timetable = json.decode(response.body);
+    });
+
+    for(var m=0;m<timetable.length;m++) {
+      var name = timetable[m]["name"];
+      var times = timetable[m]["service_start"].split(" ")[1] + " - "+timetable[m]["service_end"].split(" ")[1];
+      var status = timetable[m]["status"];
+      if(status == "completed") {
+        // _events.add(DateTime(timetable[m]["service_start"].split(" ")[0].split(":")[0], timetable[m]["service_start"].split(" ")[0].split(":")[1], timetable[m]["service_start"].split(" ")[0].split(":")[2]): [{'name': name, 'isDone': true, 'time': times},]);
+      }
+       else{
+        // _events.add(DateTime(timetable[m]["service_start"].split(" ")[0].split(":")[0], timetable[m]["service_start"].split(" ")[0].split(":")[1], timetable[m]["service_start"].split(" ")[0].split(":")[2]): [{'name': name, 'isDone': false, 'time': times},]);
+      }
+    }
+  }
+
+  // function ends //
 
   @override
   void initState() {
@@ -24,9 +58,7 @@ class _JTScheduleScreenUserState extends State<JTScheduleScreenUser> {
     _selectedEvents = _events[_selectedDay] ?? [];
 
     _events = {
-      DateTime(_selectedDay.year, _selectedDay.month, 7): [
-        {'name': 'Event A', 'isDone': true, 'time': '13 - 15 PM'},
-      ],
+      DateTime(_selectedDay.year, _selectedDay.month, 7): [{'name': 'Event A', 'isDone': true, 'time': '13 - 15 PM'},],
       DateTime(_selectedDay.year, _selectedDay.month, 9): [
         {'name': 'Event A', 'isDone': true, 'time': '10 - 11 AM'},
         {'name': 'Event B', 'isDone': true, 'time': '_selectedDay.month - 7 PM'},
