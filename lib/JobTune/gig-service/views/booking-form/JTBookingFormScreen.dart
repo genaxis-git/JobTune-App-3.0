@@ -31,8 +31,8 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   List<String> listOfQty = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23'];
   String? selectedIndexQty = '1';
   double subtotal = 0;
-  double platformfee = 1.25;
-  double total = 1.25;
+  double platformfee = 0.00;
+  double total = 0.00;
   var detail = TextEditingController();
   int subTotal = 0;
   int totalAmount = 0;

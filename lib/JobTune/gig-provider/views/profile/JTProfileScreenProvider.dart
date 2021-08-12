@@ -72,10 +72,71 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
     });
   }
 
+  List done = [];
+  String totaldone = "0";
+  Future<void> readDone() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countdone&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      done = json.decode(response.body);
+    });
+
+    setState(() {
+      totaldone = done.length.toString();
+    });
+  }
+
+  List notdone = [];
+  String totalnotdone = "0";
+  Future<void> readNotDone() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countnotdone&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      notdone = json.decode(response.body);
+    });
+
+    setState(() {
+      totalnotdone = notdone.length.toString();
+    });
+  }
+
+  String spending = "0";
+  Future<void> readSpending() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countincome&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      spending = double.parse(response.body).toStringAsFixed(2);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     this.readProfile();
+    this.readDone();
+    this.readNotDone();
+    this.readSpending();
   }
 
   // functions ends //
@@ -151,7 +212,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          "50",
+                                          totaldone + " / " + totalnotdone,
                                           style: TextStyle(
                                             color: Colors.blueAccent,
                                             fontWeight: FontWeight.bold,
@@ -177,7 +238,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          "500",
+                                          spending,
                                           style: TextStyle(
                                             color: Colors.blueAccent,
                                             fontWeight: FontWeight.bold,

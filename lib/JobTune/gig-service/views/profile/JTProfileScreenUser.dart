@@ -77,10 +77,49 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
     });
   }
 
+  List booking = [];
+  String booktotal = "0";
+  Future<void> readBooking() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_countbooking&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      booking = json.decode(response.body);
+    });
+
+    setState(() {
+      booktotal = booking.length.toString();
+    });
+  }
+  
+  String spending = "0";
+  Future<void> readSpending() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_countspending&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      spending = double.parse(response.body).toStringAsFixed(2);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     this.readProfile();
+    this.readSpending();
+    this.readBooking();
   }
 
   // functions ends //
@@ -155,7 +194,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "50",
+                                        booktotal,
                                         style: TextStyle(
                                           color: Colors.blueAccent,
                                           fontWeight: FontWeight.bold,
@@ -181,7 +220,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "500",
+                                        spending,
                                         style: TextStyle(
                                           color: Colors.blueAccent,
                                           fontWeight: FontWeight.bold,

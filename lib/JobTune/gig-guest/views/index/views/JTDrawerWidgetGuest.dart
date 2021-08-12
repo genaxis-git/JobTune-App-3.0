@@ -104,7 +104,8 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     child: Text('Home', style: boldTextStyle(color: Color(0xFF0A79DF))),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    ProKitLauncher().launch(context, isNewTask: true);
+                    // ProKitLauncher().launch(context, isNewTask: true);
+                    JTDashboardScreenGuest().launch(context, isNewTask: true);
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
