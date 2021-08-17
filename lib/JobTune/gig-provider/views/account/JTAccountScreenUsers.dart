@@ -8,6 +8,9 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardSc
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/service-manage/JTManageServiceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/service-history/JTServiceHistoryScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/timetable/JTTimetableScreenProvider.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/transaction/JTTransactionProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/clocking/JTClockingScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
@@ -151,18 +154,25 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           settingItem(context, 'My Profile', onTap: () {
             JTProfileScreenProvider().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
-//           settingItem(context, 'Timetable', onTap: () {
-// //            DTNotificationSettingScreen().launch(context);
-//           }, leading: Icon(MaterialIcons.event), detail: SizedBox()),
+          settingItem(context, 'Timetable', onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WebViewTimetableProvider(id: email)),
+            );
+          }, leading: Icon(MaterialIcons.event), detail: SizedBox()),
           settingItem(context, 'My Service', onTap: () {
             ServiceScreen().launch(context);
           }, leading: Icon(MaterialIcons.work_outline), detail: SizedBox()),
           settingItem(context, 'Clocking', onTap: () {
             JTClockingScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
-//           settingItem(context, 'Service History', onTap: () {
-// //            DTNotificationSettingScreen().launch(context);
-//           }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          settingItem(context, 'Service History', onTap: () {
+            JTServiceHistoryScreen().launch(context);
+          }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          settingItem(context, 'Transaction', onTap: () {
+            JTTransactionProvider().launch(context);
+          }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
           settingItem(context, 'Co-De', onTap: () {
             DTCartScreen1().launch(context);
           }, leading: Icon(MaterialIcons.people_outline), detail: SizedBox()),

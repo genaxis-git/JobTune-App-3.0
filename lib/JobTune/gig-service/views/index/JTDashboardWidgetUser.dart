@@ -585,27 +585,46 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
-    http.Response response = await http.get(
-        Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
-        headers: {"Accept": "application/json"}
-    );
+    if(lgid == "null"){
+      serviceList();
+    }
+    else {
+      http.Response response = await http.get(
+          Uri.parse(
+              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+          headers: {"Accept": "application/json"}
+      );
 
-    this.setState(() {
-      profile = json.decode(response.body);
-    });
+      this.setState(() {
+        profile = json.decode(response.body);
+      });
 
-    print(profile[0]["city"]+profile[0]["state"]+profile[0]["country"]);
-    checkFeatured(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+      checkFeatured(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+    }
   }
 
   List servicelist = [];
   Future<void> checkFeatured(city,state,country) async {
+    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city="+city
+        +"&state="+state
+        +"&country="+country);
     http.Response response = await http.get(
         Uri.parse(
             "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city="+city
                 +"&state="+state
                 +"&country="+country
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+  }
+
+  Future<void> serviceList() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city=&state=&country="
         ),
         headers: {"Accept": "application/json"});
 
@@ -708,8 +727,6 @@ class _DisplayRateState extends State<DisplayRate> {
     this.setState(() {
       servicelist = json.decode(response.body);
     });
-
-    print(servicelist[0]["package_rate"]);
 
     for(var m=0;m<servicelist.length;m++) {
       numbers.add(servicelist[m]["package_rate"]);

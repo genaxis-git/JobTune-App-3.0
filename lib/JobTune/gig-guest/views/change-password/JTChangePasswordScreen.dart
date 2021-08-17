@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
 
 import '../../../../main.dart';
@@ -51,7 +52,7 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => JTAccountScreenUsers()),
+                MaterialPageRoute(builder: (context) => JTDashboardScreenGuest()),
               );
             }
         ),

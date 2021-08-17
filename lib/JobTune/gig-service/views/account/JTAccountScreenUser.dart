@@ -9,6 +9,9 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardSc
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTTimetableScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/transaction/JTTransactionScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/verify-clocking/JTVerifyScreenUser.dart';
 // import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
@@ -62,8 +65,8 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
 
   Future<void> logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('email');
-    // await prefs.clear();
+    // await prefs.remove('email');
+    await prefs.clear();
 
     JTDashboardScreenGuest().launch(context, isNewTask: true);
   }
@@ -118,17 +121,19 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
           settingItem(context, 'My Profile', onTap: () {
             JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
-          // settingItem(context, 'Timetable', onTap: () {
-          //   JTScheduleScreenUser().launch(context);
-          // }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
-          settingItem(context, 'Change Password', onTap: () {
-            JTChangePasswordScreen().launch(context);
-          }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
-//           settingItem(context, 'Notifications', onTap: () {
-// //            DTNotificationSettingScreen().launch(context);
-//           },
-//               leading: Icon(MaterialIcons.notifications_none),
-//               detail: SizedBox()),
+          settingItem(context, 'Timetable', onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WebViewTimetableUser(id: email)),
+            );
+          }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
+          settingItem(context, 'Verify Clocking', onTap: () {
+            JTVerifyScreenUser().launch(context);
+          }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
+          settingItem(context, 'Transaction', onTap: () {
+            JTTransactionScreen().launch(context);
+          }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,

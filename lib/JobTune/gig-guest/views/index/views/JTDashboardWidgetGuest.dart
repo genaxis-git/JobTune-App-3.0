@@ -75,7 +75,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     this.readCategory();
     init();
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < 3) {
+      if (_currentPage < 7) {
         _currentPage++;
       } else {
         _currentPage = 0;
@@ -90,26 +90,167 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   }
 
   init() async {
-    // categories.add(CategoryModel(name: 'Baby Sitting', icon: 'images/defaultTheme/category/kids.png'));
-    // categories.add(CategoryModel(name: 'Mobile Salon', icon: 'images/defaultTheme/category/women.png'));
-    // categories.add(CategoryModel(name: 'Home Tuition/ Tutor', icon: 'images/defaultTheme/category/furniture.png'));
-    // categories.add(CategoryModel(name: 'Languages', icon: 'images/defaultTheme/category/Tv.png'));
-    // categories.add(CategoryModel(name: 'Religious', icon: 'images/defaultTheme/category/stationary.png'));
-    // categories.add(CategoryModel(name: 'Kitchen Assistance', icon: 'images/defaultTheme/category/electronics.png'));
-    // categories.add(CategoryModel(name: 'Runner', icon: 'images/defaultTheme/category/Man.png'));
-    // categories.add(CategoryModel(name: 'Server', icon: 'images/defaultTheme/category/women.png'));
-    // categories.add(CategoryModel(name: 'Data Entry', icon: 'images/defaultTheme/category/Tv.png'));
-    // categories.add(CategoryModel(name: 'Personal Shopper', icon: 'images/defaultTheme/category/fashion.png'));
-    // categories.add(CategoryModel(name: 'Lawn Mowing', icon: 'images/defaultTheme/category/Shoes.png'));
-    // categories.add(CategoryModel(name: 'Photographer', icon: 'images/defaultTheme/category/Man.png'));
-    // categories.add(CategoryModel(name: 'Personal Care', icon: 'images/defaultTheme/category/jewelry.png'));
-    // categories.add(CategoryModel(name: 'Coaching/ Training', icon: 'images/defaultTheme/category/sports.png'));
-
     pages = [
-      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Mobile Salon.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Kitchen Assistant.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Religious.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
-      Container(child: Image.network('https://jobtune.ai/gig/JobTune/assets/img/category/Data Entry.jpg', height: isMobile ? 150 : 350, fit: BoxFit.cover)),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Home.jpg'),
+              height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Home Tuition/ Tutor",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Religious.jpg'),
+              height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Religious",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Baby Sitting.jpg'),
+              height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Baby Sitting",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Photographer.jpg'),
+              height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Photography",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+            colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Mobile Salon.jpg'),
+            height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Mobile Salon",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+            colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Kitchen Assistant.jpg'),
+            height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Kitchen Assistant",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Lawn Mowing.jpg'),
+              height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Lawn Mowing",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
+      Container(child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Ink.image(
+            colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
+            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Data Entry.jpg'),
+            height: isMobile ? 180 : 350,
+              fit: BoxFit.cover
+          ),
+          Text(
+            "Data Entry",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 24,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),),
     ];
 
     setState(() {});
@@ -635,7 +776,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                         ),
                         Container(
                           margin: EdgeInsets.all(8),
-                          height: 200,
+                          height: 170,
                           child: Stack(
                             alignment: Alignment.bottomCenter,
                             children: [
