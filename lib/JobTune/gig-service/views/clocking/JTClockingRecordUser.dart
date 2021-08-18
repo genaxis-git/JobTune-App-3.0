@@ -104,6 +104,13 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
         headers: {"Accept": "application/json"}
     );
 
+    http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updatebooking&id=" + widget.bookid
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
     setState(() {
       displaytime = timein;
       displaypicin = img;

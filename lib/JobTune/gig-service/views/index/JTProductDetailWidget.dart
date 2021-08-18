@@ -76,7 +76,7 @@ Widget JTsettingItem(context, String text, {Function? onTap, Widget? detail, Wid
 
 Widget JTpriceWidget(double? price, {bool applyStrike = false, double? fontSize, Color? textColor}) {
   return Text(
-    applyStrike ? '$price' : '\RM $price',
+    applyStrike ? '$price' : '\RM ' + price!.toStringAsFixed(2),
     style: TextStyle(
       decoration: applyStrike ? TextDecoration.lineThrough : TextDecoration.none,
       color: textColor != null
