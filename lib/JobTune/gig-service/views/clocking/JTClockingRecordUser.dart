@@ -55,14 +55,14 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
   File? _imageout;
 
   Future<void> getImage() async{
-    final pickerImage = await _pickerin.getImage(source: ImageSource.camera);
+    final pickerImage = await _pickerin.getImage(source: ImageSource.camera, maxHeight: 1000, maxWidth: 1000);
     setState(() {
       _imagein = File(pickerImage!.path);
     });
   }
 
   Future<void> pickImage() async{
-    final pickerImageout = await _pickerout.getImage(source: ImageSource.camera);
+    final pickerImageout = await _pickerout.getImage(source: ImageSource.camera, maxHeight: 1000, maxWidth: 1000);
     setState(() {
       _imageout = File(pickerImageout!.path);
     });
@@ -175,7 +175,11 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
             leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => JTClockingScreenUser()),
+                  );
                 }
             ),
             bottom: TabBar(

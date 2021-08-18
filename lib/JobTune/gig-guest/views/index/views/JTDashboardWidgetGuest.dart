@@ -497,24 +497,24 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                 ],
               ),
               15.height,
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
-              //     Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
-              //   ],
-              // ),
-              // 10.height,
-              // SizedBox(
-              //   height: width * 0.55,
-              //   child: ListView.builder(
-              //       scrollDirection: Axis.horizontal,
-              //       itemCount: mListings3.length,
-              //       shrinkWrap: true,
-              //       itemBuilder: (context, index) {
-              //         return Recommended(mListings3[index], index);
-              //       }),
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
+                  Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+                ],
+              ),
+              10.height,
+              SizedBox(
+                height: width * 0.55,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: mListings3.length,
+                    itemBuilder: (context, index) {
+                      return Recommended(mListings3[index], index);
+                    }),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

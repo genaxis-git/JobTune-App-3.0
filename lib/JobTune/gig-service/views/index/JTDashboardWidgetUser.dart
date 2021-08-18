@@ -4,7 +4,11 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardWidgetGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTServiceListCategory.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
@@ -465,7 +469,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         ),
       );
     }
-
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: ContainerX(
         mobile: Container(
@@ -555,7 +559,18 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                     }).toList(),
                   ),
                 ),
-                20.height,
+                25.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                  ],
+                ),
+                10.height,
+                SizedBox(
+                    height: width * 0.77,
+                    child: JTNextList()
+                ),
                 Text(' Featured', style: boldTextStyle()).paddingAll(8),
                 Container(
                   height: 500,
@@ -895,6 +910,131 @@ class _ShowsRatingState extends State<ShowsRating> {
         5.width,
         Text('${double.parse(double.parse(widget.show).toStringAsFixed(1))}', style: secondaryTextStyle(size: 12)),
       ],
+    );
+  }
+}
+
+
+class JTNextList extends StatefulWidget {
+  @override
+  _JTNextListState createState() => _JTNextListState();
+}
+
+class _JTNextListState extends State<JTNextList> {
+
+  // functions starts //
+
+  List clocking = [];
+  Future<void> readClocking() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectstandby&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      clocking = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.readClocking();
+  }
+
+  // functions ends //
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        padding: EdgeInsets.all(8),
+        itemCount: clocking == null ? 0 : clocking.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+              width: MediaQuery.of(context).size.width / 1.5,
+              margin: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                      alignment: FractionalOffset.centerLeft,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
+                      )),
+                  Container(
+                    transform: Matrix4.translationValues(0.0, -30.0, 0.0),
+                    margin: EdgeInsets.only(left: 10, right: 10, top: 0),
+                    decoration: BoxDecoration(
+                      color: white,
+                      shape: BoxShape.rectangle,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(color: Colors.grey, blurRadius: 0.5, spreadRadius: 1),
+                      ],
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(clocking[index]["name"], style: primaryTextStyle(fontFamily: fontMedium), maxLines: 2),
+                            SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text("Starts at: ",
+                                  style: TextStyle(
+                                    fontSize: 13.0,
+                                  ),),
+                                Text(" " +clocking[index]["service_start"] + " (" + clocking[index]["package_quantity"]+" Hr)",
+                                  style: TextStyle(
+                                    fontSize: 13.0,
+                                  ),),
+                                InkWell(
+                                  onTap: () async {
+                                    List<Location> locations = await locationFromAddress(clocking[index]["location"]);
+                                    print("coordinate: ");
+                                    print(locations[0].toString().split(",")[0].split(": ")[1]);
+                                    print(locations[0].toString().split(",")[1].split(": ")[1]);
+                                    var latitude = locations[0].toString().split(",")[0].split(": ")[1];
+                                    var longitude = locations[0].toString().split(",")[1].split(": ")[1];
+
+                                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                    if (await canLaunch(googleUrl)) {
+                                      await launch(googleUrl);
+                                    } else {
+                                      throw 'Could not open the map.';
+                                    }
+                                  },
+                                  child: Text(
+                                    "Go",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: fontMedium,
+                                      color: Colors.blueAccent,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ));
+        }
     );
   }
 }

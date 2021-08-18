@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/theme4/models/T4Models.dart';
@@ -62,10 +63,22 @@ class _JTClockingScreenUserState extends State<JTClockingScreenUser> {
 
     return Scaffold(
       backgroundColor: appStore.scaffoldBackground,
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'Clocking'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTAccountScreenUsers()),
+              );
+            }),
+      ),
       body: Container(
         child: Column(
           children: <Widget>[
-            TopBar("Clocking"),
             Expanded(
               child: Container(
                 child: ClockingListing(),
@@ -168,11 +181,9 @@ class _ClockingListingState extends State<ClockingListing> {
                                   InkWell(
                                     onTap: () async {
                                       List<Location> locations = await locationFromAddress(clocking[index]["location"]);
-//                                      var first = addresses.first;
                                       print("coordinate: ");
                                       print(locations[0].toString().split(",")[0].split(": ")[1]);
                                       print(locations[0].toString().split(",")[1].split(": ")[1]);
-//                                      var coordinate = first.coordinates;
                                       var latitude = locations[0].toString().split(",")[0].split(": ")[1];
                                       var longitude = locations[0].toString().split(",")[1].split(": ")[1];
 

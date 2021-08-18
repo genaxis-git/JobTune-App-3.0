@@ -26,6 +26,7 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
+import 'JTVerifyScreenUser.dart';
 
 
 class JTVerifyRecordScreen extends StatefulWidget {
@@ -40,6 +41,8 @@ class JTVerifyRecordScreen extends StatefulWidget {
     required this.outs,
     required this.serviceid,
     required this.provider,
+    required this.actualstart,
+    required this.actualend,
   }) : super(key: key);
   final String timein;
   final String timeout;
@@ -50,6 +53,8 @@ class JTVerifyRecordScreen extends StatefulWidget {
   final String outs;
   final String serviceid;
   final String provider;
+  final String actualstart;
+  final String actualend;
   @override
   _JTVerifyRecordScreenState createState() => _JTVerifyRecordScreenState();
 }
@@ -63,6 +68,14 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
   final ImagePicker _pickerout = ImagePicker();
   File? _imagein;
   File? _imageout;
+
+  @override
+  void didChangeDependencies() {
+    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ widget.imgin, scale:10).image, context);
+    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ widget.imgout).image, context);
+    super.didChangeDependencies();
+  }
+
 
   Future<void> getImage() async{
     final pickerImage = await _pickerin.getImage(source: ImageSource.camera);
@@ -106,7 +119,55 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
   Future<void> sendVerifyin(status) async {
     if(status == "Absent") {
-      toast("Please wait for next 1 hour to confirm Absent");
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyy-MM-dd kk:mm:ss.000').format(now);
+
+      final differenceDays = DateTime.parse(formattedDate).difference(DateTime.parse(widget.actualstart)).inDays;
+      final differenceTimes = DateTime.parse(formattedDate).difference(DateTime.parse(widget.actualstart)).inMinutes;
+      print(differenceTimes);
+      if(differenceDays < 0){
+        toast("Please wait and proceed action on " + DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.actualstart)));
+      }
+      else{
+        if(differenceTimes < 0) {
+          toast("Please wait and proceed action on " + DateFormat('kk:mm:ss').format(DateTime.parse(widget.actualstart)));
+        }
+        else if(differenceTimes == 0){
+          toast("Please wait for next 1 hour to confirm Absent");
+        }
+        else if(differenceTimes >= 1) {
+          http.get(
+              Uri.parse(
+                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusin&id=" + widget.bookid
+                      + "&status=" + status
+              ),
+              headers: {"Accept": "application/json"}
+          );
+
+          http.get(
+              Uri.parse(
+                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusout&id=" + widget.bookid
+                      + "&status=" + status
+              ),
+              headers: {"Accept": "application/json"}
+          );
+
+          toast("Your respond for both clocking has been sent.");
+
+          setState(() {
+            displaybtnin = status;
+            displaybtnout = status;
+          });
+
+          showInDialog(context,
+              child: WriteReviewDialog(
+                bid: widget.bookid,
+                sid: widget.serviceid,
+                provider: widget.provider,
+              ),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+      }
     }
     else {
       http.get(
@@ -117,7 +178,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
           headers: {"Accept": "application/json"}
       );
 
-      toast("Your respond have been sent.");
+      toast("Your respond has been sent.");
 
       setState(() {
         displaybtnin = status;
@@ -127,7 +188,55 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
   Future<void> sendVerifyout(status) async {
     if(status == "Absent") {
-      toast("Please wait for next 1 hour to confirm Absent");
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyy-MM-dd kk:mm:ss.000').format(now);
+
+      final differenceDays = DateTime.parse(formattedDate).difference(DateTime.parse(widget.actualstart)).inDays;
+      final differenceTimes = DateTime.parse(formattedDate).difference(DateTime.parse(widget.actualstart)).inMinutes;
+      print(differenceTimes);
+      if(differenceDays < 0){
+        toast("Please wait and proceed action on " + DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.actualstart)));
+      }
+      else{
+        if(differenceTimes < 0) {
+          toast("Please wait and proceed action on " + DateFormat('kk:mm:ss').format(DateTime.parse(widget.actualstart)));
+        }
+        else if(differenceTimes == 0){
+          toast("Please wait for next 1 hour to confirm Absent");
+        }
+        else if(differenceTimes >= 1) {
+          http.get(
+              Uri.parse(
+                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusin&id=" + widget.bookid
+                      + "&status=" + status
+              ),
+              headers: {"Accept": "application/json"}
+          );
+
+          http.get(
+              Uri.parse(
+                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusout&id=" + widget.bookid
+                      + "&status=" + status
+              ),
+              headers: {"Accept": "application/json"}
+          );
+
+          toast("Your respond for both clocking has been sent.");
+
+          setState(() {
+            displaybtnin = status;
+            displaybtnout = status;
+          });
+
+          showInDialog(context,
+              child: WriteReviewDialog(
+                bid: widget.bookid,
+                sid: widget.serviceid,
+                provider: widget.provider,
+              ),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+      }
     }
     else {
       http.get(
@@ -138,11 +247,18 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
           headers: {"Accept": "application/json"}
       );
 
+      http.get(
+          Uri.parse(
+              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatebooking&id=" + widget.bookid
+          ),
+          headers: {"Accept": "application/json"}
+      );
+
       setState(() {
         displaybtnout = status;
       });
 
-      toast("Your respond have been sent.");
+      toast("Your respond has been sent.");
 
       showInDialog(context,
           child: WriteReviewDialog(
@@ -207,7 +323,11 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
             leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => JTVerifyScreenUser()),
+                  );
                 }
             ),
             bottom: TabBar(
@@ -311,10 +431,26 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                             ),
                           ),
                           (displaytime == "0000-00-00 00:00:00")
-                              ? (_imagein != null)
-                              ? Padding(
+                          ? (_imagein != null)
+                            ? Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Image.file(_imagein!),
+                          )
+                            : (displaybtnin == "Absent")
+                              ? Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Container(
+                              height: 200,
+                              color: Colors.white,
+                              child: Center(
+                                child: Text(
+                                  "Absent has been confirmed",
+                                  style: TextStyle(
+                                      color: Colors.black54
+                                  ),
+                                ),
+                              ),
+                            ),
                           )
                               : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -331,14 +467,14 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                               ),
                             ),
                           )
-                              : (_imagein != null)
-                              ? Padding(
+                          : (_imagein != null)
+                            ? Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Image.file(_imagein!),
                           )
-                              : Padding(
+                            : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ displaypicin),
+                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ widget.imgin),
                           ),
                           SizedBox(height: 20,),
                         ],
@@ -346,39 +482,40 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                     ),
                     (displaytime != "0000-00-00 00:00:00")
                     ? (displaybtnin == "")
-                    ? Positioned(
-                      bottom: 0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            height: 50,
-                            width: context.width() / 2,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
-                            child: Text('Verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                          ).onTap(() {
-                            var status = "Verified";
-                            sendVerifyin(status);
-                          }),
-                          Container(
-                            height: 50,
-                            width: context.width() / 2,
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
-                            child: Text('Not verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                          ).onTap(() {
-                            var status = "Not Verified";
-                            sendVerifyin(status);
-                          }),
-
-                        ],
-                      ),
-                    )
-                    : Container()
-                    : Positioned(
+                      ? Positioned(
+                        bottom: 0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: context.width() / 2,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
+                              child: Text('Verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                            ).onTap(() {
+                              var status = "Verified";
+                              sendVerifyin(status);
+                            }),
+                            Container(
+                              height: 50,
+                              width: context.width() / 2,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+                              child: Text('Not verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                            ).onTap(() {
+                              var status = "Not Verified";
+                              sendVerifyin(status);
+                            }),
+                          ],
+                        ),
+                      )
+                      : Container()
+                    : (displaybtnin == "Absent")
+                      ? Container()
+                      : Positioned(
                       bottom: 0,
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -396,7 +533,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                           }),
                         ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -486,7 +623,23 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Image.file(_imageout!),
                           )
-                              : Padding(
+                              : (displaybtnout == "Absent")
+                                ? Padding(
+                            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Container(
+                              height: 200,
+                              color: Colors.white,
+                              child: Center(
+                                child: Text(
+                                  "Absent has been confirmed",
+                                  style: TextStyle(
+                                      color: Colors.black54
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                                : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Container(
                               height: 200,
@@ -508,15 +661,69 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                           )
                               : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ displaypicout),
+                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ widget.imgout),
                           ),
                           SizedBox(height: 20,),
                         ],
                       ),
                     ),
-                    (displaytimeout != "0000-00-00 00:00:00")
+                    (displaytimeout != "0000-00-00 00:00:00") //ada clocking
                     ? (displaybtnout == "")
-                    ? Positioned(
+                      ? Positioned(
+                        bottom: 0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: context.width() / 2,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
+                              child: Text('Verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                            ).onTap(() {
+                              var status = "Verified";
+                              sendVerifyout(status);
+                            }),
+                            Container(
+                              height: 50,
+                              width: context.width() / 2,
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+                              child: Text('Not verify', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                            ).onTap(() {
+                              var status = "Not Verified";
+                              sendVerifyout(status);
+                            }),
+
+                          ],
+                        ),
+                      )
+                      : Container()
+                    : (displaytime == "0000-00-00 00:00:00")
+                        ? (displaybtnout == "Absent")
+                          ? Container()
+                          : Positioned(
+                              bottom: 0,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Container(
+                                    height: 50,
+                                    width: context.width(),
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+                                    child: Text('Absent', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+                                  ).onTap(() {
+                                    var status = "Absent";
+                                    sendVerifyout(status);
+                                  }),
+                                ],
+                              ),
+                            )
+                        : Positioned(
                       bottom: 0,
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
@@ -544,26 +751,6 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                             sendVerifyout(status);
                           }),
 
-                        ],
-                      ),
-                    )
-                    : Container()
-                    : Positioned(
-                      bottom: 0,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            height: 50,
-                            width: context.width(),
-                            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
-                            child: Text('Absent', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
-                          ).onTap(() {
-                            var status = "Absent";
-                            sendVerifyout(status);
-                          }),
                         ],
                       ),
                     ),
@@ -611,13 +798,6 @@ class _WriteReviewDialogState extends State<WriteReviewDialog> {
                 + "&rating=" + rate
                 + "&comment=" + comm
                 + "&from=" + lgid
-        ),
-        headers: {"Accept": "application/json"}
-    );
-
-    http.get(
-        Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatebooking&id=" + widget.bid
         ),
         headers: {"Accept": "application/json"}
     );

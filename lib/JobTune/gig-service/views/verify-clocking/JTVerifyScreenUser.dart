@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/theme4/models/T4Models.dart';
@@ -63,10 +64,22 @@ class _JTVerifyScreenUserState extends State<JTVerifyScreenUser> {
 
     return Scaffold(
       backgroundColor: appStore.scaffoldBackground,
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'Verify Clocking'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTAccountScreenUser()),
+              );
+            }),
+      ),
       body: Container(
         child: Column(
           children: <Widget>[
-            TopBar("Verify Clocking"),
             Expanded(
               child: Container(
                 child: ClockingListing(),
@@ -247,6 +260,8 @@ class _ClockingListingState extends State<ClockingListing> {
                                     outs: clocking[index]["out_status"],
                                     serviceid: clocking[index]["service_id"],
                                     provider: clocking[index]["provider_id"],
+                                    actualstart: clocking[index]["service_start"],
+                                    actualend: clocking[index]["service_end"],
                                   )),
                             );
                           },
