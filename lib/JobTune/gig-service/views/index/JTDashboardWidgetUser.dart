@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:geocoding/geocoding.dart';
+import 'package:prokit_flutter/main/utils/AppImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
@@ -63,6 +64,22 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
     }
   }
 
+  List clocking = [];
+  Future<void> readClocking() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectstandby&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      clocking = json.decode(response.body);
+    });
+  }
+
   // functions ends //
 
 
@@ -70,6 +87,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   void initState() {
     super.initState();
     this.readCategory();
+    this.readClocking();
 //    init();
   }
 
@@ -560,17 +578,23 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                   ),
                 ),
                 25.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                (clocking.length > 0)
+                ? Column(
                   children: [
-                    Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                      ],
+                    ),
+                    10.height,
+                    SizedBox(
+                        height: width * 0.58,
+                        child: JTNextList()
+                    ),
                   ],
-                ),
-                10.height,
-                SizedBox(
-                    height: width * 0.77,
-                    child: JTNextList()
-                ),
+                )
+                : Container(),
                 Text(' Featured', style: boldTextStyle()).paddingAll(8),
                 Container(
                   height: 500,
@@ -956,85 +980,361 @@ class _JTNextListState extends State<JTNextList> {
         padding: EdgeInsets.all(8),
         itemCount: clocking == null ? 0 : clocking.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-              width: MediaQuery.of(context).size.width / 1.5,
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                      alignment: FractionalOffset.centerLeft,
-                      child: ClipRRect(
+          return GestureDetector(
+            onTap: (){
+              showInDialog(context,
+                  child: BookingDetail(
+                    bid: clocking[index]["booking_id"],
+                    name: clocking[index]["name"],
+                    packname: clocking[index]["package_name"],
+                    start: clocking[index]["service_start"],
+                    hr: clocking[index]["package_quantity"],
+                    desc: clocking[index]["description"],
+                    address: clocking[index]["location"],
+                    guest: clocking[index]["first_name"] + " " + clocking[index]["last_name"],
+                  ),
+                  backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+            },
+            child: Container(
+                width: MediaQuery.of(context).size.width / 1.5,
+                margin: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        alignment: FractionalOffset.centerLeft,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
+                        )),
+                    Container(
+                      transform: Matrix4.translationValues(0.0, -30.0, 0.0),
+                      margin: EdgeInsets.only(left: 10, right: 10, top: 0),
+                      decoration: BoxDecoration(
+                        color: white,
+                        shape: BoxShape.rectangle,
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(color: Colors.grey, blurRadius: 0.5, spreadRadius: 1),
+                        ],
                         borderRadius: BorderRadius.circular(12.0),
-                        child: Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
-                      )),
-                  Container(
-                    transform: Matrix4.translationValues(0.0, -30.0, 0.0),
-                    margin: EdgeInsets.only(left: 10, right: 10, top: 0),
-                    decoration: BoxDecoration(
-                      color: white,
-                      shape: BoxShape.rectangle,
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(color: Colors.grey, blurRadius: 0.5, spreadRadius: 1),
-                      ],
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(clocking[index]["name"], style: primaryTextStyle(fontFamily: fontMedium), maxLines: 2),
-                            SizedBox(height: 5),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text("Starts at: ",
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                  ),),
-                                Text(" " +clocking[index]["service_start"] + " (" + clocking[index]["package_quantity"]+" Hr)",
-                                  style: TextStyle(
-                                    fontSize: 13.0,
-                                  ),),
-                                InkWell(
-                                  onTap: () async {
-                                    List<Location> locations = await locationFromAddress(clocking[index]["location"]);
-                                    print("coordinate: ");
-                                    print(locations[0].toString().split(",")[0].split(": ")[1]);
-                                    print(locations[0].toString().split(",")[1].split(": ")[1]);
-                                    var latitude = locations[0].toString().split(",")[0].split(": ")[1];
-                                    var longitude = locations[0].toString().split(",")[1].split(": ")[1];
-
-                                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-                                    if (await canLaunch(googleUrl)) {
-                                      await launch(googleUrl);
-                                    } else {
-                                      throw 'Could not open the map.';
-                                    }
-                                  },
-                                  child: Text(
-                                    "Go",
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(clocking[index]["name"], style: primaryTextStyle(fontFamily: fontMedium), maxLines: 2),
+                              SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("Starts at: "+clocking[index]["service_start"] + " (" + clocking[index]["package_quantity"]+" Hr)",
                                     style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: fontMedium,
-                                      color: Colors.blueAccent,
+                                      fontSize: 13.0,
+                                    ),),
+                                  InkWell(
+                                    onTap: () async {
+                                      List<Location> locations = await locationFromAddress(clocking[index]["location"]);
+                                      print("coordinate: ");
+                                      print(locations[0].toString().split(",")[0].split(": ")[1]);
+                                      print(locations[0].toString().split(",")[1].split(": ")[1]);
+                                      var latitude = locations[0].toString().split(",")[0].split(": ")[1];
+                                      var longitude = locations[0].toString().split(",")[1].split(": ")[1];
+
+                                      String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                                      if (await canLaunch(googleUrl)) {
+                                        await launch(googleUrl);
+                                      } else {
+                                        throw 'Could not open the map.';
+                                      }
+                                    },
+                                    child: Text(
+                                      "Go",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: fontMedium,
+                                        color: Colors.blueAccent,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ));
+                  ],
+                ))
+          );
         }
+    );
+  }
+}
+
+class BookingDetail extends StatefulWidget {
+  const BookingDetail({
+    Key? key,
+    required this.bid,
+    required this.name,
+    required this.packname,
+    required this.start,
+    required this.hr,
+    required this.desc,
+    required this.address,
+    required this.guest,
+
+  }) : super(key: key);
+  final String bid;
+  final String name;
+  final String packname;
+  final String start;
+  final String hr;
+  final String desc;
+  final String address;
+  final String guest;
+
+  @override
+  _BookingDetailState createState() => _BookingDetailState();
+}
+
+class _BookingDetailState extends State<BookingDetail> {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Booking Details', style: boldTextStyle(size: 18)),
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              GestureDetector(
+                onTap: () {
+                  finish(context);
+                },
+                child: Container(padding: EdgeInsets.all(4), alignment: Alignment.centerRight),
+              ),
+              8.height,
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "Booking ID: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        "JT"+ widget.bid,
+                      ),
+                    ],
+                  ),
+                  5.height,
+                  Row(
+                    children: [
+                      Text(
+                        "Service: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        widget.name,
+                      ),
+                    ],
+                  ),
+                  (widget.packname == widget.name)
+                  ? Container()
+                  : Column(
+                    children: [
+                      5.height,
+                      Row(
+                        children: [
+                          Text(
+                            "Package: ",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          Text(
+                            widget.packname,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  5.height,
+                  (widget.packname == widget.name)
+                  ? Row(
+                    children: [
+                      Text(
+                        "Start: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        widget.start + " ( " + widget.hr + " Hr )",
+                      ),
+                    ],
+                  )
+                  : Row(
+                    children: [
+                      Text(
+                        "Start: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        widget.start + " ( est: " + widget.hr + " Hr )",
+                      ),
+                    ],
+                  ),
+                  25.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Customer Details', style: boldTextStyle(size: 18)),
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    children: [
+                      Text(
+                        "Name: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        widget.guest,
+                      ),
+                    ],
+                  ),
+                  5.height,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Address: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        widget.address.replaceAll(",",",\n"),
+                      ),
+                    ],
+                  ),
+                  (widget.desc != "")
+                  ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      15.height,
+                      Text(
+                        "Remarks: ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(widget.desc)
+                          )
+                        ],
+                      )
+                    ],
+                  )
+                  : Container(),
+                ],
+              ),
+              30.height,
+              GestureDetector(
+                onTap: () async {
+                  finish(context);
+                  List<Location> locations = await locationFromAddress(widget.address);
+                  print("coordinate: ");
+                  print(locations[0].toString().split(",")[0].split(": ")[1]);
+                  print(locations[0].toString().split(",")[1].split(": ")[1]);
+                  var latitude = locations[0].toString().split(",")[0].split(": ")[1];
+                  var longitude = locations[0].toString().split(",")[1].split(": ")[1];
+
+                  String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+                  if (await canLaunch(googleUrl)) {
+                    await launch(googleUrl);
+                  } else {
+                    throw 'Could not open the map.';
+                  }
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.all(Radius.circular(5))),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Go Now", style: boldTextStyle(color: white)),
+                        5.width,
+                        Icon(Icons.location_pin, color: Colors.white, size: 16)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              10.height,
+              GestureDetector(
+                onTap: () {
+                  finish(context);
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: Center(
+                    child: Text("Close", style: boldTextStyle(color: white)),
+                  ),
+                ),
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

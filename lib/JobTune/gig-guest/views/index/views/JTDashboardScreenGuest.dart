@@ -15,9 +15,31 @@ class JTDashboardScreenGuest extends StatefulWidget {
 }
 
 class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
+  String greet = "";
+
+  void greeting() {
+    var hour = DateTime.now().hour;
+    if (hour >= 5 && hour < 12) {
+      setState(() {
+        greet = "Good Morning";
+      });
+    }
+    if (hour >= 12 && hour < 17) {
+      setState(() {
+        greet = "Good Afternoon";
+      });
+    }
+    else{
+      setState(() {
+        greet = "Good Evening";
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    greeting();
     init();
   }
 
@@ -37,7 +59,7 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             backgroundColor: appStore.appBarColor,
-            title: appBarTitleWidget(context, 'Good Morning'),
+            title: appBarTitleWidget(context, greet),
           ),
           drawer: JTDrawerWidgetGuest(),
           body: JTDashboardWidgetGuest(),
