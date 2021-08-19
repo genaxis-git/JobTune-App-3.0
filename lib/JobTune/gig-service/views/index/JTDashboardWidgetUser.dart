@@ -572,7 +572,12 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                           ],
                         ),
                       ).onTap(() {
-                        DTCategoryDetailScreen().launch(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => JTServiceListCategory(
+                            searchkey: e.name!,
+                          )),
+                        );
                       });
                     }).toList(),
                   ),

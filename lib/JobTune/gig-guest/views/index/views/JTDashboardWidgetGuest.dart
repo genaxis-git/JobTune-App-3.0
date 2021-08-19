@@ -10,19 +10,14 @@ import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
-import 'package:prokit_flutter/dashboard/model/db1/Db1Model.dart';
-import 'package:prokit_flutter/dashboard/utils/DbDataGenerator.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTSearchScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSignInScreen.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
@@ -49,11 +44,54 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   // functions starts //
 
+  List profile = [];
+  Future<void> checkProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    if(lgid != "null") {
+      http.Response response = await http.get(
+          Uri.parse(
+              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+          headers: {"Accept": "application/json"}
+      );
+
+      this.setState(() {
+        profile = json.decode(response.body);
+      });
+
+      print(profile[0]["city"]+profile[0]["state"]+profile[0]["country"]);
+      checkCategory(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+    }
+    else {
+      readCategory();
+    }
+  }
+
   List category = [];
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectavailablecategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+
+    for(var m=0;m<category.length;m++) {
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+    }
+  }
+
+  Future<void> checkCategory(city,state,country) async {
+    http.Response response = await http.get(
+        Uri.parse(
+            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectavailablecategory&city="+city
+              +"&state="+state
+                +"&country="+country
+        ),
         headers: {"Accept": "application/json"}
     );
 
@@ -72,7 +110,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   void initState() {
     super.initState();
     mListings3 = getJobList();
-    this.readCategory();
+    this.checkProfile();
     init();
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
       if (_currentPage < 7) {
@@ -536,24 +574,6 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                   ],
                 ),
                 15.height,
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     Text(' New Vacancies', style: boldTextStyle()).paddingAll(8),
-                //     Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
-                //   ],
-                // ),
-                // 10.height,
-                // SizedBox(
-                //   height: width * 0.55,
-                //   child: ListView.builder(
-                //       scrollDirection: Axis.horizontal,
-                //       itemCount: mListings3.length,
-                //       shrinkWrap: true,
-                //       itemBuilder: (context, index) {
-                //         return Recommended(mListings3[index], index);
-                //       }),
-                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
