@@ -725,11 +725,20 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(servicelist[index]["name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(servicelist[index]["name"],
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                            fontSize: 17
+                        )
+                    ),
                     3.height,
                     DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                    15.height,
+                    13.height,
                     DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                    5.height,
+                    Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
                   ],
                 ).paddingAll(8).expand(),
               ],

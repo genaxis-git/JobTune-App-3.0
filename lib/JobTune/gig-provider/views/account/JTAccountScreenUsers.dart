@@ -59,13 +59,12 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         profile[0]["industry_type"] == "" ||
         profile[0]["phone_no"] == "" ||
         profile[0]["address"] == "" ||
-        profile[0]["city"] == "" ||
-        profile[0]["state"] == "" ||
-        profile[0]["postcode"] == "0" ||
-        profile[0]["country"] == "" ||
+        profile[0]["bank_type"] == "" ||
+        profile[0]["bank_acc_no"] == "" ||
         profile[0]["profile_pic"] == "") {
-      // alert:  please update
-      print("update profile");
+      showInDialog(context,
+          child: AlertCompleteProfile(),
+          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
     } else {
       Navigator.push(
         context,
@@ -313,5 +312,133 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
                 ),
               ),
             ));
+  }
+}
+
+class AlertCompleteProfile extends StatefulWidget {
+  @override
+  _AlertCompleteProfileState createState() => _AlertCompleteProfileState();
+}
+
+class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/mobile/warn.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Please complete your profile.",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Please make sure your details such as name, industry type, phone number, address, bank information, and profile picture has been completed by you before proceed with posting..",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Later", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JTProfileScreenProvider()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Go to Profile", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -5,10 +5,15 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
@@ -51,6 +56,11 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   String email = "";
   String fullname = "";
   String address = "";
+  String telno = "";
+  String nric = "";
+  String gender = "";
+  String race = "";
+  String pic = "";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -69,6 +79,11 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       email = lgid;
       fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
       address = profile[0]["address"] ;
+      telno = profile[0]["phone_no"] ;
+      gender = profile[0]["gender"] ;
+      race = profile[0]["race"] ;
+      nric = profile[0]["nric"] ;
+      pic = profile[0]["profile_pic"] ;
     });
   }
 
@@ -357,281 +372,42 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         child: Text('Book Now', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
+        if(fullname != "" || telno != "" || nric != "" || gender != "" || race != "" || address != "" || pic != "") {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JTBookingFormScreen(
+                  id: widget.id,
+                  proid: proid,
+                  img: img,
+                  min: min.toString(),
+                  max: max.toString(),
+                ),
+              ));
+        }
+        else {
+          showInDialog(context,
+              child: AlertCompleteProfile(),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+      });
+    }
+
+    Widget loginBtn() {
+      return Container(
+        height: 50,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        alignment: Alignment.center,
+        width: context.width() / 2,
+        decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
+        child: Text('Login to Book', style: boldTextStyle(color: white)),
+      ).onTap(() {
+        // Do your logic
         Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => JTBookingFormScreen(
-                id: widget.id,
-                proid: proid,
-              ),
-        ));
-//        showModalBottomSheet(
-//          context: context,
-//          isScrollControlled: true,
-//          backgroundColor: appStore.scaffoldBackground,
-//          shape: RoundedRectangleBorder(
-//            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-//          ),
-//          builder: (builder) {
-//            return SingleChildScrollView(
-//              padding: EdgeInsets.all(16),
-//              child: Container(
-//                child: Column(
-//                    crossAxisAlignment: CrossAxisAlignment.start,
-//                    children: [
-//                      Text('Booking Form', style: boldTextStyle(size: 24)),
-//                      30.height,
-//                      TextFormField(
-//                        controller: bookname,
-//                        style: primaryTextStyle(),
-//                        decoration: InputDecoration(
-//                          labelText: 'Full Name',
-//                          contentPadding: EdgeInsets.all(16),
-//                          labelStyle: secondaryTextStyle(),
-//                          border: OutlineInputBorder(),
-//                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                        ),
-//                        keyboardType: TextInputType.name,
-//                        textInputAction: TextInputAction.next,
-//                      ),
-//                      16.height,
-//                      TextFormField(
-//                        controller: bookemail,
-//                        style: primaryTextStyle(),
-//                        decoration: InputDecoration(
-//                          labelText: 'Email',
-//                          contentPadding: EdgeInsets.all(16),
-//                          labelStyle: secondaryTextStyle(),
-//                          border: OutlineInputBorder(),
-//                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                        ),
-//                        keyboardType: TextInputType.name,
-//                        textInputAction: TextInputAction.next,
-//                      ),
-//                      16.height,
-//                      TextFormField(
-//                        controller: bookphone,
-//                        style: primaryTextStyle(),
-//                        decoration: InputDecoration(
-//                          labelText: 'Phone No.',
-//                          contentPadding: EdgeInsets.all(16),
-//                          labelStyle: secondaryTextStyle(),
-//                          border: OutlineInputBorder(),
-//                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                        ),
-//                        keyboardType: TextInputType.name,
-//                        textInputAction: TextInputAction.next,
-//                      ),
-//                      16.height,
-//                      TextFormField(
-//                        controller: bookaddress,
-//                        maxLines: 2,
-//                        style: primaryTextStyle(),
-//                        decoration: InputDecoration(
-//                          labelText: 'Full Address',
-//                          contentPadding: EdgeInsets.all(16),
-//                          labelStyle: secondaryTextStyle(),
-//                          border: OutlineInputBorder(),
-//                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                        ),
-//                        keyboardType: TextInputType.name,
-//                        textInputAction: TextInputAction.next,
-//                      ),
-//                      16.height,
-//                      TextFormField(
-//                        controller: bookdesc,
-//                        style: primaryTextStyle(),
-//                        decoration: InputDecoration(
-//                          labelText: 'Description (optional)',
-//                          contentPadding: EdgeInsets.all(16),
-//                          labelStyle: secondaryTextStyle(),
-//                          border: OutlineInputBorder(),
-//                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                        ),
-//                        keyboardType: TextInputType.name,
-//                        //                          validator: (s) {
-//                        //                            if (s!.trim().isEmpty) return errorThisFieldRequired;
-//                        //                            if (!s.trim().validateEmail()) return 'Email is invalid';
-//                        //                            return null;
-//                        //                          },
-//                        //                          onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
-//                        textInputAction: TextInputAction.next,
-//                      ),
-//                      16.height,
-//                      Card(
-//                          elevation: 4,
-//                          child: ListTile(
-//                            onTap: () {
-//                              _selectDate(context);
-//                            },
-//                            title: Text(
-//                              'Select your Booking date',
-//                              style: primaryTextStyle(),
-//                            ),
-//                            subtitle: Text(
-//                              "${selectedDate.toLocal()}".split(' ')[0],
-//                              style: secondaryTextStyle(),
-//                            ),
-//                            trailing: IconButton(
-//                              icon: Icon(
-//                                Icons.date_range,
-//                                color: appStore.iconColor,
-//                              ),
-//                              onPressed: () {
-//                                _selectDate(context);
-//                              },
-//                            ),
-//                          )),
-//                      16.height,
-//                      Text(
-//                        "   Select Starting time:-",
-//                        style: primaryTextStyle(),
-//                        maxLines: 2,
-//                      ),
-//                      10.height,
-//                      Row(
-//                        children: <Widget>[
-//                          Expanded(
-//                            child: DropdownButtonFormField<String>(
-//                              decoration: InputDecoration(
-//                                labelText: 'Hour',
-//                                contentPadding: EdgeInsets.all(16),
-//                                labelStyle: secondaryTextStyle(),
-//                                border: OutlineInputBorder(),
-//                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                              ),
-//                              value: hourcontroller,
-//                              items:
-//                              <String>
-//                              ['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
-//                                  .map((label) => DropdownMenuItem(
-//                                child: Text(label.toString()),
-//                                value: label,
-//                              ))
-//                                  .toList(),
-//                              onChanged: (value) {
-//
-//                              },
-//                            ),
-//                          ),
-//                          SizedBox(width: 14),
-//                          Expanded(
-//                            child: DropdownButtonFormField<String>(
-//                              decoration: InputDecoration(
-//                                labelText: 'Min',
-//                                contentPadding: EdgeInsets.all(16),
-//                                labelStyle: secondaryTextStyle(),
-//                                border: OutlineInputBorder(),
-//                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                              ),
-//                              value: mincontroller,
-//                              items:
-//                              <String>
-//                              ['00','15','30','45']
-//                                  .map((label) => DropdownMenuItem(
-//                                child: Text(label.toString()),
-//                                value: label,
-//                              ))
-//                                  .toList(),
-//                              onChanged: (value) {
-//                                setState(() {
-//
-//                                });
-//                              },
-//                            ),
-//                          ),
-//                        ],
-//                      ),
-//                      16.height,
-//                      Row(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-//                        crossAxisAlignment: CrossAxisAlignment.center,
-//                        children: <Widget>[
-//                          (package == true)
-//                              ? Expanded(
-//                            child: DropdownButtonFormField<int>(
-//                              decoration: InputDecoration(
-//                                labelText: 'Hour',
-//                                contentPadding: EdgeInsets.all(16),
-//                                labelStyle: secondaryTextStyle(),
-//                                border: OutlineInputBorder(),
-//                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-//                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-//                              ),
-//                              value: _hourController,
-//                              items:
-//                              [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
-//                                  .map((label) => DropdownMenuItem(
-//                                child: Text(label.toString()),
-//                                value: label,
-//                              ))
-//                                  .toList(),
-//                              onChanged: (value) {
-//                                setState(() {
-//
-//                                });
-//                              },
-//                            ),
-//                          )
-//                              : Container(),
-//
-////                        Expanded(
-////                                child: DropdownButtonFormField<dynamic>(
-////                                  isExpanded: true,
-////                                  decoration: InputDecoration(
-////                                    labelText: "Choose package",
-////                                    labelStyle: TextStyle(fontSize: 14,color: Colors.grey.shade400),
-////                                    enabledBorder: OutlineInputBorder(
-////                                      borderRadius: BorderRadius.circular(20),
-////                                      borderSide: BorderSide(
-////                                        color: Colors.grey.shade300,
-////                                      ),
-////                                    ),
-////                                    focusedBorder: OutlineInputBorder(
-////                                        borderRadius: BorderRadius.circular(20),
-////                                        borderSide: BorderSide(
-////                                          color: Colors.blue,
-////                                        )
-////                                    ),
-////                                  ),
-////                                  value: packagecontroller,
-////                                  items:
-////                                  choices.map((label) => DropdownMenuItem(
-////                                    child: Text(label.toString()),
-////                                    value: label,
-////                                  ))
-////                                      .toList(),
-////                                  onChanged: (value) {
-////                                    setState(() {
-////
-////                                    });
-////                                  },
-////                                ),
-////                              ),
-//                        ],
-//                      ),
-//                      16.height,
-//                      Container(
-//                        alignment: Alignment.center,
-//                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-//                        decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
-//                        child: Text('Pay Now', style: boldTextStyle(color: white, size: 18)),
-//                      ).onTap(() {
-////                          DTSignUpScreen().launch(context);
-//                      }),
-//                    ]
-//                ),
-//              ),
-//            );
-//          },
-//        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => JTSignInScreen(),
+            ));
       });
     }
 
@@ -640,12 +416,14 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         mainAxisSize: MainAxisSize.max,
         children: [
           checkCalendar(),
-          buyNowBtn(),
+          (email != "null")
+          ? buyNowBtn()
+          : loginBtn(),
 
         ],
       );
     }
-    print(proid);
+    print("email"+email);
     return Scaffold(
       appBar: JTappBar(context, 'Detail'),
       drawer: JTDrawerWidgetUser(),
@@ -748,23 +526,29 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          (fullname == "" && address == "")
+                          ? Container()
+                          : Column(
                             children: [
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('Please come to', style: primaryTextStyle()),
-                                  10.width,
-                                  Text(fullname, style: boldTextStyle()).expand(),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Please come to', style: primaryTextStyle()),
+                                      10.width,
+                                      Text(fullname, style: boldTextStyle()).expand(),
+                                    ],
+                                  ).expand(),
                                 ],
-                              ).expand(),
+                              ),
+                              4.height,
+                              Text(address, style: secondaryTextStyle()),
+                              16.height,
+                              Divider(height: 0),
                             ],
                           ),
-                          4.height,
-                          Text(address, style: secondaryTextStyle()),
-                          16.height,
-                          Divider(height: 0),
                           Padding(
                             padding: EdgeInsets.fromLTRB(5, 20, 10, 30),
                             child: Text(
@@ -1132,4 +916,132 @@ void mMoreOfferBottomSheet(BuildContext aContext) {
       );
     },
   );
+}
+
+class AlertCompleteProfile extends StatefulWidget {
+  @override
+  _AlertCompleteProfileState createState() => _AlertCompleteProfileState();
+}
+
+class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/mobile/warn.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Please complete your profile.",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Please make sure your details such as name, phone number, NRIC Number, gender, race, address, and profile picture has been completed by you before proceed with booking..",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Later", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JTProfileScreenUser()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Go to Profile", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

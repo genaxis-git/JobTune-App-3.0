@@ -50,7 +50,7 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
     });
 
     setState(() {
-      bankno = TextEditingController(text: profile[0]["bank_type"]);
+      bankno = TextEditingController(text: profile[0]["bank_acc_no"]);
       if(profile[0]["bank_type"] == ""){
         selectedIndexBank = 'Bank Name..';
       }

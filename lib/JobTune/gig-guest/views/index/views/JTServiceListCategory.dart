@@ -241,20 +241,30 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
               20.height,
               Text(' Services for Category ' + widget.searchkey, style: boldTextStyle()).paddingAll(8),
               Container(
-                height: MediaQuery.of(context).size.height - 360,
+                height: MediaQuery.of(context).size.height - 420,
                   child: JTServiceListUser(searchkey: widget.searchkey)
               ),
               10.height,
               Column(
                 children: [
+                  Image.network(
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/mobile/filter.jpg",
+                      width: 250
+                  ),
                   Text(
-                    " We have more suggestions that may attract your interest.\n\nLet's start explore and browse together.",
+                    " We have more suggestions that may attract your interest. Let's start explore and browse together.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w900
                     ),
-                  ).paddingAll(8),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
                       JTDashboardSreenUser().launch(context, isNewTask: true);
@@ -482,9 +492,9 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                           ),
                           3.height,
                           DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                          10.height,
+                          13.height,
                           DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                          7.height,
+                          5.height,
                           Text(servicelist[index]["location"], style: secondaryTextStyle(size: 14)),
                         ],
                       ).paddingAll(8).expand(),

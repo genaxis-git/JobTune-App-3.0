@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -17,9 +19,15 @@ class JTBookingFormScreen extends StatefulWidget {
     Key? key,
     required this.id,
     required this.proid,
+    required this.img,
+    required this.min,
+    required this.max,
   }) : super(key: key);
   final String id;
   final String proid;
+  final String img;
+  final String min;
+  final String max;
   @override
   _JTBookingFormScreenState createState() => _JTBookingFormScreenState();
 }
@@ -313,20 +321,14 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                      height: 100,
-                      width: 100,
-                      child: Image.asset(
-                        'images/dashboard/ic_chair2.jpg',
-                        fit: BoxFit.fitHeight,
-                        height: 180,
-                        width: context.width(),
-                      )
-                    // Image.network(
-                    //   data.image!,
-                    //   fit: BoxFit.cover,
-                    //   height: 100,
-                    //   width: 100,
-                    // ).cornerRadiusWithClipRRect(8),
+                    height: 100,
+                    width: 100,
+                    child: Image.network(
+                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + widget.img,
+                      fit: BoxFit.fitHeight,
+                      height: 180,
+                      width: context.width(),
+                    )
                   ),
                   12.width,
                   Column(
@@ -340,11 +342,28 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                           overflow: TextOverflow.ellipsis
                       ),
                       4.height,
-                      Row(
+                      (by == "Hour")
+                      ? Row(
                         children: [
                           JTpriceWidget(double.parse(rate)),
                         ],
-                      ),
+                      )
+                      : (selectedIndexPackage == "Choose package..")
+                        ? (min != max)
+                          ? Row(
+                            children: [
+                              JTpriceWidget(double.parse(widget.min)),
+                              Text(
+                                " - ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              JTpriceWidget(double.parse(widget.max)),
+                            ],
+                          )
+                          : JTpriceWidget(double.parse(widget.min))
+                        : JTpriceWidget(double.parse(selectedIndexPackage.toString().split("|")[1].split(" ")[2])),
                       8.height,
                     ],
                   ).expand(),
@@ -358,28 +377,26 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        child: Card(
-                            elevation: 1,
-                            child: ListTile(
-                              onTap: () {
-                                _selectTimeIN(context);
-                              },
-                              title: Text(
-                                'Start Shift',
-                                style: primaryTextStyle(),
-                              ),
-                              subtitle: Text(
-                                "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                                style: secondaryTextStyle(),
-                              ),
-                            )),
-                      ),
+                      child: Card(
+                          elevation: 4,
+                          child: ListTile(
+                            onTap: () {
+                              _selectTimeIN(context);
+                            },
+                            title: Text(
+                              'Start Shift',
+                              style: primaryTextStyle(),
+                            ),
+                            subtitle: Text(
+                              "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                              style: secondaryTextStyle(),
+                            ),
+                          )),
                     ),
                     8.width,
                     Expanded(
                       child: Card(
-                          elevation: 1,
+                          elevation: 4,
                           child: ListTile(
                             onTap: () {
                               _selectDate(context);
@@ -460,23 +477,21 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
-                        child: Card(
-                            elevation: 1,
-                            child: ListTile(
-                              onTap: () {
-                                _selectTimeIN(context);
-                              },
-                              title: Text(
-                                'Start Shift',
-                                style: primaryTextStyle(),
-                              ),
-                              subtitle: Text(
-                                "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
-                                style: secondaryTextStyle(),
-                              ),
-                            )),
-                      ),
+                      child: Card(
+                          elevation: 4,
+                          child: ListTile(
+                            onTap: () {
+                              _selectTimeIN(context);
+                            },
+                            title: Text(
+                              'Start Shift',
+                              style: primaryTextStyle(),
+                            ),
+                            subtitle: Text(
+                              "${selectedTimeIN.hour < 10 ? "0${selectedTimeIN.hour}" : "${selectedTimeIN.hour}"} : ${selectedTimeIN.minute < 10 ? "0${selectedTimeIN.minute}" : "${selectedTimeIN.minute}"} ${selectedTimeIN.period != DayPeriod.am ? 'PM' : 'AM'}   ",
+                              style: secondaryTextStyle(),
+                            ),
+                          )),
                     ),
                     8.width,
                     Expanded(
@@ -646,12 +661,40 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                     ));
                   }
                   else {
+                    var jammula;
+                    var minitmula;
+                    var jamakhir;
+                    var minitakhir;
+                    if(selectedTimeIN.hour < 10){
+                      jammula = "0" + selectedTimeIN.hour.toString();
+                    }
+                    else{
+                      jammula = selectedTimeIN.hour.toString();
+                    }
+                    if(selectedTimeIN.minute < 10){
+                      minitmula = "0" + selectedTimeIN.minute.toString();
+                    }
+                    else{
+                      minitmula = selectedTimeIN.minute.toString();
+                    }
                     var pickedhr = int.parse(selectedIndexPackage.toString().split(" | ")[2].split(" ")[1]);
-                    var pickedtime = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
+                    var pickedtime = jammula+":"+minitmula+":00";
                     var quantity = selectedIndexPackage.toString().split(" | ")[2].split(" ")[1];
                     var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
                     var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
-                    var ends = selectedDate.toString().split(" ")[0] + " " + addinghrs.hour.toString() + ":" + addinghrs.minute.toString() + ":00";
+                    if(addinghrs.hour < 10){
+                      jamakhir = "0" + addinghrs.hour.toString();
+                    }
+                    else{
+                      jamakhir = addinghrs.hour.toString();
+                    }
+                    if(addinghrs.minute < 10){
+                      minitakhir = "0" + addinghrs.minute.toString();
+                    }
+                    else{
+                      minitakhir = addinghrs.minute.toString();
+                    }
+                    var ends = selectedDate.toString().split(" ")[0] + " " + jamakhir + ":" + minitakhir + ":00";
                     var pickedpack = selectedIndexPackage.toString().split(" | ")[0];
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => WebviewPayment(
@@ -674,12 +717,6 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                         )
                     ));
                   }
-//                  if(by == "Hour " || by == "Hour") {
-//                    sendBooking(starts,ends,quantity,detail.text,servicename,total);
-//                  }
-//                  else{
-//                    sendBooking(starts,ends,quantity,detail.text,selectedIndexPackage.toString().split(" | ")[0],total);
-//                  }
                 }),
               ],
             ).paddingAll(8)
