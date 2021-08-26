@@ -10,6 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as Path;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
@@ -47,8 +48,8 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
 
   // function starts //
 
-  final String uploadUrlin = 'https://jobtune.ai/gig/JobTune/assets/clockingtest/in/new_upload.php';
-  final String uploadUrlout = 'https://jobtune.ai/gig/JobTune/assets/clockingtest/out/new_upload.php';
+  final String uploadUrlin = clockingIn;
+  final String uploadUrlout = clockingOut;
   final ImagePicker _pickerin = ImagePicker();
   final ImagePicker _pickerout = ImagePicker();
   File? _imagein;
@@ -346,7 +347,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
                             )
                           : Padding(
                               padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                              child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ displaypicin),
+                              child: Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/in/'+ displaypicin),
                             ),
                       SizedBox(height: 20,),
                       (displaytime == "0000-00-00 00:00:00")
@@ -519,7 +520,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
                       )
                           : Padding(
                         padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ displaypicout),
+                        child: Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/out/'+ displaypicout),
                       ),
                       SizedBox(height: 20,),
                       (displaytimeout == "0000-00-00 00:00:00")

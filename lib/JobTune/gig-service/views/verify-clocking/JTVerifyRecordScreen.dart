@@ -10,6 +10,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as Path;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
@@ -62,8 +63,8 @@ class JTVerifyRecordScreen extends StatefulWidget {
 class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
   // function starts //
 
-  final String uploadUrlin = 'https://jobtune.ai/gig/JobTune/assets/clockingtest/in/new_upload.php';
-  final String uploadUrlout = 'https://jobtune.ai/gig/JobTune/assets/clockingtest/out/new_upload.php';
+  final String uploadUrlin = clockingIn;
+  final String uploadUrlout = clockingOut;
   final ImagePicker _pickerin = ImagePicker();
   final ImagePicker _pickerout = ImagePicker();
   File? _imagein;
@@ -71,8 +72,8 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
   @override
   void didChangeDependencies() {
-    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ widget.imgin, scale:10).image, context);
-    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ widget.imgout).image, context);
+    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/in/'+ widget.imgin, scale:10).image, context);
+    precacheImage(Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/out/'+ widget.imgout).image, context);
     super.didChangeDependencies();
   }
 
