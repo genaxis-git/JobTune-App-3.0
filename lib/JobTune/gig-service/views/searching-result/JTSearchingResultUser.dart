@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
@@ -36,7 +37,7 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -88,7 +89,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> checkFeatured() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_filterservice&keyword="+widget.keyword
+            server + "jtnew_user_filterservice&keyword="+widget.keyword
         ),
         headers: {"Accept": "application/json"});
 
@@ -182,7 +183,7 @@ class _DisplayRateState extends State<DisplayRate> {
   Future<void> readPackage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 

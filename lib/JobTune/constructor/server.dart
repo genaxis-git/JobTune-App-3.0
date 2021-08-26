@@ -17,3 +17,7 @@ final clockingIn =
 //server img Clock - out
 final clockingOut =
     "https://jobtune.ai/gig/JobTune/assets/evidence/out/mobile_uploadPhoto_evidenceout.php";
+
+//server payment - service
+final servicePayments =
+    'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Provider/newcheckoutSenangPayMobile.php?';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTReviewWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +38,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> checkregister(email, pass) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
+            server + "jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
@@ -56,7 +57,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> smtp(email, pass) async{
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+            server + "jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
         headers: {"Accept": "application/json"}
     );
 
@@ -66,19 +67,19 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> register(email, pass) async {
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_signups&jemail=" + email + '&jpassword=' + pass),
+            server + "jtnew_signups&jemail=" + email + '&jpassword=' + pass),
         headers: {"Accept": "application/json"}
     );
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertprofile&jemail=" + email),
+            server + "jtnew_user_insertprofile&jemail=" + email),
         headers: {"Accept": "application/json"}
     );
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertprofile&jemail=" + email),
+            server + "jtnew_provider_insertprofile&jemail=" + email),
         headers: {"Accept": "application/json"}
     );
 

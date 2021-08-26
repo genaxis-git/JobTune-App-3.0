@@ -3,6 +3,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/integrations/screens/flutterCalender/CleanCalendar.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -28,7 +29,7 @@ class _JTScheduleScreenUserState extends State<JTScheduleScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectschedule&id=" + lgid),
+            server + "jtnew_user_selectschedule&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 

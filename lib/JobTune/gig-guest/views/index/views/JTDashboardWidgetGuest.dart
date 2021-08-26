@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
@@ -52,7 +53,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -72,7 +73,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectavailablecategory"),
+            server + "jtnew_user_selectavailablecategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -88,7 +89,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   Future<void> checkCategory(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectavailablecategory&city="+city
+            server + "jtnew_user_selectavailablecategory&city="+city
               +"&state="+state
                 +"&country="+country
         ),

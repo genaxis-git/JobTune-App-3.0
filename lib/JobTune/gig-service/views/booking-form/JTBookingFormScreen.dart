@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/webview_payment.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
@@ -60,7 +61,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -88,7 +89,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   Future<void> readService() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + widget.id),
+            server + "jtnew_provider_selectservice&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -120,7 +121,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   Future<void> readProvider() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + widget.proid),
+            server + "jtnew_provider_selectprofile&lgid=" + widget.proid),
         headers: {"Accept": "application/json"}
     );
 
@@ -141,7 +142,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   Future<void> readPackage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -158,7 +159,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   Future<void> sendBooking(starts,ends,quantity,desc,names,total) async {
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertbooking&serviceid=" + widget.id
+            server + "jtnew_user_insertbooking&serviceid=" + widget.id
                 + "&client=" + email
                 + "&starts=" + starts
                 + "&ends=" + ends.toString()
@@ -172,7 +173,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectmaxbooking&lgid=" + email),
+            server + "jtnew_user_selectmaxbooking&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
@@ -182,7 +183,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertpayment&id=" + book
+            server + "jtnew_user_insertpayment&id=" + book
                 + "&total=" + total
                 + "&type=gig-service"
         ),

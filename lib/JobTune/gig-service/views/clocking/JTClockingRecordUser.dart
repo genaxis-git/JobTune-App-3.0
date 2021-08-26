@@ -98,7 +98,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
   Future<void> sendClockin(timein,img) async {
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updateclockin&id=" + widget.bookid
+            server + "jtnew_provider_updateclockin&id=" + widget.bookid
                 + "&ins=" + timein
                 + "&img=" + img
         ),
@@ -107,7 +107,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updatebooking&id=" + widget.bookid
+            server + "jtnew_provider_updatebooking&id=" + widget.bookid
         ),
         headers: {"Accept": "application/json"}
     );
@@ -121,7 +121,7 @@ class _JTClockingRecordUserState extends State<JTClockingRecordUser> {
   Future<void> sendClockout(timein,img) async {
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updateclockout&id=" + widget.bookid
+            server + "jtnew_provider_updateclockout&id=" + widget.bookid
                 + "&outs=" + timein
                 + "&img=" + img
         ),

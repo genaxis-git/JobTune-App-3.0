@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
@@ -40,7 +41,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -61,7 +62,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -79,13 +80,13 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
 
   List servicelist = [];
   Future<void> checkFeatured(city,state,country) async {
-    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city="+city
+    print(server + "jtnew_user_selectservicecategory&city="+city
         +"&state="+state
         +"&country="+country
         +"&category=" + widget.searchkey);
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city="+city
+            server + "jtnew_user_selectservicecategory&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category=" + widget.searchkey
@@ -102,7 +103,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> checkService() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
+            server + "jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
         ),
         headers: {"Accept": "application/json"});
 
@@ -118,7 +119,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> checkBig(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -133,7 +134,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> readBig() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -148,7 +149,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> checkOther(city,state,country,bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city="+city
+            server + "jtnew_user_selectotherservice&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category="+widget.searchkey
@@ -164,7 +165,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
   Future<void> allOther(bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
+            server + "jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
         ),
         headers: {"Accept": "application/json"});
 
@@ -320,7 +321,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -343,7 +344,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> checkFeatured(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city="+city
+            server + "jtnew_user_selectservicecategory&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category=" + widget.searchkey
@@ -360,7 +361,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> checkService() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
+            server + "jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
         ),
         headers: {"Accept": "application/json"});
 
@@ -376,7 +377,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> checkBig(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -391,7 +392,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> readBig() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -406,7 +407,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> checkOther(city,state,country,bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city="+city
+            server + "jtnew_user_selectotherservice&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category="+widget.searchkey
@@ -422,7 +423,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> allOther(bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
+            server + "jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
         ),
         headers: {"Accept": "application/json"});
 
@@ -588,7 +589,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -608,7 +609,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> checkFeatured(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city="+city
+            server + "jtnew_user_selectservicecategory&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category=" + widget.searchkey
@@ -625,7 +626,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> checkService() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
+            server + "jtnew_user_selectservicecategory&city=&state=&country=&category="+widget.searchkey+"&big="
         ),
         headers: {"Accept": "application/json"});
 
@@ -641,7 +642,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> checkBig(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -656,7 +657,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> readBig() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_identifybigcat&cat="+widget.searchkey
+            server + "jtnew_user_identifybigcat&cat="+widget.searchkey
         ),
         headers: {"Accept": "application/json"});
 
@@ -671,7 +672,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> checkOther(city,state,country,bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city="+city
+            server + "jtnew_user_selectotherservice&city="+city
                 +"&state="+state
                 +"&country="+country
                 +"&category="+widget.searchkey
@@ -687,7 +688,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
   Future<void> allOther(bigcat) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
+            server + "jtnew_user_selectotherservice&city=&state=&country=&category="+widget.searchkey+"&big="+bigcat
         ),
         headers: {"Accept": "application/json"});
 
@@ -804,7 +805,7 @@ class _DisplayRatingState extends State<DisplayRating> {
   Future<void> readAverage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+            server + "jtnew_user_selectaveragerating&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -880,7 +881,7 @@ class _DisplayRateState extends State<DisplayRate> {
   Future<void> readPackage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 

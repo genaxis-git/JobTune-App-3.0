@@ -18,9 +18,9 @@ class _JTWalkThroughScreenGuestState extends State<JTWalkThroughScreenGuest> {
   List<Widget>  pages = [];
   var selectedIndex = 0;
 
-  final img1 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/services.jpg');
-  final img2 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/product.jpg');
-  final img3 = Image.network('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/onboard/nomad.jpg');
+  final img1 = Image.network('https://jobtune.ai/gig/JobTune/assets/onboard/services.jpg');
+  final img2 = Image.network('https://jobtune.ai/gig/JobTune/assets/onboard/product.jpg');
+  final img3 = Image.network('https://jobtune.ai/gig/JobTune/assets/onboard/nomad.jpg');
 
 
   @override

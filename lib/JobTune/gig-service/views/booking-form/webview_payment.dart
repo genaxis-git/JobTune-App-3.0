@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -65,7 +66,7 @@ class _WebviewPaymentState extends State<WebviewPayment> {
         padding: EdgeInsets.all(16),
         child: WebView(
 
-          initialUrl: 'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Provider/newcheckoutSenangPayMobile.php?name='+widget.username+
+          initialUrl: servicePayments + 'name='+widget.username+
           '&package='+widget.packname+'&email='+widget.clientid+'&phone='+widget.teluser+'&amount='+widget.total+
           '&detail='+widget.postid+'&proid='+widget.proemail+'&jempid=&jemprid=&timein='+widget.starts+'&timeout='+widget.ends+
           '&dayin=&dayout=&address='+widget.address+'&desc='+widget.desc+'&user_id='+widget.clientid+'&platformfee=&servicename='+widget.servicename+

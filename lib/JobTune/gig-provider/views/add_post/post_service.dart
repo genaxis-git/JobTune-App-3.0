@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailScreen.dart';
@@ -44,7 +45,7 @@ class _PostServiceState extends State<PostService> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -62,7 +63,7 @@ class _PostServiceState extends State<PostService> {
     final String lgid = prefs.getString('email').toString();
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertservice&proid=" + lgid
+            server + "jtnew_provider_insertservice&proid=" + lgid
                 + '&name=' + title
                 + '&category=' + category
                 + '&by=' + by
@@ -86,7 +87,7 @@ class _PostServiceState extends State<PostService> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectmaxservice&lgid=" + lgid),
+            server + "jtnew_provider_selectmaxservice&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -104,7 +105,7 @@ class _PostServiceState extends State<PostService> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectmaxservice&lgid=" + lgid),
+            server + "jtnew_provider_selectmaxservice&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -130,7 +131,7 @@ class _PostServiceState extends State<PostService> {
     if(packagearr.length == 0) {
       http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertpackage&serviceid=" + serviceid
+              server + "jtnew_provider_insertpackage&serviceid=" + serviceid
                   + "&name=" + packnameCont.text
                   + "&rate=" + double.parse(priceCont.text).toStringAsFixed(2)
                   + "&time=" + timeCont.text
@@ -146,7 +147,7 @@ class _PostServiceState extends State<PostService> {
 
         http.get(
             Uri.parse(
-                "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_insertpackage&serviceid=" + serviceid
+                server + "jtnew_provider_insertpackage&serviceid=" + serviceid
                     + "&name=" + name
                     + "&rate=" + price
                     + "&time=" + time
@@ -168,7 +169,7 @@ class _PostServiceState extends State<PostService> {
   Future<void> readService(serviceid) async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + serviceid),
+            server + "jtnew_provider_selectservice&id=" + serviceid),
         headers: {"Accept": "application/json"}
     );
 

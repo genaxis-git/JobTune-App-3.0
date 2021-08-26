@@ -5,6 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:geocoding/geocoding.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/main/utils/AppImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
@@ -51,7 +52,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -71,7 +72,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectstandby&id=" + lgid),
+            server + "jtnew_provider_selectstandby&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -635,7 +636,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
     else {
       http.Response response = await http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -649,12 +650,12 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
 
   List servicelist = [];
   Future<void> checkFeatured(city,state,country) async {
-    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city="+city
+    print(server + "jtnew_user_selectfeatured&city="+city
         +"&state="+state
         +"&country="+country);
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city="+city
+            server + "jtnew_user_selectfeatured&city="+city
                 +"&state="+state
                 +"&country="+country
         ),
@@ -668,7 +669,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
   Future<void> serviceList() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectfeatured&city=&state=&country="
+            server + "jtnew_user_selectfeatured&city=&state=&country="
         ),
         headers: {"Accept": "application/json"});
 
@@ -773,7 +774,7 @@ class _DisplayRateState extends State<DisplayRate> {
   Future<void> readPackage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -855,7 +856,7 @@ class _DisplayRatingState extends State<DisplayRating> {
   Future<void> readAverage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+            server + "jtnew_user_selectaveragerating&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -969,7 +970,7 @@ class _JTNextListState extends State<JTNextList> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectstandby&id=" + lgid),
+            server + "jtnew_provider_selectstandby&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 

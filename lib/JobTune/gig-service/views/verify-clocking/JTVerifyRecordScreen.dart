@@ -139,7 +139,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
         else if(differenceTimes >= 1) {
           http.get(
               Uri.parse(
-                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusin&id=" + widget.bookid
+                  server + "jtnew_user_updatestatusin&id=" + widget.bookid
                       + "&status=" + status
               ),
               headers: {"Accept": "application/json"}
@@ -147,7 +147,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
           http.get(
               Uri.parse(
-                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusout&id=" + widget.bookid
+                  server + "jtnew_user_updatestatusout&id=" + widget.bookid
                       + "&status=" + status
               ),
               headers: {"Accept": "application/json"}
@@ -173,7 +173,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
     else {
       http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusin&id=" + widget.bookid
+              server + "jtnew_user_updatestatusin&id=" + widget.bookid
                   + "&status=" + status
           ),
           headers: {"Accept": "application/json"}
@@ -208,7 +208,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
         else if(differenceTimes >= 1) {
           http.get(
               Uri.parse(
-                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusin&id=" + widget.bookid
+                  server + "jtnew_user_updatestatusin&id=" + widget.bookid
                       + "&status=" + status
               ),
               headers: {"Accept": "application/json"}
@@ -216,7 +216,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
           http.get(
               Uri.parse(
-                  "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusout&id=" + widget.bookid
+                  server + "jtnew_user_updatestatusout&id=" + widget.bookid
                       + "&status=" + status
               ),
               headers: {"Accept": "application/json"}
@@ -242,7 +242,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
     else {
       http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatestatusout&id=" + widget.bookid
+              server + "jtnew_user_updatestatusout&id=" + widget.bookid
                   + "&status=" + status
           ),
           headers: {"Accept": "application/json"}
@@ -250,7 +250,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
 
       http.get(
           Uri.parse(
-              "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updatebooking&id=" + widget.bookid
+              server + "jtnew_user_updatebooking&id=" + widget.bookid
           ),
           headers: {"Accept": "application/json"}
       );
@@ -793,7 +793,7 @@ class _WriteReviewDialogState extends State<WriteReviewDialog> {
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_insertrating&bid=" + widget.bid
+            server + "jtnew_user_insertrating&bid=" + widget.bid
                 + "&sid=" + widget.sid
                 + "&to=" + widget.provider
                 + "&rating=" + rate

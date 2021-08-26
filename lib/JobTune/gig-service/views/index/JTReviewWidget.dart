@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTReviewModel.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/flutter_rating_bar.dart';
@@ -26,7 +27,7 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
   Future<void> readTotal() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selecttotalrate&id=" + widget.id),
+            server + "jtnew_user_selecttotalrate&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 

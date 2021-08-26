@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
@@ -47,7 +48,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -85,7 +86,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_countbooking&id=" + lgid),
+            server + "jtnew_user_countbooking&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -105,7 +106,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_countspending&id=" + lgid),
+            server + "jtnew_user_countspending&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 

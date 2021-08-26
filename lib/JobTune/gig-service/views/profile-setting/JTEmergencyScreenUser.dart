@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 
@@ -35,7 +36,7 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -56,7 +57,7 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_updateprofile&id=" + lgid
+            server + "jtnew_user_updateprofile&id=" + lgid
                 + "&fname=" + profile[0]["first_name"]
                 + "&lname=" + profile[0]["last_name"]
                 + "&telno=" + profile[0]["phone_no"]

@@ -23,7 +23,7 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    print('http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/jobtune-employee-timetable.html?key='+widget.id);
+    print('https://jobtune.ai/gig/JobTune/jobtune-employee-timetable.html?key='+widget.id);
     EasyLoading.showToast('Loading..');
     var newsize = MediaQuery.of(context).size.height - (MediaQuery.of(context).size.height - 22.5);
     return Container(
@@ -42,7 +42,7 @@ class _WebViewCalendarState extends State<WebViewCalendar> {
               Container(
                 height: 1200,
                 child: WebView(
-                  initialUrl: 'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/jobtune-employee-timetable.html?key='+widget.id,
+                  initialUrl: 'https://jobtune.ai/gig/JobTune/jobtune-employee-timetable.html?key='+widget.id,
                   javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (WebViewController c) {
                     _controller = c;

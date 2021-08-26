@@ -4,6 +4,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
@@ -40,7 +41,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_selectlogins&lgid=" + email),
+            server + "jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {

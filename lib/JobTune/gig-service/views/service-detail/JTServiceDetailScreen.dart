@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
@@ -67,7 +68,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -99,10 +100,10 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   String by = "Package";
   String id = "";
   Future<void> readService() async {
-    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + widget.id);
+    print(server + "jtnew_provider_selectservice&id=" + widget.id);
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=" + widget.id),
+            server + "jtnew_provider_selectservice&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -134,10 +135,10 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   String img = "no profile.png";
   List provider = [];
   Future<void> readProvider(a,b) async {
-    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + a);
+    print(server + "jtnew_provider_selectprofile&lgid=" + a);
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + a),
+            server + "jtnew_provider_selectprofile&lgid=" + a),
         headers: {"Accept": "application/json"}
     );
 
@@ -163,10 +164,10 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   double max = 0;
   double min = 0;
   Future<void> readPackage(b) async {
-    print("http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + b);
+    print(server + "jtnew_provider_selectpackage&id=" + b);
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + b),
+            server + "jtnew_provider_selectpackage&id=" + b),
         headers: {"Accept": "application/json"}
     );
 
@@ -197,7 +198,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   Future<void> readAverage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selectaveragerating&id=" + widget.id),
+            server + "jtnew_user_selectaveragerating&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -211,7 +212,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   Future<void> readTotal() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selecttotalrate&id=" + widget.id),
+            server + "jtnew_user_selecttotalrate&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -776,7 +777,7 @@ class _DisplayPackageState extends State<DisplayPackage> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 

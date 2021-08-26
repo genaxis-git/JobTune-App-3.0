@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
@@ -37,7 +38,7 @@ class _JTVerifyScreenUserState extends State<JTVerifyScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selecttimesheet&id=" + lgid),
+            server + "jtnew_provider_selecttimesheet&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -110,7 +111,7 @@ class _ClockingListingState extends State<ClockingListing> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_user_selecttimesheet&id=" +
+            server + "jtnew_user_selecttimesheet&id=" +
                 lgid),
         headers: {"Accept": "application/json"}
     );
@@ -300,7 +301,7 @@ class _DisplayPicState extends State<DisplayPic> {
   Future<void> readProfile() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + widget.id),
+            server + "jtnew_provider_selectprofile&lgid=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 

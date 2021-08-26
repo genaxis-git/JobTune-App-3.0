@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
@@ -270,7 +271,7 @@ class _displayRateState extends State<displayRate> {
   Future<void> readPackage() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpackage&id=" + widget.id),
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
