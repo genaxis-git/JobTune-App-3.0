@@ -439,7 +439,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                   Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
+                      "https://jobtune.ai/gig/JobTune/assets/img/" + img,
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
@@ -553,7 +553,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           Padding(
                             padding: EdgeInsets.fromLTRB(5, 20, 10, 30),
                             child: Text(
-                              desc,
+                              desc.replaceAll("<br>", "\n"),
                               textAlign: TextAlign.justify,
                               style: TextStyle(
                                 color: Colors.black87,
@@ -594,30 +594,6 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Available Day: ",
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(width: 68,),
-                                    Text(
-                                      days,
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
                                       "Operating Hours: ",
                                       textAlign: TextAlign.justify,
                                       style: TextStyle(
@@ -638,6 +614,48 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                   ],
                                 ),
                                 SizedBox(height: 10,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Available Day: ",
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(width: 68,),
+                                    (days.length > 3)
+                                        ? Container(
+                                        height: 35,
+                                        width: 185,
+                                        child: Flexible(
+                                            child: Text(
+                                              days,
+                                              // overflow: TextOverflow.fade,
+                                              maxLines: 2,
+                                              textAlign: TextAlign.justify,
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 16,
+                                              ),
+                                            )
+                                        )
+                                    )
+                                        : Text(
+                                      days,
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 20,),
                               ],
                             ),
                           ),
@@ -964,7 +982,7 @@ class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
                 children: [
                   Container(
                     child: Image.network(
-                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/mobile/warn.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

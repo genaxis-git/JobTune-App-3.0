@@ -325,7 +325,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                     height: 100,
                     width: 100,
                     child: Image.network(
-                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + widget.img,
+                      "https://jobtune.ai/gig/JobTune/assets/img/" + widget.img,
                       fit: BoxFit.fitHeight,
                       height: 180,
                       width: context.width(),

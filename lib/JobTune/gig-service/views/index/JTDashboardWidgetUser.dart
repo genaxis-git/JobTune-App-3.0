@@ -490,131 +490,146 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
     }
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: ContainerX(
-        mobile: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: appColorPrimary,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-                      ),
-                    ).visible(false),
-                    Column(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: (clocking.length > 0) ? 500.0 : 240.0,
+              floating: true,
+              pinned: true,
+              snap: false,
+              automaticallyImplyLeading : false,
+              backgroundColor: appStore.appBarColor,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        10.height,
-                        Padding(
-                          padding: EdgeInsets.all(5),
-                          child: Form(
-                            key: formKey,
-                            child: TextFormField(
-                              controller: searchCont,
-                              style: primaryTextStyle(),
-                              decoration: InputDecoration(
-                                labelText: 'Search',
-                                suffixIcon: IconButton(
-                                  onPressed: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => JTSearchingResultUser(
-                                        searchkey: searchCont.text,
-                                      )),
-                                    );
-                                  },
-                                  icon: Icon(Icons.search),
-                                ),
-                                contentPadding: EdgeInsets.all(16),
-                                labelStyle: secondaryTextStyle(),
-                                border: OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-                                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-                              ),
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.next,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                10.height,
-                Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(right: 8, top: 8),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: categories.map((e) {
-                      return Container(
-                        width: isMobile ? 100 : 120,
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        Stack(
                           children: [
                             Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
-                              child: Image.asset(e.icon!, height: 30, width: 30, color: white),
-                            ),
-                            4.height,
-                            Text(
-                                e.name!,
-                                style: primaryTextStyle(size: 12),
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis
+                              height: 150,
+                              decoration: BoxDecoration(
+                                color: appColorPrimary,
+                                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                              ),
+                            ).visible(false),
+                            Column(
+                              children: [
+                                10.height,
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Form(
+                                    key: formKey,
+                                    child: TextFormField(
+                                      controller: searchCont,
+                                      style: primaryTextStyle(),
+                                      decoration: InputDecoration(
+                                        labelText: 'Search',
+                                        suffixIcon: IconButton(
+                                          onPressed: (){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => JTSearchingResultUser(
+                                                searchkey: searchCont.text,
+                                              )),
+                                            );
+                                          },
+                                          icon: Icon(Icons.search),
+                                        ),
+                                        contentPadding: EdgeInsets.all(16),
+                                        labelStyle: secondaryTextStyle(),
+                                        border: OutlineInputBorder(),
+                                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      textInputAction: TextInputAction.next,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ).onTap(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => JTServiceListCategory(
-                            searchkey: e.name!,
-                          )),
-                        );
-                      });
-                    }).toList(),
-                  ),
-                ),
-                25.height,
-                (clocking.length > 0)
-                ? Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                        10.height,
+                        Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.only(right: 8, top: 8),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: categories.map((e) {
+                              return Container(
+                                width: isMobile ? 100 : 120,
+                                alignment: Alignment.center,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
+                                      child: Image.asset(e.icon!, height: 30, width: 30, color: white),
+                                    ),
+                                    4.height,
+                                    Text(
+                                        e.name!,
+                                        style: primaryTextStyle(size: 12),
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis
+                                    ),
+                                  ],
+                                ),
+                              ).onTap(() {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => JTServiceListCategory(
+                                    searchkey: e.name!,
+                                  )),
+                                );
+                              });
+                            }).toList(),
+                          ),
+                        ),
+                        25.height,
+                        (clocking.length > 0)
+                            ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                              ],
+                            ),
+                            4.height,
+                            SizedBox(
+                                height: width * 0.58,
+                                child: JTNextList()
+                            ),
+                          ],
+                        )
+                            : Container(),
+                        Text('    Featured', style: boldTextStyle()).paddingBottom(8),
                       ],
                     ),
-                    10.height,
-                    SizedBox(
-                        height: width * 0.58,
-                        child: JTNextList()
-                    ),
-                  ],
-                )
-                : Container(),
-                Text(' Featured', style: boldTextStyle()).paddingAll(8),
-                Container(
-                  height: 500,
-                  child: JTServiceListUser()
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ];
+        },
+        body: Container(
+            height: 500,
+            child: JTServiceListUser()
         ),
-        web: webWidget(),
-      ),
+      )
     );
   }
 }
+
+
 
 class JTServiceListUser extends StatefulWidget {
   @override
@@ -713,7 +728,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   child: Stack(
                     children: [
                       Image.network(
-                        "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                        "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
                         fit: BoxFit.cover,
                         height: 110,
                         width: 126,
@@ -1019,7 +1034,7 @@ class _JTNextListState extends State<JTNextList> {
                         alignment: FractionalOffset.centerLeft,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12.0),
-                          child: Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
+                          child: Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
                         )),
                     Container(
                       transform: Matrix4.translationValues(0.0, -30.0, 0.0),

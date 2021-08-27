@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -307,287 +308,131 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   @override
   Widget build(BuildContext context) {
-
-    Widget searchTxt() {
-      return Container(
-        width: dynamicWidth(context),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: viewLineColor),
-          color: appStore.scaffoldBackground,
-        ),
-        margin: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Icon(AntDesign.search1, color: appStore.textSecondaryColor),
-            10.width,
-            Text('Search', style: boldTextStyle(color: appStore.textSecondaryColor)),
-          ],
-        ),
-        padding: EdgeInsets.all(10),
-      ).onTap(() {
-        DTSearchScreen().launch(context);
-      });
-    }
-
-    Widget horizontalList() {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.only(right: 8, top: 8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: categories.map((e) {
-            return Container(
-              width: isMobile ? 100 : 120,
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
-                    child: Image.asset(e.icon!, height: 30, width: 30, color: white),
-                  ),
-                  4.height,
-                  Text(e.name!, style: primaryTextStyle(size: 12), maxLines: 1, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            ).onTap(() {
-              DTCategoryDetailScreen().launch(context);
-            });
-          }).toList(),
-        ),
-      );
-    }
-
-    Widget horizontalProductListView() {
-      return ListView.builder(
-        padding: EdgeInsets.all(8),
-        itemBuilder: (_, index) {
-          DTProductModel data = getProducts()[index];
-
-          return Container(
-            decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
-            width: 220,
-            margin: EdgeInsets.only(right: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                10.height,
-                Stack(
-                  children: [
-                    Image.asset(
-                      'images/dashboard/ic_chair2.jpg',
-                      fit: BoxFit.fitHeight,
-                      height: 180,
-                      width: context.width(),
-                    ).cornerRadiusWithClipRRect(8),
-                    Positioned(
-                      right: 10,
-                      top: 10,
-                      child: data.isLiked.validate() ? Icon(Icons.favorite, color: Colors.red, size: 16) : Icon(Icons.favorite_border, size: 16),
-                    ),
-                  ],
-                ).expand(),
-                8.width,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(data.name!, style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    4.height,
-                    Row(
-                      children: [
-                        IgnorePointer(
-                          child: RatingBar(
-                            onRatingChanged: (r) {},
-                            filledIcon: Icons.star,
-                            emptyIcon: Icons.star_border,
-                            initialRating: data.rating!,
-                            maxRating: 5,
-                            filledColor: Colors.yellow,
-                            size: 14,
-                          ),
-                        ),
-                        5.width,
-                        Text('${data.rating}', style: secondaryTextStyle(size: 12)),
-                      ],
-                    ),
-                    4.height,
-                    Row(
-                      children: [
-                        priceWidget(data.discountPrice),
-                        8.width,
-                        priceWidget(data.price, applyStrike: true),
-                      ],
-                    ),
-                  ],
-                ).paddingAll(8),
-                10.height,
-              ],
-            ),
-          ).onTap(() async {
-            int? index = await JTProductDetailScreenGuest(productModel: data).launch(context);
-            if (index != null) appStore.setDrawerItemIndex(index);
-          });
-        },
-        /*gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: context.width() > 1550
-                        ? 4
-                        : context.width() > 1080
-                            ? 3
-                            : 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: cardWidth / cardHeight,
-                  ),*/
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: getProducts().length,
-      );
-    }
-
-    Widget bannerWidget() {
-      return Container(
-        margin: EdgeInsets.only(left: 8),
-        child: Row(
-          children: [
-            Image.asset('images/JobTune/banner/dt_advertise1.jpg', fit: BoxFit.cover).cornerRadiusWithClipRRect(8).expand(),
-            8.width,
-            Image.asset('images/JobTune/banner/dt_advertise2.jpg', fit: BoxFit.cover).cornerRadiusWithClipRRect(8).expand(),
-            8.width,
-            Image.asset('images/JobTune/banner/dt_advertise4.jpg', fit: BoxFit.cover).cornerRadiusWithClipRRect(8).expand(),
-            8.width,
-            Image.asset('images/JobTune/banner/dt_advertise3.jpg', fit: BoxFit.cover).cornerRadiusWithClipRRect(8).expand(),
-          ],
-        ),
-      );
-    }
-
-
     return Scaffold(
-      body: ContainerX(
-        mobile: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        color: appColorPrimary,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
-                      ),
-                    ).visible(false),
-                    Column(
-                      children: [
-                        15.height,
-//                      searchTxt(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
-                                Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
-                                  appStore.setDrawerItemIndex(-1);
-
-                                  if (isMobile) {
-                                    JTDashboardSreenUser().launch(context, isNewTask: true);
-                                  } else {
-//                                  DTDashboardScreen().launch(context, isNewTask: true);
-                                  }
-                                }),
-                              ],
-                            ),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.only(right: 8, top: 8),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: categories.map((e) {
-                                  return Container(
-                                    width: isMobile ? 100 : 120,
-                                    alignment: Alignment.center,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.all(8),
-                                          decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
-                                          child: Image.asset(e.icon!, height: 30, width: 30, color: white),
-                                        ),
-                                        4.height,
-                                        Text(
-                                            e.name!,
-                                            style: primaryTextStyle(size: 12),
-                                            maxLines: 1,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis
-                                        ),
-                                      ],
-                                    ),
-                                  ).onTap(() {
-                                    // JTServiceListCategory().launch(context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => JTServiceListCategory(
-                                        searchkey: e.name!,
-                                      )),
-                                    );
-                                  });
-                                }).toList(),
-                              ),
-                            ),
-                            20.height,
-                          ],
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 375.0,
+              floating: true,
+              pinned: true,
+              snap: false,
+              automaticallyImplyLeading : false,
+              backgroundColor: appStore.appBarColor,
+              flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    children: [
+                      Container(
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: appColorPrimary,
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
                         ),
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          height: 170,
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
+                      ).visible(false),
+                      Column(
+                        children: [
+                          15.height,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              PageView(
-                                controller: pageController,
-                                scrollDirection: Axis.horizontal,
-                                children: pages,
-                                onPageChanged: (index) {
-                                  selectedIndex = index;
-                                  setState(() {});
-                                },
-                              ).cornerRadiusWithClipRRect(8),
-                              DotIndicator(
-                                pages: pages,
-                                indicatorColor: appColorPrimary,
-                                pageController: pageController,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
+                                  Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
+                                    appStore.setDrawerItemIndex(-1);
+
+                                    if (isMobile) {
+                                      JTDashboardSreenUser().launch(context, isNewTask: true);
+                                    } else {
+                                      //                                  DTDashboardScreen().launch(context, isNewTask: true);
+                                    }
+                                  }),
+                                ],
                               ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                padding: EdgeInsets.only(right: 8, top: 8),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: categories.map((e) {
+                                    return Container(
+                                      width: isMobile ? 100 : 120,
+                                      alignment: Alignment.center,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(shape: BoxShape.circle, color: appColorPrimary),
+                                            child: Image.asset(e.icon!, height: 30, width: 30, color: white),
+                                          ),
+                                          4.height,
+                                          Text(
+                                              e.name!,
+                                              style: primaryTextStyle(size: 12),
+                                              maxLines: 1,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.ellipsis
+                                          ),
+                                        ],
+                                      ),
+                                    ).onTap(() {
+                                      // JTServiceListCategory().launch(context);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => JTServiceListCategory(
+                                          searchkey: e.name!,
+                                        )),
+                                      );
+                                    });
+                                  }).toList(),
+                                ),
+                              ),
+                              20.height,
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                15.height,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
-                    Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
-                  ],
-                ),
-                Container(height: 500, child: JTProductList()),
-              ],
+                          Container(
+                            margin: EdgeInsets.all(8),
+                            height: 170,
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                PageView(
+                                  controller: pageController,
+                                  scrollDirection: Axis.horizontal,
+                                  children: pages,
+                                  onPageChanged: (index) {
+                                    selectedIndex = index;
+                                    setState(() {});
+                                  },
+                                ).cornerRadiusWithClipRRect(8),
+                                DotIndicator(
+                                  pages: pages,
+                                  indicatorColor: appColorPrimary,
+                                  pageController: pageController,
+                                ),
+                              ],
+                            ),
+                          ),
+                          10.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
+                              Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+              ),
             ),
-          ),
-        ),
-      ),
+          ];
+        },
+        body: Container(height: 390, child: JTProductList()),
+      )
     );
   }
 }

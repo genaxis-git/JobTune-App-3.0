@@ -123,7 +123,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           Row(
             children: [
               Image.network(
-                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" +
+                      "https://jobtune.ai/gig/JobTune/assets/img/" +
                           img,
                       height: 70,
                       width: 70,
@@ -361,7 +361,7 @@ class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
                 children: [
                   Container(
                     child: Image.network(
-                      "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/mobile/warn.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

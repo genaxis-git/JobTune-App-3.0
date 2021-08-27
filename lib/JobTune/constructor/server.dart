@@ -1,6 +1,6 @@
 //server URL
 final server =
-    "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
+    "https://jobtune.ai/REST/API/index.php?interface=";
 
 //server img
 final image =
@@ -20,4 +20,4 @@ final clockingOut =
 
 //server payment - service
 final servicePayments =
-    'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Provider/newcheckoutSenangPayMobile.php?';
+    'https://jobtune.ai/gig/JobTune/Provider/newcheckoutSenangPayMobile.php?';
