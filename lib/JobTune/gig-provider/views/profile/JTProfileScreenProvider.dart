@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTAddressScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTBankScreenProvider.dart';
@@ -45,7 +46,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
+            server + "jtnew_provider_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -80,7 +81,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countdone&id=" + lgid),
+            server + "jtnew_provider_countdone&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -101,7 +102,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countnotdone&id=" + lgid),
+            server + "jtnew_provider_countnotdone&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -121,7 +122,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_countincome&id=" + lgid),
+            server + "jtnew_provider_countincome&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -271,7 +272,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img),
+                          backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
                           radius: 50,
                         ),
                       ),

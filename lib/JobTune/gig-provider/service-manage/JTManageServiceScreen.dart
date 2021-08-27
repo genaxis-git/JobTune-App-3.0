@@ -21,7 +21,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            'http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_sortservice&id=' + user),
+            server + 'jtnew_provider_sortservice&id=' + user),
         headers: {"Accept": "application/json"});
 
 
@@ -76,7 +76,7 @@ class _ServiceListState extends State<ServiceList> {
 
     http.Response response = await http.get(
         Uri.parse(
-            'http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_sortservice&id=' + user),
+            server + 'jtnew_provider_sortservice&id=' + user),
         headers: {"Accept": "application/json"});
 
 
@@ -88,21 +88,21 @@ class _ServiceListState extends State<ServiceList> {
   Future<void> deletejob(a) async {
     http.get(
         Uri.parse(
-            'http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updatedeactive&id=' + a),
+            server + 'jtnew_provider_updatedeactive&id=' + a),
         headers: {"Accept": "application/json"});
   }
 
   Future<void> addjob(a) async {
     http.get(
         Uri.parse(
-            'http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updateactive&id=' + a),
+            server + 'jtnew_provider_updateactive&id=' + a),
         headers: {"Accept": "application/json"});
   }
 
   Future<void> getinfo(a) async {
     http.Response response = await http.get(
         Uri.parse(
-            'http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectservice&id=' + a),
+            server + 'jtnew_provider_selectservice&id=' + a),
         headers: {"Accept": "application/json"});
 
 

@@ -43,6 +43,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   double platformfee = 0.00;
   double total = 0.00;
   var detail = TextEditingController();
+  var pickinghour = TextEditingController();
   int subTotal = 0;
   int totalAmount = 0;
   int shippingCharges = 0;
@@ -431,42 +432,31 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                     children: [
                       Text("  Pick hour:-"),
                       7.height,
-                      Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // if you need this
-                            side: BorderSide(
-                              color: Colors.black.withOpacity(0.6),
-                              width: 1,
-                            ),
-                          ),
-                          child: DropdownButton(
-                            isExpanded: true,
-                            dropdownColor: appStore.appBarColor,
-                            value: selectedIndexQty,
-                            style: boldTextStyle(),
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: appStore.iconColor,
-                            ),
-                            underline: 0.height,
-                            onChanged: (dynamic newValue) {
-                              setState(() {
-                                toast(newValue);
-                                selectedIndexQty = newValue;
-
-                                setState(() {
-                                  subtotal = double.parse(rate) * double.parse(selectedIndexQty.toString());
-                                  total = subtotal + platformfee;
-                                });
-                              });
-                            },
-                            items: listOfQty.map((category) {
-                              return DropdownMenuItem(
-                                child: Text(category, style: primaryTextStyle()).paddingLeft(8),
-                                value: category,
-                              );
-                            }).toList(),
-                          )
+                      TextFormField(
+                        controller: pickinghour,
+                        onChanged: (text) {
+                          toast(pickinghour.text);
+                          setState(() {
+                            subtotal = double.parse(rate) * double.parse(pickinghour.text.toString());
+                            total = subtotal + platformfee;
+                          });
+                        },
+                        style: primaryTextStyle(),
+                        decoration: InputDecoration(
+                          labelText: 'Hour',
+                          contentPadding: EdgeInsets.all(16),
+                          labelStyle: secondaryTextStyle(),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide(
+                                  color: appStore.textSecondaryColor!)),
+                        ),
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
                       ),
                     ],
                   ),
@@ -634,9 +624,25 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                   child: Text('Checkout', style: boldTextStyle(color: white)),
                 ).onTap(() {
                   if(by == "Hour " || by == "Hour") {
-                    var pickedhr = int.parse(selectedIndexQty.toString());
-                    var pickedtime = selectedTimeIN.hour.toString()+":"+selectedTimeIN.minute.toString()+":00";
-                    var quantity = selectedIndexQty.toString();
+                    var jammula;
+                    var minitmula;
+                    var jamakhir;
+                    var minitakhir;
+                    if(selectedTimeIN.hour < 10){
+                      jammula = "0" + selectedTimeIN.hour.toString();
+                    }
+                    else{
+                      jammula = selectedTimeIN.hour.toString();
+                    }
+                    if(selectedTimeIN.minute < 10){
+                      minitmula = "0" + selectedTimeIN.minute.toString();
+                    }
+                    else{
+                      minitmula = selectedTimeIN.minute.toString();
+                    }
+                    var pickedhr = int.parse(pickinghour.text.toString());
+                    var pickedtime = jammula.toString()+":"+minitmula.toString()+":00";
+                    var quantity = pickinghour.text.toString();
                     var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
                     var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
                     var ends = selectedDate.toString().split(" ")[0] + " " + addinghrs.hour.toString() + ":" + addinghrs.minute.toString() + ":00";

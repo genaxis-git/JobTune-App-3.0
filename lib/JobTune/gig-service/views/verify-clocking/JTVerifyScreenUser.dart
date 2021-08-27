@@ -338,7 +338,7 @@ class _DisplayPicState extends State<DisplayPic> {
     return ClipRRect(
       child: CachedNetworkImage(
         placeholder: placeholderWidgetFn() as Widget Function(BuildContext, String)?,
-        imageUrl: "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img,
+        imageUrl: "https://jobtune.ai/gig/JobTune/assets/img/" + img,
         width: width / 4,
         height: width / 4.2,
         fit: BoxFit.cover,

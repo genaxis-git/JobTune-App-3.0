@@ -253,7 +253,7 @@ class _DisplayImageState extends State<DisplayImage> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child:Image.network(
-        "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/"+img,
+        "https://jobtune.ai/gig/JobTune/assets/img/"+img,
         fit: BoxFit.fill,
       ),
     );

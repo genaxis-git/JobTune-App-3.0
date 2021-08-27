@@ -4,7 +4,7 @@ final server =
 
 //server img
 final image =
-    "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/";
+    "https://jobtune.ai/gig/JobTune/assets/img/";
 
 //server img Product
 final productImage =

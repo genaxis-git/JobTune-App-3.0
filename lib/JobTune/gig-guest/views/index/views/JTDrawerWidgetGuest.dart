@@ -125,13 +125,13 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                       MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
                     );
                   }),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
-                  ).onTap(() {
-                    appStore.setDrawerItemIndex(-1);
-                    JTDashboardScreenProduct().launch(context, isNewTask: true);
-                  }),
+                  // Container(
+                  //   padding: EdgeInsets.all(16),
+                  //   child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
+                  // ).onTap(() {
+                  //   appStore.setDrawerItemIndex(-1);
+                  //   JTDashboardScreenProduct().launch(context, isNewTask: true);
+                  // }),
                   Divider(height: 16, color: Colors.blueGrey),
                   (loginstat == 0)
                   ? Column(

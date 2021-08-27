@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTProfileSettingWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
@@ -39,7 +40,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectprofile&lgid=" + lgid),
+            server + "jtnew_provider_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -71,7 +72,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -90,7 +91,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
 
     http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_updateprofile&id=" + lgid
+            server + "jtnew_provider_updateprofile&id=" + lgid
                 + "&names=" + name
                 + "&type=" + category
                 + "&telno=" + profile[0]["phone_no"]

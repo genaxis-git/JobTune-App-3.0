@@ -133,7 +133,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                     child: Stack(
                       children: [
                         Image.network(
-                          "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                          "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
                           fit: BoxFit.cover,
                           height: 110,
                           width: 126,

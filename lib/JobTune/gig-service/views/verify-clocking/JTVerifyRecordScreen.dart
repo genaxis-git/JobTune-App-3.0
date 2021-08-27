@@ -475,7 +475,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                           )
                             : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/in/'+ widget.imgin),
+                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/in/'+ widget.imgin),
                           ),
                           SizedBox(height: 20,),
                         ],
@@ -662,7 +662,7 @@ class _JTVerifyRecordScreenState extends State<JTVerifyRecordScreen> {
                           )
                               : Padding(
                             padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/clockingtest/out/'+ widget.imgout),
+                            child: Image.network('https://jobtune.ai/gig/JobTune/assets/evidence/out/'+ widget.imgout),
                           ),
                           SizedBox(height: 20,),
                         ],

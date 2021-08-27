@@ -253,7 +253,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       margin: EdgeInsets.symmetric(horizontal: 16.0),
                       alignment: FractionalOffset.center,
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img),
+                        backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
                         radius: 50,
                       ),
                     ),

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
@@ -141,7 +142,7 @@ class _SpendingListState extends State<SpendingList> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectpending&id="+lgid
+            server + "jtnew_provider_selectpending&id="+lgid
         ),
         headers: {"Accept": "application/json"});
 
@@ -239,7 +240,7 @@ class _ReveiceListState extends State<ReveiceList> {
 
     http.Response response = await http.get(
         Uri.parse(
-            "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=jtnew_provider_selectcomplete&id="+lgid
+            server + "jtnew_provider_selectcomplete&id="+lgid
         ),
         headers: {"Accept": "application/json"});
 
