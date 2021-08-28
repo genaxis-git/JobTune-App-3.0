@@ -5,6 +5,8 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
@@ -32,6 +34,9 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   var passCont = TextEditingController();
 
   var passFocus = FocusNode();
+
+  String emailstatus = "false";
+  String passstatus = "false";
 
   // functions starts //
 
@@ -80,16 +85,21 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
           }
         }
         else {
-          // alert: not confirmed yet
+          showInDialog(context,
+              child: AlertVerifyEmail(),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
         }
       }
       else {
-        // alert: wrong password
+        showInDialog(context,
+            child: AlertWrongPassword(),
+            backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
       }
     }
     else {
-      // alert: not available
-      JTSignUpScreen().launch(context, isNewTask: true);
+      showInDialog(context,
+          child: AlertNotRegistered(),
+          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
     }
   }
 
@@ -154,9 +164,18 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (s) {
-                      if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      if (!s.trim().validateEmail()) return 'Email is invalid';
-                      return null;
+                      if (s!.trim().isEmpty) {
+                        emailstatus = "false";
+                        return errorThisFieldRequired;
+                      }
+                      if (!s.trim().validateEmail()) {
+                        emailstatus = "false";
+                        return 'Email is invalid';
+                      }
+                      else{
+                        emailstatus = "true";
+                        return null;
+                      }
                     },
                     onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
                     textInputAction: TextInputAction.next,
@@ -164,7 +183,6 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                   16.height,
                   TextFormField(
                     obscureText: obscureText,
-                    focusNode: passFocus,
                     controller: passCont,
                     style: primaryTextStyle(),
                     decoration: InputDecoration(
@@ -180,7 +198,14 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                       }),
                     ),
                     validator: (s) {
-
+                      if(s!.isEmpty){
+                        passstatus = "false";
+                        return 'This field is required';
+                      }
+                      else{
+                        passstatus = "true";
+                        return null;
+                      }
                     },
                   ),
                   GestureDetector(
@@ -200,7 +225,12 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                     decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                     child: Text('Sign In', style: boldTextStyle(color: white, size: 18)),
                   ).onTap(() {
-                    readLogin(emailCont.text, passCont.text);
+                    if(emailstatus == "true" && passstatus == "true") {
+                      readLogin(emailCont.text, passCont.text);
+                    }
+                    else{
+                      toast("Complete the form before proceed.");
+                    }
                   }),
                   10.height,
                   Container(
@@ -215,6 +245,354 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
               ),
             ),
           ).center(),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertVerifyEmail extends StatefulWidget {
+  @override
+  _AlertVerifyEmailState createState() => _AlertVerifyEmailState();
+}
+
+class _AlertVerifyEmailState extends State<AlertVerifyEmail> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "You have not confirmed the use of this email in the previous registration process. Please check your inbox and confirm to complete the registration process before you are allowed to Sign In.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  GestureDetector(
+                    onTap: () {
+                      finish(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      child: Center(
+                        child: Text("Okay", style: boldTextStyle(color: white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertWrongPassword extends StatefulWidget {
+  @override
+  _AlertWrongPasswordState createState() => _AlertWrongPasswordState();
+}
+
+class _AlertWrongPasswordState extends State<AlertWrongPassword> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Wrong Password",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "You may have forgotten your password. Please try again or you are allowed to reset the password if you wish.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Try again", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JTForgotPasswordScreen()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Reset Password", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertNotRegistered extends StatefulWidget {
+  @override
+  _AlertNotRegisteredState createState() => _AlertNotRegisteredState();
+}
+
+class _AlertNotRegisteredState extends State<AlertNotRegistered> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Not Registered",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "You have not registered this email yet. Or probably you have key-in the wrong one. Please try again or you may register this email first.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Try again", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JTSignUpScreen()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Register", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
         ),
       ),
     );
