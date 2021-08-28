@@ -180,8 +180,7 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
                       }),
                     ),
                     validator: (s) {
-                      if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      return null;
+
                     },
                   ),
                   GestureDetector(
