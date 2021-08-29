@@ -129,8 +129,8 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   PickedFile? _image;
   File? _showimg;
-//  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/mobile_uploadPhoto_user.php';
-  final String uploadUrl = 'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/jtnew_uploadPhoto_user.php';
+ // final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/mobile_uploadPhoto_user.php';
+  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/jtnew_uploadPhoto_user.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -207,7 +207,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,
