@@ -10,32 +10,56 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'JTEnterCode.dart';
+import 'JTResetPasswordScreen.dart';
 
-class JTForgotPasswordScreen extends StatefulWidget {
-  static String tag = '/JTForgotPasswordScreen';
+class JTEnterCode extends StatefulWidget {
+  static String tag = '/JTEnterCode';
 
   @override
-  _JTForgotPasswordScreenState createState() => _JTForgotPasswordScreenState();
+  _JTEnterCodeState createState() => _JTEnterCodeState();
 }
 
-class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
+class _JTEnterCodeState extends State<JTEnterCode> {
   var emailCont = TextEditingController();
+  var codes = TextEditingController();
   bool autoValidate = false;
   var formKey = GlobalKey<FormState>();
   String emailstatus = "false";
+  String codestatus = "false";
 
-  List profile = [];
-  Future<void> sendingCode(email,digit) async {
-    http.get(
+  List user = [];
+
+  Future<void> checkCode(email,pass) async {
+    http.Response response = await http.get(
         Uri.parse(
-            server + "jt_mail_forgotpassword&jemail=" + email + "&host=jobtune.ai&nums=" + digit),
+            server + "jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
-    showInDialog(context,
-        child: AlertForgotPassword(),
-        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+    this.setState(() {
+      user = json.decode(response.body);
+    });
+    
+    if(user.length > 0){
+      if(user[0]["password"].split("").length == 6){
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => JTResetPasswordScreen(id: email)
+          ),
+        );
+      }
+      else{
+        showInDialog(context,
+            child: AlertNoRequest(),
+            backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+      }
+    }
+    else{
+      showInDialog(context,
+          child: AlertNotRegistered(),
+          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+    }
   }
 
   @override
@@ -51,7 +75,7 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context, 'Forgot Password'),
+      appBar: appBar(context, 'Confirmation Code'),
 //      drawer: DTDrawerWidget(),
       resizeToAvoidBottomInset: false,
       body: Center(
@@ -68,8 +92,8 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Forgot Password', style: boldTextStyle(size: 24)),
-                    Text('To reset your password, enter your email so that we will be able to send you 6 digit code to you.', style: secondaryTextStyle()),
+                    Text('Confirmation Code', style: boldTextStyle(size: 24)),
+                    Text('Key-in your email and the 6 digits that you received.', style: secondaryTextStyle()),
                     30.height,
                     TextFormField(
                       controller: emailCont,
@@ -88,10 +112,6 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
                           emailstatus = "false";
                           return errorThisFieldRequired;
                         }
-                        if (!s.trim().validateEmail()) {
-                          emailstatus = "false";
-                          return 'Email is invalid';
-                        }
                         else {
                           emailstatus = "true";
                           return null;
@@ -99,34 +119,40 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
                       },
                       textInputAction: TextInputAction.done,
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        JTEnterCode().launch(context);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(top: 8, bottom: 8),
-                        alignment: Alignment.topRight,
-                        child: Text("I have Confirmation Code", style: boldTextStyle(color: Color(0xFF0A79DF))),
+                    12.height,
+                    TextFormField(
+                      controller: codes,
+                      style: primaryTextStyle(),
+                      decoration: InputDecoration(
+                        labelText: '6-digit code',
+                        contentPadding: EdgeInsets.all(16),
+                        labelStyle: secondaryTextStyle(),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                       ),
+                      keyboardType: TextInputType.number,
+                      validator: (s) {
+                        if (s!.trim().isEmpty) {
+                          codestatus = "false";
+                          return errorThisFieldRequired;
+                        }
+                        else {
+                          codestatus = "true";
+                          return null;
+                        }
+                      },
+                      textInputAction: TextInputAction.done,
                     ),
                     20.height,
                     Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                       decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
-                      child: Text('Send Code', style: boldTextStyle(color: white, size: 18)),
+                      child: Text('Go', style: boldTextStyle(color: white, size: 18)),
                     ).onTap(() async {
-                      var rnd = new Random();
-                      var next = rnd.nextDouble() * 1000000;
-                      while (next < 100000) {
-                        next *= 10;
-                      }
-
-                      if(emailstatus == "true"){
-                        sendingCode(emailCont.text,next.toInt().toString());
-                      }
-                      else{
-                        toast("Key-in your email first.");
+                      if(emailstatus == "true" && codestatus == "true"){
+                        checkCode(emailCont.text,codes.text);
                       }
                     }),
                   ],
@@ -140,12 +166,12 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
   }
 }
 
-class AlertForgotPassword extends StatefulWidget {
+class AlertNoRequest extends StatefulWidget {
   @override
-  _AlertForgotPasswordState createState() => _AlertForgotPasswordState();
+  _AlertNoRequestState createState() => _AlertNoRequestState();
 }
 
-class _AlertForgotPasswordState extends State<AlertForgotPassword> {
+class _AlertNoRequestState extends State<AlertNoRequest> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -188,7 +214,7 @@ class _AlertForgotPasswordState extends State<AlertForgotPassword> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Reset Password Begin..",
+                        "Opss..",
                         style: TextStyle(
                             fontWeight: FontWeight.bold
                         ),
@@ -201,7 +227,7 @@ class _AlertForgotPasswordState extends State<AlertForgotPassword> {
                     children: [
                       Flexible(
                         child: Text(
-                          "We sent you an email. Please check your inbox and follow the instruction as has been advised.",
+                          "Your password reset request is not on our records. This field is only for users who have already made a password reset request.",
                           textAlign: TextAlign.center,
                         ),
                       )

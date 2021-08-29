@@ -26,7 +26,6 @@ dependencies:
   url_launcher: ^6.0.3
   http: ^0.13.3
   html: ^0.15.0
-  sms_maintained: ^0.2.5
   package_info: ^2.0.2
 
   # IMAGES

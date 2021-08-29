@@ -66,7 +66,7 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
   Future<void> smtp(email, pass) async{
     http.get(
         Uri.parse(
-            server + "jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+            server + "jt_mail&jemail=" + email + "&host=jobtune.ai"),
         headers: {"Accept": "application/json"}
     );
 
