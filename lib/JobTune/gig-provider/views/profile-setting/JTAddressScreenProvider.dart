@@ -90,7 +90,7 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   @override

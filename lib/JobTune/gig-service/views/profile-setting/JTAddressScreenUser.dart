@@ -102,7 +102,7 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   @override

@@ -124,7 +124,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   PickedFile? _image;

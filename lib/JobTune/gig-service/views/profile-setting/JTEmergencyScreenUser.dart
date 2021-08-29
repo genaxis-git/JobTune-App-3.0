@@ -81,7 +81,7 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   @override

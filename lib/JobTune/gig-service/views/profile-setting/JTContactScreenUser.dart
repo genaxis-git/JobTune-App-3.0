@@ -81,7 +81,7 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   @override

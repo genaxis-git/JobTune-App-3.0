@@ -85,7 +85,7 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
         headers: {"Accept": "application/json"}
     );
 
-    //alert: update success
+    toast("Updated!");
   }
 
   @override
