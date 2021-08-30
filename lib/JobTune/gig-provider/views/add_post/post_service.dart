@@ -33,7 +33,7 @@ class _PostServiceState extends State<PostService> {
   var descCont = TextEditingController();
   var locationCont = TextEditingController();
   var rateCont = TextEditingController();
-
+  bool _isSelected_agree = false;
   var packnameCont = TextEditingController();
   var priceCont = TextEditingController();
   var timeCont = TextEditingController();
@@ -58,7 +58,30 @@ class _PostServiceState extends State<PostService> {
     }
   }
 
-  Future<void> insertService(days, starts, ends, title, category, by, rate, desc, location) async {
+  List fee = [];
+  String insurancefee = "";
+  Future<void> readFee(a) async {
+    print(a);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      fee = json.decode(response.body);
+    });
+
+    for(var m=0;m<fee.length;m++){
+      if(fee[m]["category"] == a){
+        setState(() {
+          insurancefee = fee[m]["insurance_pl_fee"];
+        });
+      }
+    }
+  }
+
+  Future<void> insertService(days, starts, ends, title, category, by, rate, desc, location, fee) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
     http.get(
@@ -73,6 +96,7 @@ class _PostServiceState extends State<PostService> {
                 + '&starts=' + starts
                 + '&ends=' + ends
                 + '&location=' + location
+                + '&fee=' + fee
         ),
         headers: {"Accept": "application/json"}
     );
@@ -523,6 +547,7 @@ class _PostServiceState extends State<PostService> {
                   setState(() {
                     toast(newValue);
                     selectedIndexCategory = newValue;
+                    readFee(selectedIndexCategory.toString());
                   });
                 },
                 items: listOfCategory.map((category) {
@@ -853,6 +878,58 @@ class _PostServiceState extends State<PostService> {
               ),
               16.height,
               Column(children:_children),
+              (insurancefee != "")
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  20.height,
+                  // Container(
+                  //   alignment: Alignment.topLeft,
+                  //   child: CheckboxListTile(
+                  //     title: Column(
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             Flexible(
+                  //               child: Text(
+                  //                 "I agree that a sum of RM "+insurancefee+" will be deducted from the total amount of payment I will receive each time as my insurance fee.",
+                  //                 maxLines: 4,
+                  //                 overflow: TextOverflow.clip,
+                  //                 style: TextStyle(
+                  //                   fontSize: 15,
+                  //                 ),
+                  //               ),
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     value: _isSelected_agree,
+                  //     onChanged: (newValue) {
+                  //       setState(() {
+                  //         _isSelected_agree = newValue!;
+                  //       });
+                  //     },
+                  //     controlAffinity: ListTileControlAffinity.leading,
+                  //   ),
+                  // ),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "We would like to inform you that a sum of RM "+insurancefee+" will be deducted from the total amount of payment you will receive each time as your insurance fee.",
+                          maxLines: 4,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              )
+              : Container(),
               16.height,
               GestureDetector(
                  onTap: () {
@@ -941,26 +1018,26 @@ class _PostServiceState extends State<PostService> {
 
                    if(selectedTimeOUT.hour > selectedTimeIN.hour) {
                      if(titleCont.text == "" || descCont.text == "" || locationCont.text == "" || stringList == "") {
-                       // alert: tak lengkap
+                       toast("Form not complete");
                      }
                      else {
                        if(selectedIndexCategory != 'Category') {
                          if(selectedRateBy == 'Hour') {
                            rateperhour = rateCont.text;
-                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text);
+                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
                          }
                          else {
                            rateperhour = "0.00";
-                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text);
+                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
                          }
                        }
                        else{
-                         // alert: choose category
+                         toast("Please choose service category first.");
                        }
                      }
                    }
                    else {
-                     // alert: error masa
+                     toast("Error: something wrong with the Shift time selection. Please check again");
                    }
                  },
                 child: Container(

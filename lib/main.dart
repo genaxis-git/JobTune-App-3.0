@@ -68,7 +68,8 @@ class _MyAppState extends State<MyApp> {
         routes: routes(),
         title: '$mainAppName${!isMobile ? ' ${platformName()}' : ''}',
 //        home: DTWalkThoughScreen(),
-        home: JTDashboardScreenGuest(),
+//         home: JTDashboardScreenGuest(),
+        home: JTDashboardSreenUser(),
         theme: !appStore.isDarkModeOn
             ? AppThemeData.lightTheme
             : AppThemeData.darkTheme,

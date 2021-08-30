@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/webview_payment.dart';
@@ -49,6 +50,8 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   int shippingCharges = 0;
   int mainCount = 0;
 
+  String daystatus = "false";
+  String timestatus = "false";
 
   // function starts //
   List profile = [];
@@ -85,6 +88,8 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
   String category = "";
   String days = "";
   String hours = "";
+  String startsdb = "";
+  String endsdb = "";
   String location = "";
   String by = "Package";
   Future<void> readService() async {
@@ -104,6 +109,8 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
       desc = info[0]["description"];
       category = info[0]["category"];
       days = info[0]["available_day"];
+      startsdb = info[0]["available_start"];
+      endsdb = info[0]["available_end"];
       hours = info[0]["available_start"] + " to " + info[0]["available_end"];
       location = info[0]["location"];
       by = info[0]["rate_by"];
@@ -153,6 +160,140 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
 
     for(var m=0;m<category.length;m++) {
       listOfPackage.add(packs[m]["package_name"] + " | RM " + packs[m]["package_rate"] + " | est: " + packs[m]["package_time"] + " Hr");
+    }
+  }
+
+  List bookings = [];
+  List approval = [];
+  Future<void> checkAvailability(pickedstart,pickedend,pickedhour,desc,totalpay,pickedpack) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+    print(server + "jtnew_user_checkbooked&id=" + proemail + "&date=" + pickedstart.split(" ")[0]);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_checkbooked&id=" + proemail + "&date=" + pickedstart.split(" ")[0]),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      bookings = json.decode(response.body);
+    });
+
+    var jammula;
+    var jamakhir;
+    var minitmula;
+    var minitakhir;
+    if(bookings.length > 0) {
+      for (var m = 0; m < bookings.length; m++) {
+        var sejamsebelum = TimeOfDay.fromDateTime(
+            DateTime.parse(bookings[m]["service_start"]).add(
+                Duration(hours: -1)));
+        if (sejamsebelum.hour < 10) {
+          jammula = "0" + sejamsebelum.hour.toString();
+        }
+        else {
+          jammula = sejamsebelum.hour.toString();
+        }
+        if (sejamsebelum.minute < 10) {
+          minitmula = "0" + sejamsebelum.minute.toString();
+        }
+        else {
+          minitmula = sejamsebelum.minute.toString();
+        }
+        var bermula = pickedstart.split(" ")[0] + " " + jammula + ":" + minitmula + ":00";
+        var sejamselepas = TimeOfDay.fromDateTime(DateTime.parse(bookings[m]["service_end"]).add(Duration(hours: 1)));
+        if (sejamselepas.hour < 10) {
+          jamakhir = "0" + sejamselepas.hour.toString();
+        }
+        else {
+          jamakhir = sejamselepas.hour.toString();
+        }
+        if (sejamselepas.minute < 10) {
+          minitakhir = "0" + sejamselepas.minute.toString();
+        }
+        else {
+          minitakhir = sejamselepas.minute.toString();
+        }
+        var berakhir = pickedend.split(" ")[0] + " " + jamakhir + ":" +
+            minitakhir + ":00";
+
+        if(DateTime.parse(pickedstart).isAtSameMomentAs(DateTime.parse(bermula)) || DateTime.parse(pickedstart).isAtSameMomentAs((DateTime.parse(berakhir)))){
+          var result = "not allowed";
+          print("1");
+          approval.add(result);
+        }
+        else if(DateTime.parse(pickedend).isAtSameMomentAs(DateTime.parse(bermula)) || DateTime.parse(pickedend).isAtSameMomentAs(DateTime.parse(berakhir))){
+          var result = "not allowed";
+          print("2");
+          approval.add(result);
+        }
+        else if (DateTime.parse(pickedstart).isAfter(DateTime.parse(bermula)) && DateTime.parse(pickedstart).isBefore(DateTime.parse(berakhir))) {
+          var result = "not allowed";
+          print("3");
+          approval.add(result);
+        }
+        else if(DateTime.parse(pickedend).isAfter((DateTime.parse(bermula))) && DateTime.parse(pickedend).isBefore((DateTime.parse(berakhir)))) {
+          var result = "not allowed";
+          print("4");
+          approval.add(result);
+        }
+        else {
+          var result = "allowed";
+          approval.add(result);
+        }
+      }
+      print(approval);
+      if(approval.contains("not allowed") == true){
+        approval = [];
+        showInDialog(context,
+            child: AlertNotAvailable(),
+            backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+      }
+      else{
+        approval = [];
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => WebviewPayment(
+              postid: widget.id,
+              clientid: email,
+              starts: pickedstart,
+              ends: pickedend,
+              quantity: pickedhour,
+              address: userloc,
+              desc: desc,
+              type: "gig-service",
+              total: totalpay,
+              packname: pickedpack,
+              username: fullname,
+              teluser: usercall,
+              proname: proname,
+              proemail: proemail,
+              protel: protel,
+              servicename: servicename,
+            )
+        ));
+      }
+    }
+    else{
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => WebviewPayment(
+            postid: widget.id,
+            clientid: email,
+            starts: pickedstart,
+            ends: pickedend,
+            quantity: pickedhour,
+            address: userloc,
+            desc: desc,
+            type: "gig-service",
+            total: totalpay,
+            packname: pickedpack,
+            username: fullname,
+            teluser: usercall,
+            proname: proname,
+            proemail: proemail,
+            protel: protel,
+            servicename: servicename,
+          )
+      ));
     }
   }
 
@@ -227,9 +368,20 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate)
       setState(() {
-        print(picked);
         selectedDate = picked;
-        print(selectedTimeIN);
+        var pickeddays = DateFormat('EEEE').format(selectedDate);
+        var status = days.split(",").contains(pickeddays);
+        if(status == false){
+          daystatus = "false";
+          print(daystatus);
+          showInDialog(context,
+              child: AlertNoDay(date: days),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+        else{
+          daystatus = "true";
+          print(daystatus);
+        }
       });
   }
 
@@ -250,6 +402,44 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
     if (pickedIN != null)
       setState(() {
         selectedTimeIN = pickedIN;
+        DateTime nows = DateTime.now();
+        String now = DateFormat('yyyy-MM-d').format(nows);
+        var jams;
+        var mins;
+        if(selectedTimeIN.hour < 10){
+          jams = "0" + selectedTimeIN.hour.toString();
+        }
+        else{
+          jams = selectedTimeIN.hour.toString();
+        }
+        if(selectedTimeIN.minute < 10){
+          mins = "0" + selectedTimeIN.minute.toString();
+        }
+        else{
+          mins = selectedTimeIN.minute.toString();
+        }
+
+        if(DateTime.parse(now.toString().split(" ")[0] + " " + jams + ":" + mins).isAtSameMomentAs((DateTime.parse(now.toString() + " " + endsdb)))){
+          timestatus = "false";
+          showInDialog(context,
+              child: AlertNoTime(date: hours),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+        else if(DateTime.parse(now.toString().split(" ")[0] + " " + jams + ":" + mins).isBefore((DateTime.parse(now.toString() + " " + startsdb)))){
+          timestatus = "false";
+          showInDialog(context,
+              child: AlertNoTime(date: hours),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+        else if(DateTime.parse(now.toString().split(" ")[0] + " " + jams + ":" + mins).isAfter((DateTime.parse(now.toString() + " " + endsdb)))){
+          timestatus = "false";
+          showInDialog(context,
+              child: AlertNoTime(date: hours),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+        }
+        else{
+          timestatus = "true";
+        }
       });
   }
 
@@ -623,106 +813,131 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                   decoration: boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xFF0A79DF)),
                   child: Text('Checkout', style: boldTextStyle(color: white)),
                 ).onTap(() {
-                  if(by == "Hour " || by == "Hour") {
-                    var jammula;
-                    var minitmula;
-                    var jamakhir;
-                    var minitakhir;
-                    if(selectedTimeIN.hour < 10){
-                      jammula = "0" + selectedTimeIN.hour.toString();
-                    }
-                    else{
-                      jammula = selectedTimeIN.hour.toString();
-                    }
-                    if(selectedTimeIN.minute < 10){
-                      minitmula = "0" + selectedTimeIN.minute.toString();
-                    }
-                    else{
-                      minitmula = selectedTimeIN.minute.toString();
-                    }
-                    var pickedhr = int.parse(pickinghour.text.toString());
-                    var pickedtime = jammula.toString()+":"+minitmula.toString()+":00";
-                    var quantity = pickinghour.text.toString();
-                    var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
-                    var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
-                    var ends = selectedDate.toString().split(" ")[0] + " " + addinghrs.hour.toString() + ":" + addinghrs.minute.toString() + ":00";
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => WebviewPayment(
-                          postid: widget.id,
-                          clientid: email,
-                          starts: starts.toString(),
-                          ends: ends.toString(),
-                          quantity: quantity.toString(),
-                          address: userloc,
-                          desc: detail.text,
-                          type: "gig-service",
-                          total: total.toString(),
-                          packname: servicename,
-                          username: fullname,
-                          teluser: usercall,
-                          proname: proname,
-                          proemail: proemail,
-                          protel: protel,
-                          servicename: servicename,
-                        )
-                    ));
+                  var pickeddays = DateFormat('EEEE').format(selectedDate);
+                  var status = days.split(",").contains(pickeddays);
+                  if(status == false){
+                    daystatus = "false";
+                    print(daystatus);
+                    showInDialog(context,
+                        child: AlertNoDay(date: days),
+                        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
                   }
-                  else {
-                    var jammula;
-                    var minitmula;
-                    var jamakhir;
-                    var minitakhir;
-                    if(selectedTimeIN.hour < 10){
-                      jammula = "0" + selectedTimeIN.hour.toString();
+                  else{
+                    daystatus = "true";
+                    print(daystatus);
+                  }
+                  DateTime nows = DateTime.now();
+                  String now = DateFormat('yyyy-MM-d').format(nows);
+                  var jams;
+                  var mins;
+                  if(selectedTimeIN.hour < 10){
+                    jams = "0" + selectedTimeIN.hour.toString();
+                  }
+                  else{
+                    jams = selectedTimeIN.hour.toString();
+                  }
+                  if(selectedTimeIN.minute < 10){
+                    mins = "0" + selectedTimeIN.minute.toString();
+                  }
+                  else{
+                    mins = selectedTimeIN.minute.toString();
+                  }
+                  if(DateTime.parse(now.toString().split(" ")[0] + " " + jams + ":" + mins).isBefore((DateTime.parse(now.toString() + " " + startsdb)))){
+                    timestatus = "false";
+                    showInDialog(context,
+                        child: AlertNoTime(date: hours),
+                        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                  }
+                  else{
+                    if(DateTime.parse(now.toString().split(" ")[0] + " " + jams + ":" + mins).isAfter((DateTime.parse(now.toString() + " " + endsdb)))){
+                      timestatus = "false";
+                      showInDialog(context,
+                          child: AlertNoTime(date: hours),
+                          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
                     }
                     else{
-                      jammula = selectedTimeIN.hour.toString();
+                      timestatus = "true";
                     }
-                    if(selectedTimeIN.minute < 10){
-                      minitmula = "0" + selectedTimeIN.minute.toString();
+                  }
+                  if(daystatus == "true" && timestatus == "true"){
+                    if(by == "Hour " || by == "Hour") {
+                      var jammula;
+                      var minitmula;
+                      var jamakhir;
+                      var minitakhir;
+                      if(selectedTimeIN.hour < 10){
+                        jammula = "0" + selectedTimeIN.hour.toString();
+                      }
+                      else{
+                        jammula = selectedTimeIN.hour.toString();
+                      }
+                      if(selectedTimeIN.minute < 10){
+                        minitmula = "0" + selectedTimeIN.minute.toString();
+                      }
+                      else{
+                        minitmula = selectedTimeIN.minute.toString();
+                      }
+                      var pickedhr = int.parse(pickinghour.text.toString());
+                      var pickedtime = jammula.toString()+":"+minitmula.toString()+":00";
+                      var quantity = pickinghour.text.toString();
+                      var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
+                      var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
+                      if(selectedTimeIN.hour < 10){
+                        jamakhir = "0" + addinghrs.hour.toString();
+                      }
+                      else{
+                        jamakhir = addinghrs.hour.toString();
+                      }
+                      if(selectedTimeIN.minute < 10){
+                        minitakhir = "0" + addinghrs.minute.toString();
+                      }
+                      else{
+                        minitakhir = addinghrs.minute.toString();
+                      }
+                      var ends = selectedDate.toString().split(" ")[0] + " " + jamakhir + ":" + minitakhir + ":00";
+                      checkAvailability(starts.toString(),ends.toString(),quantity.toString(),detail.text,total.toString(),servicename);
                     }
-                    else{
-                      minitmula = selectedTimeIN.minute.toString();
+                    else {
+                      var jammula;
+                      var minitmula;
+                      var jamakhir;
+                      var minitakhir;
+                      if(selectedTimeIN.hour < 10){
+                        jammula = "0" + selectedTimeIN.hour.toString();
+                      }
+                      else{
+                        jammula = selectedTimeIN.hour.toString();
+                      }
+                      if(selectedTimeIN.minute < 10){
+                        minitmula = "0" + selectedTimeIN.minute.toString();
+                      }
+                      else{
+                        minitmula = selectedTimeIN.minute.toString();
+                      }
+                      var pickedhr = int.parse(selectedIndexPackage.toString().split(" | ")[2].split(" ")[1]);
+                      var pickedtime = jammula+":"+minitmula+":00";
+                      var quantity = selectedIndexPackage.toString().split(" | ")[2].split(" ")[1];
+                      var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
+                      var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
+                      if(addinghrs.hour < 10){
+                        jamakhir = "0" + addinghrs.hour.toString();
+                      }
+                      else{
+                        jamakhir = addinghrs.hour.toString();
+                      }
+                      if(addinghrs.minute < 10){
+                        minitakhir = "0" + addinghrs.minute.toString();
+                      }
+                      else{
+                        minitakhir = addinghrs.minute.toString();
+                      }
+                      var ends = selectedDate.toString().split(" ")[0] + " " + jamakhir + ":" + minitakhir + ":00";
+                      var pickedpack = selectedIndexPackage.toString().split(" | ")[0];
+                      checkAvailability(starts.toString(),ends.toString(),quantity.toString(),detail.text,total.toString(),pickedpack.toString());
                     }
-                    var pickedhr = int.parse(selectedIndexPackage.toString().split(" | ")[2].split(" ")[1]);
-                    var pickedtime = jammula+":"+minitmula+":00";
-                    var quantity = selectedIndexPackage.toString().split(" | ")[2].split(" ")[1];
-                    var starts = selectedDate.toString().split(" ")[0] + " " + pickedtime;
-                    var addinghrs = TimeOfDay.fromDateTime(DateTime.parse(starts).add(Duration(hours: pickedhr)));
-                    if(addinghrs.hour < 10){
-                      jamakhir = "0" + addinghrs.hour.toString();
-                    }
-                    else{
-                      jamakhir = addinghrs.hour.toString();
-                    }
-                    if(addinghrs.minute < 10){
-                      minitakhir = "0" + addinghrs.minute.toString();
-                    }
-                    else{
-                      minitakhir = addinghrs.minute.toString();
-                    }
-                    var ends = selectedDate.toString().split(" ")[0] + " " + jamakhir + ":" + minitakhir + ":00";
-                    var pickedpack = selectedIndexPackage.toString().split(" | ")[0];
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => WebviewPayment(
-                          postid: widget.id,
-                          clientid: email,
-                          starts: starts.toString(),
-                          ends: ends.toString(),
-                          quantity: quantity.toString(),
-                          address: userloc,
-                          desc: detail.text,
-                          type: "gig-service",
-                          total: total.toString(),
-                          packname: pickedpack.toString(),
-                          username: fullname,
-                          teluser: usercall,
-                          proname: proname,
-                          proemail: proemail,
-                          protel: protel,
-                          servicename: servicename,
-                        )
-                    ));
+                  }
+                  else{
+                    toast("Please place your booking within the operation hour of this service. You may check again the details on the previous page.");
                   }
                 }),
               ],
@@ -816,6 +1031,339 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
       body: JTContainerX(
         mobile: mobileWidget(),
         web: webWidget(),
+      ),
+    );
+  }
+}
+
+class AlertNoDay extends StatefulWidget {
+  const AlertNoDay({Key? key, required this.date}) : super(key: key);
+  final String date;
+
+  @override
+  _AlertNoDayState createState() => _AlertNoDayState();
+}
+
+class _AlertNoDayState extends State<AlertNoDay> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Container(
+              //       child: Image.network(
+              //         "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+              //         width: context.width() * 0.70,
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sorry..",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "This service is not available on the day that you pick.\n(Available day: " + widget.date + ")",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Change", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertNoTime extends StatefulWidget {
+  const AlertNoTime({Key? key, required this.date}) : super(key: key);
+  final String date;
+
+  @override
+  _AlertNoTimeState createState() => _AlertNoTimeState();
+}
+
+class _AlertNoTimeState extends State<AlertNoTime> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Container(
+              //       child: Image.network(
+              //         "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+              //         width: context.width() * 0.70,
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sorry..",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "This service is not available on the time that you pick.\n(Available only within: " + widget.date + ")",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Change", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertNotAvailable extends StatefulWidget {
+  @override
+  _AlertNotAvailableState createState() => _AlertNotAvailableState();
+}
+
+class _AlertNotAvailableState extends State<AlertNotAvailable> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     Container(
+              //       child: Image.network(
+              //         "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+              //         width: context.width() * 0.70,
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Sorry..",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "Your selected slot is full. This also refering to 1 hour before and after any of these booking is started. Please refer to the schedule and pick another day.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Change", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
       ),
     );
   }

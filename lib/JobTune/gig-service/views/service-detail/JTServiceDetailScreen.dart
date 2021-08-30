@@ -530,6 +530,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           (fullname == "" && address == "")
                           ? Container()
                           : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
