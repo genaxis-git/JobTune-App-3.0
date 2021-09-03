@@ -119,19 +119,19 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    // JTDashboardScreenNomad().launch(context, isNewTask: true);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
-                    );
+                    JTDashboardScreenNomad().launch(context, isNewTask: true);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
+                    // );
                   }),
-                  // Container(
-                  //   padding: EdgeInsets.all(16),
-                  //   child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
-                  // ).onTap(() {
-                  //   appStore.setDrawerItemIndex(-1);
-                  //   JTDashboardScreenProduct().launch(context, isNewTask: true);
-                  // }),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+                    JTDashboardScreenProduct().launch(context, isNewTask: true);
+                  }),
                   Divider(height: 16, color: Colors.blueGrey),
                   (loginstat == 0)
                   ? Column(

@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
-import 'dart:math';
 import 'package:geocoding/geocoding.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-import 'package:prokit_flutter/main/utils/AppImages.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardWidgetGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTServiceListCategory.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSearchScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSignInScreen.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
-import 'JTProductDetailScreen.dart';
 import 'JTProductDetailWidget.dart';
 
 class JTDashboardWidgetUser extends StatefulWidget {

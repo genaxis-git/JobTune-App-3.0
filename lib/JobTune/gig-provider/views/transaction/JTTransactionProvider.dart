@@ -139,7 +139,7 @@ class _SpendingListState extends State<SpendingList> {
   Future<void> readSpend() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
-
+print(server + "jtnew_provider_selectpending&id="+lgid);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_provider_selectpending&id="+lgid
@@ -189,7 +189,7 @@ class _SpendingListState extends State<SpendingList> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child:Image.network(
-                          "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/"+spendinglist[index]["profile_pic"],
+                          "http://jobtune.ai/gig/JobTune/assets/img/"+spendinglist[index]["profile_pic"],
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -203,11 +203,23 @@ class _SpendingListState extends State<SpendingList> {
                           Row(
                             children: <Widget>[
                               trans_text(spendinglist[index]["first_name"] + " " + spendinglist[index]["last_name"], textColor: appStore.textPrimaryColor, fontSize: 14.0, fontFamily: 'Semibold'),
-                              trans_text("RM "+spendinglist[index]["total_amount"], textColor: appStore.textSecondaryColor, fontSize: 14.0, fontFamily: 'Semibold')
+                              trans_text("RM "+double.parse(spendinglist[index]["total_amount"]).toStringAsFixed(2), textColor: appStore.textSecondaryColor, fontSize: 14.0, fontFamily: 'Semibold'),
                             ],
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           ),
-                          trans_text(spendinglist[index]["package_name"], fontSize: 14.0)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              trans_text(spendinglist[index]["package_name"], fontSize: 14.0),
+                              trans_text("- RM "+spendinglist[index]["insurance_fee"], textColor: Colors.red, fontSize: 14.0, fontFamily: 'Semibold'),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              trans_text("RM "+(double.parse(spendinglist[index]["total_amount"])-double.parse(spendinglist[index]["insurance_fee"])).toStringAsFixed(2), textColor: Colors.green, fontSize: 14.0, fontFamily: 'Bold'),
+                            ],
+                          )
                         ],
                       ),
                     )
@@ -287,7 +299,7 @@ class _ReveiceListState extends State<ReveiceList> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
                         child:Image.network(
-                          "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/"+spendinglist[index]["profile_pic"],
+                          "http://jobtune.ai/gig/JobTune/assets/img/"+spendinglist[index]["profile_pic"],
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -301,11 +313,23 @@ class _ReveiceListState extends State<ReveiceList> {
                           Row(
                             children: <Widget>[
                               trans_text(spendinglist[index]["first_name"] + " " + spendinglist[index]["last_name"], textColor: appStore.textPrimaryColor, fontSize: 14.0, fontFamily: 'Semibold'),
-                              trans_text("RM "+spendinglist[index]["total_amount"], textColor: appStore.textSecondaryColor, fontSize: 14.0, fontFamily: 'Semibold')
+                              trans_text("RM "+double.parse(spendinglist[index]["total_amount"]).toStringAsFixed(2), textColor: appStore.textSecondaryColor, fontSize: 14.0, fontFamily: 'Semibold')
                             ],
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           ),
-                          trans_text(spendinglist[index]["package_name"], fontSize: 14.0)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              trans_text(spendinglist[index]["package_name"], fontSize: 14.0),
+                              trans_text("- RM "+spendinglist[index]["insurance_fee"], textColor: Colors.red, fontSize: 14.0, fontFamily: 'Semibold'),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              trans_text("RM "+(double.parse(spendinglist[index]["total_amount"])-double.parse(spendinglist[index]["insurance_fee"])).toStringAsFixed(2), textColor: Colors.green, fontSize: 14.0, fontFamily: 'Bold'),
+                            ],
+                          )
                         ],
                       ),
                     )

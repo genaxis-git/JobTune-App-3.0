@@ -64,7 +64,7 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                child: Image.network("http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/" + ratinglist[index]["profile_pic"],
+                child: Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + ratinglist[index]["profile_pic"],
                     height: 30, width: 30, fit: BoxFit.cover)
                     .cornerRadiusWithClipRRect(40),
                 decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black54),

@@ -1,6 +1,10 @@
-//server URL
+//server URL - production
 final server =
     "https://jobtune.ai/REST/API/index.php?interface=";
+
+//server URL - dev
+final dev =
+    "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
 
 //server img
 final image =

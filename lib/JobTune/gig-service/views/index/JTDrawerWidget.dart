@@ -133,25 +133,25 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
 //                       JTDashboardScreenNomad().launch(context, isNewTask: true);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
+                        MaterialPageRoute(builder: (context) => JTDashboardScreenNomad()),
                       );
+                    } else {
+                      JTDashboardScreenNomad().launch(context, isNewTask: true);
+                    }
+                  }),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+
+                    if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+                      JTDashboardScreenProduct().launch(context, isNewTask: true);
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
                   }),
-//                   Container(
-//                     padding: EdgeInsets.all(16),
-//                     child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
-//                   ).onTap(() {
-//                     appStore.setDrawerItemIndex(-1);
-//
-//                     if (isMobile) {
-// //                      ProKitLauncher().launch(context, isNewTask: true);
-//                       JTDashboardScreenProduct().launch(context, isNewTask: true);
-//                     } else {
-//                       DTDashboardScreen().launch(context, isNewTask: true);
-//                     }
-//                   }),
                   Divider(height: 16, color: Colors.blueGrey),
                   (loginstat == 0)
                   ? Column(
