@@ -75,7 +75,7 @@ class _PostServiceState extends State<PostService> {
     for(var m=0;m<fee.length;m++){
       if(fee[m]["category"] == a){
         setState(() {
-          insurancefee = fee[m]["insurance_pl_fee"];
+          insurancefee = (double.parse(fee[m]["insurance_pl_fee"]) + 0.50).toStringAsFixed(2);
         });
       }
     }
