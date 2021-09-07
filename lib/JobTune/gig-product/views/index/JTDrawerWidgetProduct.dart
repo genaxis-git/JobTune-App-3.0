@@ -105,7 +105,7 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
 //                       JTDashboardScreenNomad().launch(context, isNewTask: true);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => JTDashboardScreenNomad()),
+                        MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employee")),
                       );
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);

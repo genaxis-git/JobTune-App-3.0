@@ -138,9 +138,9 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
           settingItem(context, 'Transaction', onTap: () {
             JTTransactionScreen().launch(context);
           }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
-          settingItem(context, 'Job History', onTap: () {
-            JTVerifyScreenUser().launch(context);
-          }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          // settingItem(context, 'Job History', onTap: () {
+          //   JTVerifyScreenUser().launch(context);
+          // }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,

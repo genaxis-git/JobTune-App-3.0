@@ -113,7 +113,7 @@ class _JTWalkThroughScreenEmployerState extends State<JTWalkThroughScreenEmploye
                   padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8)),
                 ).onTap(() {
-                  JTDashboardScreenNomad().launch(context);
+                  JTDashboardScreenNomad(id:"Employer").launch(context);
                 }),
                 secondChild: SizedBox(),
                 duration: Duration(milliseconds: 300),
@@ -132,7 +132,7 @@ class _JTWalkThroughScreenEmployerState extends State<JTWalkThroughScreenEmploye
                 decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8)),
               ).onTap(() {
                 finish(context);
-                JTDashboardScreenNomad().launch(context);
+                JTDashboardScreenNomad(id:"Employer").launch(context);
               }),
               left: 20,
               bottom: 20,

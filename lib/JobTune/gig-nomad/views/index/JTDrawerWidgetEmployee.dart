@@ -5,7 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
@@ -21,18 +23,17 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/widgets/materialWidgets/mwAppStrucutreWidgets/MWDrawerWidgets/MWDrawerScreen2.dart';
 
 import '../../../../main.dart';
-import 'JTDashboardScreenUser.dart';
 
 bool seen = false;
 
-class JTDrawerWidgetUser extends StatefulWidget {
-  static String tag = '/JTDrawerWidgetUser';
+class JTDrawerWidgetEmployee extends StatefulWidget {
+  static String tag = '/JTDrawerWidgetEmployee';
 
   @override
-  _JTDrawerWidgetUserState createState() => _JTDrawerWidgetUserState();
+  _JTDrawerWidgetEmployeeState createState() => _JTDrawerWidgetEmployeeState();
 }
 
-class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
+class _JTDrawerWidgetEmployeeState extends State<JTDrawerWidgetEmployee> {
   List<NavbarUserList> drawerItems = getDrawerItemsService();
   var scrollController = ScrollController();
 
@@ -94,7 +95,7 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   16.height,
-                  Text('Gig Service', style: secondaryTextStyle(size: 12)).paddingOnly(left: 16),
+                  Text('Gig Nomad', style: secondaryTextStyle(size: 12)).paddingOnly(left: 16),
                   4.height,
                   Container(
                     padding: EdgeInsets.all(16),
@@ -104,14 +105,14 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
 
                     if (isMobile) {
                       // ProKitLauncher().launch(context, isNewTask: true);
-                     JTDashboardScreenGuest().launch(context, isNewTask: true);
+                      JTDashboardScreenGuest().launch(context, isNewTask: true);
                     } else {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Service', style: boldTextStyle(color: appColorPrimary)),
+                    child: Text('Gig Service', style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
@@ -124,7 +125,7 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Nomad', style: boldTextStyle(color: appColorPrimary)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
 
@@ -154,48 +155,48 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                   }),
                   Divider(height: 16, color: Colors.blueGrey),
                   (loginstat == 0)
-                  ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        appStore.setDrawerItemIndex(-1);
-                        JTSignInScreen().launch(context, isNewTask: true);
-                      }),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Forgot Password', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        appStore.setDrawerItemIndex(-1);
-                        JTForgotPasswordScreen().launch(context, isNewTask: true);
-                      }),
-                    ],
-                  )
-                  : ListView.builder(
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-//                          color: appStore.selectedDrawerItem == index ? appColorPrimary.withOpacity(0.3) : appStore.scaffoldBackground,
-                        ),
-                        child: Text(
-                          drawerItems[index].name!,
-                          style: boldTextStyle(color: Colors.black),
-                        ),
-                      ).onTap(() {
-                        finish(context);
-                        appStore.setDrawerItemIndex(index);
-
-                        drawerItems[index].widget.launch(context);
-                      });
-                    },
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.only(top: 8, bottom: 8),
-                    itemCount: drawerItems.length,
-                    shrinkWrap: true,
-                  ),
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTSignInScreen().launch(context, isNewTask: true);
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Forgot Password', style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTForgotPasswordScreen().launch(context, isNewTask: true);
+                            }),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('My Account', style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => JTAccountScreenEmployee()),
+                              );
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('For Employer', style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employer")),
+                              );
+                            }),
+                          ],
+                        )
                 ],
               ),
             ),

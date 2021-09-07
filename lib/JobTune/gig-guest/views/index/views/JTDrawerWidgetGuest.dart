@@ -60,7 +60,7 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
       JTSignInScreenEmployer().launch(context, isNewTask: true);
     }
     else{
-      JTDashboardScreenNomad().launch(context, isNewTask: true);
+      JTDashboardScreenNomad(id:"Employer").launch(context, isNewTask: true);
     }
   }
 
@@ -129,7 +129,7 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    JTDashboardScreenNomad().launch(context, isNewTask: true);
+                    JTDashboardScreenNomad(id:"Employee").launch(context, isNewTask: true);
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),

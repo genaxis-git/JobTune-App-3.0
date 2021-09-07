@@ -99,7 +99,7 @@ class _JTSignInScreenEmployerState extends State<JTSignInScreenEmployer> {
           prefs.setString('employerID', email);
 
           if(emprcount > 1) {
-            JTDashboardScreenNomad().launch(context, isNewTask: true);
+            JTDashboardScreenNomad(id:"Employer").launch(context, isNewTask: true);
           }
           else {
             JTWalkThroughScreenEmployer().launch(context, isNewTask: true);
@@ -144,7 +144,7 @@ class _JTSignInScreenEmployerState extends State<JTSignInScreenEmployer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => JTDashboardScreenNomad()),
+                    builder: (context) => JTDashboardScreenNomad(id:"Employer")),
               );
             }),
       ),
