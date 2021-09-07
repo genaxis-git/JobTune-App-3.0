@@ -38,7 +38,7 @@ class _JTDashboardSreenUserState extends State<JTDashboardSreenUser> {
         builder: (context) => Scaffold(
           appBar: AppBar(
             backgroundColor: appStore.appBarColor,
-            title: appBarTitleWidget(context, 'JobTune'),
+            title: appBarTitleWidget(context, 'Gig Service'),
           ),
           drawer: JTDrawerWidgetUser(),
           body: JTDashboardWidgetUser(),

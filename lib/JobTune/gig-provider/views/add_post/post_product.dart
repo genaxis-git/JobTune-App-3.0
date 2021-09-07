@@ -13,7 +13,12 @@ import 'package:prokit_flutter/main/utils/AppColors.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart' as Path;
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
+import 'package:image_picker/image_picker.dart';
+import 'dart:async';
+import 'dart:io';
 
 import '../../../../main.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
@@ -48,6 +53,21 @@ class _PostProductState extends State<PostProduct> {
   var priceField = TextEditingController();
   var deliveryFeeField = TextEditingController();
   var availabilityField = TextEditingController();
+
+  final String uploadUrlin = server.productImageUpload;
+  final ImagePicker _pickerin = ImagePicker();
+  File? _imagein;
+
+  Future<void> getImage() async {
+    try {
+      final pickerImage = await _pickerin.getImage(source: ImageSource.gallery);
+      setState(() {
+        _imagein = File(pickerImage!.path);
+      });
+    } catch (e) {
+      print("Image picker error");
+    }
+  }
 
   List<String> listOfCategory = [
     'Category',
@@ -248,6 +268,19 @@ class _PostProductState extends State<PostProduct> {
         priceData, deliveryFeeData, totalPrice);
   }
 
+  Future<String?> uploadImage(filepath, url) async {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('kk:mm:ss d MMM y').format(now);
+    // final snackBar = SnackBar(
+    //     content: Text('Clock-in record sent at ' + formattedDate + ' !'));
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    request.fields['lgid'] = "5";
+    request.files.add(await http.MultipartFile.fromPath('image', filepath));
+    var res = await request.send();
+    return res.reasonPhrase;
+  }
+
   Future<void> addProduct(availableDay, titleData, descData, locationData,
       expectedDayData, priceData, deliveryFeeData, totalPrice) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -255,7 +288,7 @@ class _PostProductState extends State<PostProduct> {
     final jobtuneUser = "shahirah0397@gmail.com";
 
     http.get(
-        Uri.parse(server.server +
+        Uri.parse(server.devserver +
             "jtnew_product_insertproduct&j_providerid=" +
             jobtuneUser.toString() +
             "&j_title=" +
@@ -517,9 +550,43 @@ class _PostProductState extends State<PostProduct> {
               availabilityLabel(),
               availabilityDay(),
               16.height,
+              ButtonTheme(
+                minWidth: 500,
+                child: ElevatedButton(
+                  // textColor: Colors.white,
+                  // color: Colors.blueAccent,
+                  onPressed: () async {
+                    getImage();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Upload Photo',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            letterSpacing: 1),
+                      ),
+                      SizedBox(width: 5),
+                      Icon(
+                        Icons.camera_alt_sharp,
+                        size: 15,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              8.height,
               GestureDetector(
                 onTap: () {
                   getInput();
+                  uploadImage(_imagein!.path, uploadUrlin);
+                  var filename = Path.basename(_imagein!.path);
+                  DateTime now = DateTime.now();
+                  String formattedDate =
+                      DateFormat('y-MM-dd kk:mm:ss').format(now);
+                  // sendClockin(formattedDate.toString(), filename.toString());
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,

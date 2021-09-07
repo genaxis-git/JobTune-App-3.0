@@ -310,29 +310,6 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                     children: [
                       10.height,
                       searchTxt(),
-//                      Container(
-//                        margin: EdgeInsets.all(8),
-//                        height: 230,
-//                        child: Stack(
-//                          alignment: Alignment.bottomCenter,
-//                          children: [
-//                            PageView(
-//                              controller: pageController,
-//                              scrollDirection: Axis.horizontal,
-//                              children: pages,
-//                              onPageChanged: (index) {
-//                                selectedIndex = index;
-//                                setState(() {});
-//                              },
-//                            ).cornerRadiusWithClipRRect(8),
-//                            DotIndicator(
-//                              pages: pages,
-//                              indicatorColor: appColorPrimary,
-//                              pageController: pageController,
-//                            ),
-//                          ],
-//                        ),
-//                      ),
                     ],
                   ),
                 ],
@@ -342,91 +319,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
               horizontalList(),
               20.height,
               Text(' Featured', style: boldTextStyle()).paddingAll(8),
-              Container(height: 1000, child: JTProductList()),
-              // ListView.builder(
-              //   padding: EdgeInsets.all(8),
-              //   itemBuilder: (_, index) {
-              //     DTProductModel data = getProducts()[index];
-
-              //     return Container(
-              //       decoration: boxDecorationRoundedWithShadow(8,
-              //           backgroundColor: appStore.appBarColor!),
-              //       margin: EdgeInsets.all(8),
-              //       child: Row(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           Container(
-              //             height: 110,
-              //             width: 126,
-              //             child: Stack(
-              //               children: [
-              //                 Image.asset(
-              //                   data.image!,
-              //                   fit: BoxFit.cover,
-              //                   height: 110,
-              //                   width: 126,
-              //                 ).cornerRadiusWithClipRRect(8),
-              //                 Positioned(
-              //                   right: 10,
-              //                   top: 10,
-              //                   child: data.isLiked.validate()
-              //                       ? Icon(Icons.favorite,
-              //                           color: Colors.red, size: 16)
-              //                       : Icon(Icons.favorite_border, size: 16),
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //           8.width,
-              //           Column(
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             children: [
-              //               Text(data.name!,
-              //                   style: primaryTextStyle(),
-              //                   maxLines: 1,
-              //                   overflow: TextOverflow.ellipsis),
-              //               4.height,
-              //               Row(
-              //                 children: [
-              //                   IgnorePointer(
-              //                     child: RatingBar(
-              //                       onRatingChanged: (r) {},
-              //                       filledIcon: Icons.star,
-              //                       emptyIcon: Icons.star_border,
-              //                       initialRating: data.rating!,
-              //                       maxRating: 5,
-              //                       filledColor: Colors.yellow,
-              //                       size: 14,
-              //                     ),
-              //                   ),
-              //                   5.width,
-              //                   Text('${data.rating}',
-              //                       style: secondaryTextStyle(size: 12)),
-              //                 ],
-              //               ),
-              //               4.height,
-              //               Row(
-              //                 children: [
-              //                   priceWidget(data.discountPrice),
-              //                   8.width,
-              //                   priceWidget(data.price, applyStrike: true),
-              //                 ],
-              //               ),
-              //             ],
-              //           ).paddingAll(8).expand(),
-              //         ],
-              //       ),
-              //     ).onTap(() async {
-              //       int? index = await JTProductDetail(productModel: data)
-              //           .launch(context);
-              //       if (index != null) appStore.setDrawerItemIndex(index);
-              //     });
-              //   },
-              //   shrinkWrap: true,
-              //   physics: NeverScrollableScrollPhysics(),
-              //   itemCount: getProducts().length,
-              // ),
+              Container(child: JTProductList()),
             ],
           ),
         ),
@@ -574,6 +467,8 @@ class _JTProductListState extends State<JTProductList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.all(8),
         itemCount: productlist == null ? 0 : productlist.length,
         itemBuilder: (BuildContext context, int index) {

@@ -19,6 +19,7 @@ import '../../../../main.dart';
 import 'CartListView.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
+import '../payment/payment_webview.dart';
 // import '../JTDrawerWidget.dart';
 
 // ignore: must_be_immutable
@@ -98,26 +99,51 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
 
   Future<void> insertBooking() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final jobtuneUser = prefs.getString('user');
-    final jobtuneUser = "hafeezhanapiah@gmail.com";
+    final jobtuneUser = prefs.getString('email');
+    // final jobtuneUser = "hafeezhanapiah@gmail.com";
+    final nameUser = userlist[0]["first_name"] + " " + userlist[0]["last_name"];
     final addressUser = userlist[0]["address"];
+    final phoneUser = userlist[0]["phone_no"];
     final expectedDeliveryUser = expectedDelivery;
+    final posttotalamount = widget.price.toInt() + widget.additionalfee.toInt();
 
-    http.get(
-        Uri.parse(server.server +
-            "jtnew_product_insertbooking&j_productid=" +
-            widget.productid +
-            "&j_providerid=" +
-            widget.providerid +
-            "&j_userid=" +
-            jobtuneUser +
-            "&j_location=" +
-            addressUser +
-            "&j_expecteddelivery=" +
-            expectedDeliveryUser),
-        headers: {"Accept": "application/json"});
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => WebviewPayment(
+            productid: widget.productid,
+            providerid: widget.providerid.toString(),
+            clientid: jobtuneUser.toString(),
+            clientlocation: addressUser.toString(),
+            expecteddelivery: expectedDelivery.toString(),
+            clientname: nameUser.toString(),
+            clientphone: phoneUser.toString(),
+            totalamount: posttotalamount.toString(),
+            productname: widget.name.toString())));
 
-    toast("Purchased successfully");
+    print(widget.productid);
+    print(widget.providerid);
+    print(jobtuneUser);
+    print(addressUser);
+    print(expectedDelivery);
+    print(nameUser);
+    print(phoneUser);
+    print(posttotalamount.toString());
+    print(widget.name);
+
+    // http.get(
+    //     Uri.parse(server.server +
+    //         "jtnew_product_insertbooking&j_productid=" +
+    //         widget.productid +
+    //         "&j_providerid=" +
+    //         widget.providerid +
+    //         "&j_userid=" +
+    //         jobtuneUser +
+    //         "&j_location=" +
+    //         addressUser +
+    //         "&j_expecteddelivery=" +
+    //         expectedDeliveryUser),
+    //     headers: {"Accept": "application/json"});
+
+    // toast("Purchased successfully");
   }
 
   @override
