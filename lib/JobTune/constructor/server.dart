@@ -1,14 +1,20 @@
 //server URL - production
-final server =
-    "https://jobtune.ai/REST/API/index.php?interface=";
+final server = "https://jobtune.ai/REST/API/index.php?interface=";
 
 //server URL - dev
 final dev =
     "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
 
+//server img product upload
+final productImageUpload =
+    "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/product/jtnew-upload-product-photo.php";
+
+//server Dev
+final devserver =
+    "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
+
 //server img - production
-final image =
-    "https://jobtune.ai/gig/JobTune/assets/img/";
+final image = "https://jobtune.ai/gig/JobTune/assets/img/";
 
 //server img - dev
 final imagedev =
