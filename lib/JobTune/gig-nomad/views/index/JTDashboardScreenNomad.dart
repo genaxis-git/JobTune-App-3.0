@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTDashboardWidget.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
-import 'package:prokit_flutter/main.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManagJobScreen.dart';
+import 'JTDrawerWidgetNomad.dart';
 
 
 class JTDashboardScreenNomad extends StatefulWidget {
@@ -13,7 +11,29 @@ class JTDashboardScreenNomad extends StatefulWidget {
 
 class _JTDashboardScreenNomadState extends State<JTDashboardScreenNomad> {
   @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  init() async {
+    setState(() {});
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container();
+    return SafeArea(
+      child: Observer(
+        builder: (context) => Scaffold(
+          drawer: JTDrawerWidgetNomad(),
+          body: JTManageJobScreen(),
+        ),
+      ),
+    );
   }
 }

@@ -3,21 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManagJobScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/onboarding/JTWalkThroughScreenEmployer.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/account/JTAccountScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTOnboardingScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 
 import '../../../../../../main.dart';
 import 'JTDashboardScreenGuest.dart';
-import 'package:prokit_flutter/main/screens/ProKitLauncher.dart';
 
 
 
@@ -52,6 +51,17 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
     // await prefs.clear();
 
     JTDashboardScreenGuest().launch(context, isNewTask: true);
+  }
+
+  Future<void> gotoEmployer() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgemployer = prefs.getString('employerID').toString();
+    if(lgemployer == "null"){
+      JTSignInScreenEmployer().launch(context, isNewTask: true);
+    }
+    else{
+      JTDashboardScreenNomad().launch(context, isNewTask: true);
+    }
   }
 
   @override
@@ -179,6 +189,12 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                       //     SizedBox(width:0),
                       //   ],
                       // ),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('For Employer', style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        gotoEmployer();
+                      }),
                       Container(
                         padding: EdgeInsets.all(16),
                         child: Text('Logout', style: boldTextStyle(color: Colors.black)),
