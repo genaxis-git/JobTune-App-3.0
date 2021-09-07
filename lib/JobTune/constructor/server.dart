@@ -6,9 +6,13 @@ final server =
 final dev =
     "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
 
-//server img
+//server img - production
 final image =
     "https://jobtune.ai/gig/JobTune/assets/img/";
+
+//server img - dev
+final imagedev =
+    "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/";
 
 //server img Product
 final productImage =
