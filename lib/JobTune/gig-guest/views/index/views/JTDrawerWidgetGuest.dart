@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManagJobScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/onboarding/JTWalkThroughScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,8 +18,6 @@ import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreen
 import '../../../../../../main.dart';
 import 'JTDashboardScreenGuest.dart';
 
-
-
 class JTDrawerWidgetGuest extends StatefulWidget {
   static String tag = '/JTDrawerWidgetGuest';
 
@@ -31,15 +29,14 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   // functions starts//
 
   int loginstat = 0;
-  Future<void> readUser() async{
+  Future<void> readUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
     setState(() {
-      if(lgid == "null") {
+      if (lgid == "null") {
         loginstat = 0;
-      }
-      else{
+      } else {
         loginstat = 1;
       }
     });
@@ -56,11 +53,10 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   Future<void> gotoEmployer() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgemployer = prefs.getString('employerID').toString();
-    if(lgemployer == "null"){
+    if (lgemployer == "null") {
       JTSignInScreenEmployer().launch(context, isNewTask: true);
-    }
-    else{
-      JTDashboardScreenNomad(id:"Employer").launch(context, isNewTask: true);
+    } else {
+      JTDashboardScreenNomad(id: "Employer").launch(context, isNewTask: true);
     }
   }
 
@@ -72,7 +68,6 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   }
 
   // functions ends//
-
 
   List<NavbarGuestItems> drawerItems = getDrawerItemsGuest();
   var scrollController = ScrollController();
@@ -107,11 +102,13 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   16.height,
-                  Text('Guest', style: secondaryTextStyle(size: 12)).paddingOnly(left: 16),
+                  Text('Guest', style: secondaryTextStyle(size: 12))
+                      .paddingOnly(left: 16),
                   4.height,
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Home', style: boldTextStyle(color: Color(0xFF0A79DF))),
+                    child: Text('Home',
+                        style: boldTextStyle(color: Color(0xFF0A79DF))),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
                     // ProKitLauncher().launch(context, isNewTask: true);
@@ -119,17 +116,20 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Service', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Service',
+                        style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
                     JTDashboardSreenUser().launch(context, isNewTask: true);
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Nomad',
+                        style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    JTDashboardScreenNomad(id:"Employee").launch(context, isNewTask: true);
+                    JTDashboardScreenNomad(id: "Employee")
+                        .launch(context, isNewTask: true);
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
@@ -137,73 +137,79 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                   }),
                   Container(
                     padding: EdgeInsets.all(16),
-                    child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
+                    child: Text('Gig Product',
+                        style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
                     JTDashboardScreenProduct().launch(context, isNewTask: true);
                   }),
                   Divider(height: 16, color: Colors.blueGrey),
                   (loginstat == 0)
-                  ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        appStore.setDrawerItemIndex(-1);
-                        JTSignInScreen().launch(context, isNewTask: true);
-                      }),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Forgot Password', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        appStore.setDrawerItemIndex(-1);
-                        JTForgotPasswordScreen().launch(context, isNewTask: true);
-                      }),
-                    ],
-                  )
-                  : Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     Container(
-                      //       padding: EdgeInsets.all(16),
-                      //       child: Text('Provider', style: boldTextStyle(color: Colors.black)),
-                      //     ).onTap(() {
-                      //       appStore.setDrawerItemIndex(-1);
-                      //       if(loginstat == 0){
-                      //         JTOnboardingScreenProvider().launch(context, isNewTask: true);
-                      //       }
-                      //       else{
-                      //         JTAccountScreen().launch(context, isNewTask: true);
-                      //       }
-                      //     }),
-                      //     SizedBox(width:150),
-                      //     Icon(
-                      //       Icons.arrow_forward_ios,
-                      //       size: 15,
-                      //     ),
-                      //     SizedBox(width:0),
-                      //   ],
-                      // ),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('For Employer', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        gotoEmployer();
-                      }),
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('Logout', style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        appStore.setDrawerItemIndex(-1);
-                        logout();
-                      }),
-                    ],
-                  ),
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Log In/ Create account',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTSignInScreen().launch(context, isNewTask: true);
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Forgot Password',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTForgotPasswordScreen()
+                                  .launch(context, isNewTask: true);
+                            }),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Container(
+                            //       padding: EdgeInsets.all(16),
+                            //       child: Text('Provider', style: boldTextStyle(color: Colors.black)),
+                            //     ).onTap(() {
+                            //       appStore.setDrawerItemIndex(-1);
+                            //       if(loginstat == 0){
+                            //         JTOnboardingScreenProvider().launch(context, isNewTask: true);
+                            //       }
+                            //       else{
+                            //         JTAccountScreen().launch(context, isNewTask: true);
+                            //       }
+                            //     }),
+                            //     SizedBox(width:150),
+                            //     Icon(
+                            //       Icons.arrow_forward_ios,
+                            //       size: 15,
+                            //     ),
+                            //     SizedBox(width:0),
+                            //   ],
+                            // ),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('For Employer',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              gotoEmployer();
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Logout',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              logout();
+                            }),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -214,15 +220,16 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
   }
 }
 
-
 class JTOvalRightBorderClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = Path();
     path.lineTo(0, 0);
     path.lineTo(size.width - 50, 0);
-    path.quadraticBezierTo(size.width, size.height / 4, size.width, size.height / 2);
-    path.quadraticBezierTo(size.width, size.height - (size.height / 4), size.width - 40, size.height);
+    path.quadraticBezierTo(
+        size.width, size.height / 4, size.width, size.height / 2);
+    path.quadraticBezierTo(size.width, size.height - (size.height / 4),
+        size.width - 40, size.height);
     path.lineTo(0, size.height);
     return path;
   }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManagJobScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardWidgetUser.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import '../../../../main.dart';
 import 'JTDrawerWidgetEmployee.dart';
 import 'JTDrawerWidgetNomad.dart';
-
 
 class JTDashboardScreenNomad extends StatefulWidget {
   const JTDashboardScreenNomad({Key? key, required this.id}) : super(key: key);
@@ -17,7 +16,6 @@ class JTDashboardScreenNomad extends StatefulWidget {
 }
 
 class _JTDashboardScreenNomadState extends State<JTDashboardScreenNomad> {
-
   @override
   void initState() {
     super.initState();
