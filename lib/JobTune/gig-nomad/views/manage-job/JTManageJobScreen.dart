@@ -12,6 +12,7 @@ import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 import '../../../../main.dart';
 import 'JTBrowseCoDeBooking.dart';
 import 'JTAcceptedCoDeBooking.dart';
+import '../index/JTDrawerWidgetNomad.dart';
 
 class JTManageJobScreen extends StatefulWidget {
   static String tag = '/DTCartScreen';
@@ -265,6 +266,7 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
         child: DefaultTabController(
             length: 2,
             child: Scaffold(
+              drawer: JTDrawerWidgetNomad(),
               appBar: AppBar(
                 backgroundColor: appStore.appBarColor,
                 // title: Text(
@@ -272,7 +274,7 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
                 //   style: boldTextStyle(
                 //       color: appStore.textPrimaryColor, size: 20),
                 // ),
-                title: appBarTitleWidget(context, 'Co-Dependent'),
+                title: appBarTitleWidget(context, 'Manage Job'),
                 bottom: TabBar(
                   onTap: (index) {
                     print(index);
@@ -282,10 +284,10 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
                   labelStyle: boldTextStyle(),
                   tabs: [
                     Tab(
-                      text: "Browse",
+                      text: "Alert",
                     ),
                     Tab(
-                      text: "Booking",
+                      text: "Matching",
                     ),
                   ],
                 ),
