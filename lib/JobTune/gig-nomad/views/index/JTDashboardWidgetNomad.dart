@@ -37,7 +37,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              server + "jtnew_user_selectprofile&lgid=" + lgid),
+              dev + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -56,7 +56,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> checkCategory(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_user_selectavailablecategory&city="+city
+            dev + "jtnew_user_selectavailablecategory&city="+city
                 +"&state="+state
                 +"&country="+country
         ),
@@ -76,7 +76,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_provider_selectcategory"),
+            dev + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -96,7 +96,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_provider_selectstandby&id=" + lgid),
+            dev + "jtnew_provider_selectstandby&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 

@@ -45,7 +45,7 @@ class _JTSignUpScreenEmployerState extends State<JTSignUpScreenEmployer> {
   Future<void> checkregister(email, pass) async {
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_selectlogins&lgid=" + email),
+            dev + "jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"}
     );
 
@@ -66,7 +66,7 @@ class _JTSignUpScreenEmployerState extends State<JTSignUpScreenEmployer> {
   Future<void> smtp(email, pass) async{
     http.get(
         Uri.parse(
-            server + "jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+            dev + "jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
         headers: {"Accept": "application/json"}
     );
 
@@ -78,13 +78,13 @@ class _JTSignUpScreenEmployerState extends State<JTSignUpScreenEmployer> {
 
     http.get(
         Uri.parse(
-            server + "jtnew_signups&jemail=" + email + '&jpassword=' + pass),
+            dev + "jtnew_signups&jemail=" + email + '&jpassword=' + pass),
         headers: {"Accept": "application/json"}
     );
 
     http.get(
         Uri.parse(
-            server + "jtnew_employer_insertprofile&jemail=" + email),
+            dev + "jtnew_employer_insertprofile&jemail=" + email),
         headers: {"Accept": "application/json"}
     );
 

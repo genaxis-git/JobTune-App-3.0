@@ -73,6 +73,14 @@ class _JTDrawerWidgetNomadState extends State<JTDrawerWidgetNomad> {
     init();
   }
 
+  Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('employerID');
+    // await prefs.clear();
+
+    JTDashboardScreenGuest().launch(context, isNewTask: true);
+  }
+
   // functions ends//
 
 
@@ -207,7 +215,7 @@ class _JTDrawerWidgetNomadState extends State<JTDrawerWidgetNomad> {
                               child: Text('Log Out As Hirer', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              logout();
                             }),
                           ],
                         )

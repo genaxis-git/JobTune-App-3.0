@@ -45,7 +45,7 @@ class _JTAccountScreenEmployerState extends State<JTAccountScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_provider_selectprofile&lgid=" +
+            dev + "jtnew_provider_selectprofile&lgid=" +
                 lgid),
         headers: {"Accept": "application/json"});
 
@@ -77,7 +77,7 @@ class _JTAccountScreenEmployerState extends State<JTAccountScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_user_selectprofile&lgid=" + lgid),
+            dev + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 

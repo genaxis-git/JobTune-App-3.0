@@ -49,7 +49,7 @@ class _JTSignInScreenEmployerState extends State<JTSignInScreenEmployer> {
   Future<void> readLogin(email, pass) async{
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_selectlogins&lgid=" + email),
+            dev + "jtnew_selectlogins&lgid=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -70,7 +70,7 @@ class _JTSignInScreenEmployerState extends State<JTSignInScreenEmployer> {
   Future<void> checkAcc(email, pass, dbpass, dbstatus) async {
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_user_selectprofile&lgid=" + email),
+            dev + "jtnew_user_selectprofile&lgid=" + email),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
