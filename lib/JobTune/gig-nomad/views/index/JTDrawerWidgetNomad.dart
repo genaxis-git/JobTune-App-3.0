@@ -8,6 +8,7 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInSc
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employer/JTAccountScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employer/JTProfileScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
@@ -150,7 +151,7 @@ class _JTDrawerWidgetNomadState extends State<JTDrawerWidgetNomad> {
                               child: Text('Company Profile', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              JTProfileScreenEmployer().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),

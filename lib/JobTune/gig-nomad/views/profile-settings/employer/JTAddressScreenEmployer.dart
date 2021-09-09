@@ -7,20 +7,21 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employer/JTProfileScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTProfileSettingWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 
-import '../../../../main.dart';
+import '../../../../../main.dart';
 
 
-class JTAddressScreenProvider extends StatefulWidget {
+class JTAddressScreenEmployer extends StatefulWidget {
   @override
-  _JTAddressScreenProviderState createState() => _JTAddressScreenProviderState();
+  _JTAddressScreenEmployerState createState() => _JTAddressScreenEmployerState();
 }
 
-class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
+class _JTAddressScreenEmployerState extends State<JTAddressScreenEmployer> {
   List<String> listOfState = ['Choose State..','Johor', 'Kedah', 'Kelantan', 'Pahang', 'Melaka', 'Negeri Sembilan', 'Perak', 'Perlis', 'Penang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Wilayah Persekutuan Kuala Lumpur', 'Wilayah Persekutuan Labuan', 'Wilayah Persekutuan Putrajaya'];
   String? selectedIndexState = 'Choose State..';
   String? dropdownNames;
@@ -41,11 +42,11 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
   String email = " ";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String lgid = prefs.getString('email').toString();
+    final String lgid = prefs.getString('employerID').toString();
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_provider_selectprofile&lgid=" + lgid),
+            server + "jtnew_employer_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -70,7 +71,7 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
 
   Future<void> updateProfile(full,postcode,city,country,state) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String lgid = prefs.getString('email').toString();
+    final String lgid = prefs.getString('employerID').toString();
 
     List<Location> locations = await locationFromAddress(full);
     var latitude = locations[0].toString().split(",")[0].split(": ")[1];
@@ -78,20 +79,21 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
 
     http.get(
         Uri.parse(
-            server + "jtnew_provider_updateprofile&id=" + lgid
-                + "&names=" + profile[0]["name"]
+            server + "jtnew_employer_updateprofile&id=" + lgid
+                + "&compname=" + profile[0]["company_name"]
                 + "&type=" + profile[0]["industry_type"]
                 + "&telno=" + profile[0]["phone_no"]
                 + "&desc=" + profile[0]["description"]
+                + "&regno=" + profile[0]["company_reg_no"]
                 + "&address=" + full
                 + "&city=" + city
                 + "&state=" + state
                 + "&postcode=" + postcode
                 + "&country=" + country
-                + "&banktype=" + profile[0]["bank_type"]
-                + "&bankno=" + profile[0]["bank_acc_no"]
-                + "&lat=" + latitude.toString()
-                + "&long=" + longitude.toString()
+                + "&fb=" + profile[0]["social_fb"]
+                + "&web=" + profile[0]["social_website"]
+                + "&lat=" + latitude
+                + "&long=" + longitude
         ),
         headers: {"Accept": "application/json"}
     );
@@ -124,7 +126,7 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => JTProfileScreenProvider()),
+                MaterialPageRoute(builder: (context) => JTProfileScreenEmployer()),
               );
             }
         ),
