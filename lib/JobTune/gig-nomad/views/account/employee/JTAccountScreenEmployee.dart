@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardEmployee.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
@@ -120,7 +123,7 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
       return Column(
         children: [
           settingItem(context, 'My Profile', onTap: () {
-            JTProfileScreenUser().launch(context);
+            JTProfileScreenEmployee().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
           settingItem(context, 'Timetable', onTap: () {
             Navigator.push(
@@ -138,9 +141,9 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
           settingItem(context, 'Transaction', onTap: () {
             JTTransactionScreen().launch(context);
           }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
-          // settingItem(context, 'Job History', onTap: () {
-          //   JTVerifyScreenUser().launch(context);
-          // }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          settingItem(context, 'Job History', onTap: () {
+            JTVerifyScreenUser().launch(context);
+          }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -177,7 +180,7 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => JTDashboardSreenUser()),
+                      builder: (context) => JTDashboardScreenNomad(id:"Employee")),
                 );
               }),
         ),

@@ -144,7 +144,7 @@ class _JTSignInScreenEmployerState extends State<JTSignInScreenEmployer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => JTDashboardScreenNomad(id:"Employer")),
+                    builder: (context) => JTDashboardScreenGuest()),
               );
             }),
       ),
