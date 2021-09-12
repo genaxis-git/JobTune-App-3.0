@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 
 import '../../../../main.dart';
 import 'JTProfileSettingWidgetUser.dart';
-import 'JTUploadImage.dart';
 
 class JTPersonalScreenUser extends StatefulWidget {
+  const JTPersonalScreenUser({Key? key, required this.id}) : super(key: key);
+  final String id;
   @override
   _JTPersonalScreenUserState createState() => _JTPersonalScreenUserState();
 }
@@ -32,6 +32,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   bool autoValidate = false;
   String pickedgender = "";
   String pickedrace = "";
+  String pickedjob = "";
   var formKey = GlobalKey<FormState>();
 
   var fname = TextEditingController();
@@ -42,6 +43,25 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
 
   // functions starts //
+
+  List category = [];
+  String? selectedIndexCategory = 'Job category specialize/ in priority..';
+  List<String> listOfCategory = ['Job category specialize/ in priority..'];
+  Future<void> readCategory() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            dev + "jtnew_provider_selectcategory"),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      category = json.decode(response.body);
+    });
+
+    for(var m=0;m<category.length;m++) {
+      listOfCategory.add(category[m]["category"]);
+    }
+  }
 
   List profile = [];
   String email = "";
@@ -54,7 +74,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_user_selectprofile&lgid=" + lgid),
+            dev + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -69,6 +89,14 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
       nric = TextEditingController(text: profile[0]["nric"]);
       dob = TextEditingController(text: profile[0]["dob"]);
       description = TextEditingController(text: profile[0]["description"]);
+
+      if(profile[0]["category"] == ""){
+        selectedIndexCategory = 'Job category specialize/ in priority..';
+      }
+      else{
+        selectedIndexCategory = profile[0]["category"];
+      }
+
       if(profile[0]["gender"] == ""){
         selectedIndexGender = 'Choose Gender..';
       }
@@ -92,45 +120,75 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     });
   }
 
-  Future<void> updateProfile(fname,lname,nric,gender,race,desc,dob) async {
+  Future<void> updateProfile(fname,lname,nric,gender,race,desc,dob,category) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
     print(fname+lname+nric+gender+race+desc+dob);
 
-    http.get(
-        Uri.parse(
-            server + "jtnew_user_updateprofile&id=" + lgid
-                + "&fname=" + fname
-                + "&lname=" + lname
-                + "&telno=" + profile[0]["phone_no"]
-                + "&nric=" + nric
-                + "&gender=" + gender
-                + "&race=" + race
-                + "&desc=" + desc
-                + "&dob=" + dob
-                + "&address=" + profile[0]["address"]
-                + "&city=" + profile[0]["city"]
-                + "&state=" + profile[0]["state"]
-                + "&postcode=" + profile[0]["postcode"]
-                + "&country=" + profile[0]["country"]
-                + "&ecname=" + profile[0]["ec_name"]
-                + "&ecno=" + profile[0]["ec_phone_no"]
-                + "&banktype=" + profile[0]["bank_type"]
-                + "&bankno=" + profile[0]["bank_account_no"]
-                + "&lat=" + profile[0]["location_latitude"]
-                + "&long=" + profile[0]["location_longitude"]
-        ),
-        headers: {"Accept": "application/json"}
-    );
+    if(category == "non"){
+      http.get(
+          Uri.parse(
+              dev + "jtnew_user_updateprofile&id=" + lgid
+                  + "&fname=" + fname
+                  + "&lname=" + lname
+                  + "&telno=" + profile[0]["phone_no"]
+                  + "&nric=" + nric
+                  + "&gender=" + gender
+                  + "&race=" + race
+                  + "&desc=" + desc
+                  + "&dob=" + dob
+                  + "&address=" + profile[0]["address"]
+                  + "&city=" + profile[0]["city"]
+                  + "&state=" + profile[0]["state"]
+                  + "&postcode=" + profile[0]["postcode"]
+                  + "&country=" + profile[0]["country"]
+                  + "&ecname=" + profile[0]["ec_name"]
+                  + "&ecno=" + profile[0]["ec_phone_no"]
+                  + "&banktype=" + profile[0]["bank_type"]
+                  + "&bankno=" + profile[0]["bank_account_no"]
+                  + "&lat=" + profile[0]["location_latitude"]
+                  + "&long=" + profile[0]["location_longitude"]
+                  + "&category=" + profile[0]["category"]
+          ),
+          headers: {"Accept": "application/json"}
+      );
+    }
+    else {
+      http.get(
+          Uri.parse(
+              dev + "jtnew_user_updateprofile&id=" + lgid
+                  + "&fname=" + fname
+                  + "&lname=" + lname
+                  + "&telno=" + profile[0]["phone_no"]
+                  + "&nric=" + nric
+                  + "&gender=" + gender
+                  + "&race=" + race
+                  + "&desc=" + desc
+                  + "&dob=" + dob
+                  + "&address=" + profile[0]["address"]
+                  + "&city=" + profile[0]["city"]
+                  + "&state=" + profile[0]["state"]
+                  + "&postcode=" + profile[0]["postcode"]
+                  + "&country=" + profile[0]["country"]
+                  + "&ecname=" + profile[0]["ec_name"]
+                  + "&ecno=" + profile[0]["ec_phone_no"]
+                  + "&banktype=" + profile[0]["bank_type"]
+                  + "&bankno=" + profile[0]["bank_account_no"]
+                  + "&lat=" + profile[0]["location_latitude"]
+                  + "&long=" + profile[0]["location_longitude"]
+                  + "&category=" + category
+          ),
+          headers: {"Accept": "application/json"}
+      );
+    }
 
     toast("Updated!");
   }
 
   PickedFile? _image;
   File? _showimg;
- // final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/mobile_uploadPhoto_user.php';
-  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/jtnew_uploadPhoto_user.php';
+  final String uploadUrl = imagedev + 'jtnew_uploadPhoto_user.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -160,6 +218,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   void initState() {
     super.initState();
     this.readProfile();
+    this.readCategory();
   }
 
   // functions ends //
@@ -178,10 +237,18 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
-              );
+              if(widget.id == "Employee"){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+                );
+              }
+              else{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
+                );
+              }
             }
         ),
       ),
@@ -207,7 +274,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(imagedev + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,
@@ -397,6 +464,43 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
                       ),
+                      16.height,
+                      (widget.id == "Employee")
+                      ? Container(
+                        height: 60,
+                        child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10), // if you need this
+                              side: BorderSide(
+                                color: Colors.black.withOpacity(0.6),
+                                width: 1,
+                              ),
+                            ),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              dropdownColor: appStore.appBarColor,
+                              value: selectedIndexCategory,
+                              style: boldTextStyle(),
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: appStore.iconColor,
+                              ),
+                              underline: 0.height,
+                              onChanged: (dynamic newValue) {
+                                setState(() {
+                                  toast(newValue);
+                                  selectedIndexCategory = newValue;
+                                });
+                              },
+                              items: listOfCategory.map((category) {
+                                return DropdownMenuItem(
+                                  child: Text(category, style: primaryTextStyle()).paddingLeft(8),
+                                  value: category,
+                                );
+                              }).toList(),
+                            )),
+                      )
+                      : Container(),
                       40.height,
                       Container(
                         alignment: Alignment.center,
@@ -410,7 +514,16 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         if(selectedIndexRace.toString() != 'Choose Race'){
                           pickedrace = selectedIndexRace.toString();
                         }
-                        updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text);
+                        if(widget.id == "Employee"){
+                          if(selectedIndexCategory.toString() != 'Job category specialize/ in priority..'){
+                            pickedjob = selectedIndexCategory.toString();
+                          }
+                          updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text,pickedjob);
+                        }
+                        else{
+                          pickedjob = "non";
+                          updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text,pickedjob);
+                        }
                       }),
                       20.height,
                     ],

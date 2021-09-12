@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 
@@ -14,6 +15,8 @@ import 'JTProfileSettingWidgetUser.dart';
 
 
 class JTContactScreenUser extends StatefulWidget {
+  const JTContactScreenUser({Key? key, required this.id}) : super(key: key);
+  final String id;
   @override
   _JTContactScreenUserState createState() => _JTContactScreenUserState();
 }
@@ -77,6 +80,7 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
                 + "&bankno=" + profile[0]["bank_account_no"]
                 + "&lat=" + profile[0]["location_latitude"]
                 + "&long=" + profile[0]["location_longitude"]
+                + "&category=" + profile[0]["category"]
         ),
         headers: {"Accept": "application/json"}
     );
@@ -106,10 +110,18 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
-              );
+              if(widget.id == "User"){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
+                );
+              }
+              else{
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+                );
+              }
             }
         ),
       ),

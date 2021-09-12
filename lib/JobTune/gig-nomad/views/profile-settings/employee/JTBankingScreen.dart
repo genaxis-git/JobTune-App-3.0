@@ -2,32 +2,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTProfileSettingWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTFilterScreen.dart';
 
-import '../../../../main.dart';
-import 'JTProfileSettingWidgetUser.dart';
+import '../../../../../main.dart';
 
 
-class JTEmergencyScreenUser extends StatefulWidget {
-  const JTEmergencyScreenUser({Key? key, required this.id}) : super(key: key);
-  final String id;
+class JTBankingScreen extends StatefulWidget {
   @override
-  _JTEmergencyScreenUserState createState() => _JTEmergencyScreenUserState();
+  _JTBankingScreenState createState() => _JTBankingScreenState();
 }
 
-class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
+class _JTBankingScreenState extends State<JTBankingScreen> {
+  List<String> listOfCategory = ['Choose bank..','Maybank', 'CIMB Bank', 'Public Bank Berhad', 'RHB Bank', 'Hong Leong Bank', 'Ambank', 'UOB Malaysia Bank', 'Bank Rakyat', 'OCBC Bank Malaysia', 'HSBC Bank Malaysia', 'Affin Bank', 'Bank Islam Malaysia', 'Standard Chartered Bank Malaysia', 'CitiBank Malaysia', 'Bank Simpanan Nasional', 'Bank Muamalat Malaysia Berhad', 'Alliance Bank', 'Agrobank', 'Al-Rajhi Malaysia', 'MBSB Bank Berhad', 'Co-op Bank Pertama'];
+  String? selectedIndexCategory = 'Choose bank..';
+  String? dropdownNames;
+  String? dropdownScrollable = 'I';
   bool obscureText = true;
   bool autoValidate = false;
   var formKey = GlobalKey<FormState>();
-
-  var names = TextEditingController();
-  var telnos = TextEditingController();
+  String pickedbank = "";
+  var accno = TextEditingController();
 
 // functions starts //
 
@@ -39,7 +39,7 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_user_selectprofile&lgid=" + lgid),
+            dev + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -49,18 +49,23 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
     });
 
     setState(() {
-      names = TextEditingController(text: profile[0]["ec_name"]);
-      telnos = TextEditingController(text: profile[0]["ec_phone_no"]);
+      accno = TextEditingController(text: profile[0]["bank_account_no"]);
+      if(profile[0]["bank_type"] == ""){
+        selectedIndexCategory = "Choose bank..";
+      }
+      else{
+        selectedIndexCategory = profile[0]["bank_type"];
+      }
     });
   }
 
-  Future<void> updateProfile(names,telnos) async {
+  Future<void> updateProfile(btype,bno) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
     http.get(
         Uri.parse(
-            server + "jtnew_user_updateprofile&id=" + lgid
+            dev + "jtnew_user_updateprofile&id=" + lgid
                 + "&fname=" + profile[0]["first_name"]
                 + "&lname=" + profile[0]["last_name"]
                 + "&telno=" + profile[0]["phone_no"]
@@ -74,13 +79,13 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
                 + "&state=" + profile[0]["state"]
                 + "&postcode=" + profile[0]["postcode"]
                 + "&country=" + profile[0]["country"]
-                + "&category=" + profile[0]["category"]
-                + "&ecname=" + names
-                + "&ecno=" + telnos
-                + "&banktype=" + profile[0]["bank_type"]
-                + "&bankno=" + profile[0]["bank_account_no"]
+                + "&ecname=" + profile[0]["ec_name"]
+                + "&ecno=" + profile[0]["ec_phone_no"]
+                + "&banktype=" + btype
+                + "&bankno=" + bno
                 + "&lat=" + profile[0]["location_latitude"]
                 + "&long=" + profile[0]["location_longitude"]
+                + "&category=" + profile[0]["category"]
         ),
         headers: {"Accept": "application/json"}
     );
@@ -114,18 +119,10 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              if(widget.id == "User") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
-                );
-              }
-              else{
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
-                );
-              }
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+              );
             }
         ),
       ),
@@ -147,27 +144,47 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       20.height,
-                      TextFormField(
-                        controller: names,
-                        style: primaryTextStyle(),
-                        decoration: InputDecoration(
-                          labelText: 'Guardian Name',
-                          contentPadding: EdgeInsets.all(16),
-                          labelStyle: secondaryTextStyle(),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-                        ),
-                        keyboardType: TextInputType.text,
-                        textInputAction: TextInputAction.next,
+                      Container(
+                        height: 60,
+                        child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(
+                                color: Colors.black.withOpacity(0.6),
+                                width: 1,
+                              ),
+                            ),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              dropdownColor: appStore.appBarColor,
+                              value: selectedIndexCategory,
+                              style: boldTextStyle(),
+                              icon: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: appStore.iconColor,
+                              ),
+                              underline: 0.height,
+                              onChanged: (dynamic newValue) {
+                                setState(() {
+                                  toast(newValue);
+                                  selectedIndexCategory = newValue;
+                                });
+                              },
+                              items: listOfCategory.map((category) {
+                                return DropdownMenuItem(
+                                  child: Text(category, style: primaryTextStyle()).paddingLeft(8),
+                                  value: category,
+                                );
+                              }).toList(),
+                            )),
                       ),
                       16.height,
                       TextFormField(
-                        controller: telnos,
+                        controller: accno,
 //                    focusNode: emailFocus,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
-                          labelText: 'Guardian Phone No.',
+                          labelText: 'Account No.',
                           labelStyle: secondaryTextStyle(),
                           contentPadding: EdgeInsets.all(16),
                           border: OutlineInputBorder(),
@@ -184,7 +201,13 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        updateProfile(names.text,telnos.text);
+                        if(selectedIndexCategory.toString() == "Choose bank.."){
+                          pickedbank = "";
+                        }
+                        else{
+                          pickedbank = selectedIndexCategory.toString();
+                        }
+                        updateProfile(pickedbank,accno.text);
                       }),
                       20.height,
                     ],

@@ -278,7 +278,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => JTPersonalScreenUser()),
+                                MaterialPageRoute(builder: (context) => JTPersonalScreenUser(id: "User")),
                               );
                             },
                           ),
@@ -353,7 +353,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => JTContactScreenUser()),
+                                MaterialPageRoute(builder: (context) => JTContactScreenUser(id:"User")),
                               );
                             },
                           ),
@@ -394,7 +394,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => JTAddressScreenUser()),
+                                MaterialPageRoute(builder: (context) => JTAddressScreenUser(id:"User")),
                               );
                             },
                           ),
@@ -429,7 +429,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             onPressed: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => JTEmergencyScreenUser()),
+                                MaterialPageRoute(builder: (context) => JTEmergencyScreenUser(id:"User")),
                               );
                             },
                           ),

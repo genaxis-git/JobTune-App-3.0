@@ -4,9 +4,11 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile-settings/employee/JTBankingScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile-settings/employee/JTExperienceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 
@@ -17,6 +19,8 @@ import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTConta
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTEmergencyScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTPersonalScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../main.dart';
 import 'JTProfileExperienceEmployee.dart';
@@ -120,6 +124,9 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
   String address = " ";
   String ecname = " ";
   String ecno = " ";
+  String category = "";
+  String banktype = "";
+  String bankno = "";
   String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -147,6 +154,9 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
       address = profile[0]["address"] ;
       ecname = profile[0]["ec_name"] ;
       ecno = profile[0]["ec_phone_no"] ;
+      category = profile[0]["category"] ;
+      banktype = profile[0]["bank_type"] ;
+      bankno = profile[0]["bank_account_no"] ;
 
       if(profile[0]["profile_pic"] != "") {
         img = profile[0]["profile_pic"];
@@ -298,6 +308,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                                     fontSize: 20.0, fontFamily: 'Medium'
                                 ),
                                 jtprofile_text(email, textColor: Colors.blueAccent, fontSize: 16.0, fontFamily: 'Medium'),
+                                jtprofile_text(category, textColor: Colors.blueAccent, fontSize: 16.0, fontFamily: 'Medium'),
                                 SizedBox(height: 20),
                                 Padding(
                                   padding: EdgeInsets.all(5),
@@ -382,7 +393,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                           margin: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: FractionalOffset.center,
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
+                            backgroundImage: NetworkImage(imagedev + img),
                             radius: 50,
                           ),
                         ),
@@ -407,7 +418,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => JTPersonalScreenUser()),
+                                    MaterialPageRoute(builder: (context) => JTPersonalScreenUser(id:"Employee")),
                                   );
                                 },
                               ),
@@ -482,7 +493,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => JTContactScreenUser()),
+                                    MaterialPageRoute(builder: (context) => JTContactScreenUser(id:"Employee")),
                                   );
                                 },
                               ),
@@ -523,7 +534,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => JTAddressScreenUser()),
+                                    MaterialPageRoute(builder: (context) => JTAddressScreenUser(id:"Employee")),
                                   );
                                 },
                               ),
@@ -552,13 +563,58 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              jtprofile_rowHeading("BANKING INFORMATION"),
+                              IconButton(
+                                icon: Icon(AntDesign.edit, color: Colors.black,),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => JTBankingScreen()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          jtprofile_profileText(
+                              (banktype == "")
+                                  ? "Bank Name.."
+                                  : banktype
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                            child: jtprofile_view(),
+                          ),
+                          SizedBox(height: 8),
+                          jtprofile_profileText(
+                              (bankno == "")
+                                  ? "Account No.."
+                                  : bankno
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    decoration: jtprofile_boxDecoration(bgColor: appStore.scaffoldBackground, radius: 10, showShadow: true),
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               jtprofile_rowHeading("EMERGENCY CONTACT"),
                               IconButton(
                                 icon: Icon(AntDesign.edit, color: Colors.black,),
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => JTEmergencyScreenUser()),
+                                    MaterialPageRoute(builder: (context) => JTEmergencyScreenUser(id:"Employee")),
                                   );
                                 },
                               ),
@@ -686,7 +742,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                           //   ),
                           // ),
                           Container(
-                            height: 189 * double.parse(explist.length.toString()),
+                            height: 380,
                             child: JTExpList(),
                           ),
                           SizedBox(height: 8),
@@ -744,17 +800,20 @@ class _JTExpListState extends State<JTExpList> {
       padding: EdgeInsets.all(20),
       itemCount: explist == null ? 0 : explist.length,
       itemBuilder: (BuildContext context, int index) {
+        final DateFormat formatter = DateFormat('d MMM yyyy');
+        final String formattedIN = formatter.format(DateTime.parse(explist[index]["from"]));
+        final String formattedOUT = formatter.format(DateTime.parse(explist[index]["to"]));
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 10),
               Text(
-                explist[index]["from"] + " - " + explist[index]["to"],
+                formattedIN + " - " + formattedOUT,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.blueAccent,
-                  fontSize: 10.0,
+                  fontSize: 12.0,
                   letterSpacing: 0.5,
 
                 ),
@@ -776,7 +835,7 @@ class _JTExpListState extends State<JTExpList> {
                 ),
               ),
               Text(
-                explist[index]["exp_desc"] + " Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                explist[index]["exp_desc"],
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   letterSpacing: 0.5,
@@ -798,7 +857,11 @@ class _JTExpListState extends State<JTExpList> {
                   ),
                   10.width,
                   TextButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      showInDialog(context,
+                          child: AlertConfirmDelete(id:explist[index]["exp_id"]),
+                          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                    },
                     child: Text('DELETE', style: secondaryTextStyle()),
                   ),
                 ],
@@ -811,6 +874,149 @@ class _JTExpListState extends State<JTExpList> {
             ],
           );
       }
+    );
+  }
+}
+
+
+class AlertConfirmDelete extends StatefulWidget {
+
+  const AlertConfirmDelete({Key? key, required this.id}) : super(key: key);
+  final String id;
+
+  @override
+  _AlertConfirmDeleteState createState() => _AlertConfirmDeleteState();
+}
+
+class _AlertConfirmDeleteState extends State<AlertConfirmDelete> {
+
+  Future<void> deleteExp() async {
+    http.get(
+        Uri.parse(
+            dev + "jtnew_user_deleteexperience&exp=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    toast("Reloading..");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Confirm Delete?",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "This action will permanently delete the data from the record.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Cancel", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          deleteExp();
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Delete", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

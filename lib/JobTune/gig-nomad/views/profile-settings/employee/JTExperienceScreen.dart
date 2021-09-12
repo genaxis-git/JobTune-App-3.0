@@ -80,13 +80,81 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
     );
 
     toast("Added!");
-    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+    );
+  }
+
+  Future<void> updateExp(title,company,type,desc,ins,outs) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            dev + "jtnew_user_updateexperience&id=" + lgid
+                + "&name=" + title
+                + "&desc=" + desc
+                + "&from=" + ins
+                + "&to=" + outs
+                + "&category=" + type
+                + "&comp=" + company
+                + "&exp=" + widget.id
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    toast("Updated!");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenEmployee()),
+    );
+  }
+
+  List explist = [];
+  Future<void> readExp() async {
+    if(widget.id != "non"){
+      http.Response response = await http.get(
+          Uri.parse(
+              dev + "jtnew_user_selectexperiencebyid&id=" + widget.id),
+          headers: {"Accept": "application/json"}
+      );
+
+      this.setState(() {
+        explist = json.decode(response.body);
+      });
+
+      setState(() {
+        title = TextEditingController(text: explist[0]["exp_name"]);
+        desc = TextEditingController(text: explist[0]["exp_desc"]);
+        company = TextEditingController(text: explist[0]["exp_company"]);
+        if(explist[0]["exp_category"] == ""){
+          selectedIndexCategory = 'Job Category..';
+        }
+        else{
+          selectedIndexCategory = explist[0]["exp_category"];
+        }
+        if(explist[0]["from"] != "") {
+          selectedDateIN = DateTime.parse(explist[0]["from"]);
+        }
+        if(explist[0]["to"] == "current") {
+          DateTime now = new DateTime.now();
+          DateTime date = new DateTime(now.year, now.month, now.day);
+          selectedDateOUT = date;
+          _isSelected_agree = true;
+        }
+        if(explist[0]["to"] != "") {
+          selectedDateOUT = DateTime.parse(explist[0]["to"]);
+        }
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
     this.readCategory();
+    this.readExp();
   }
 
   // functions ends //
@@ -344,7 +412,8 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
                         ),
                       ),
                       40.height,
-                      Container(
+                      (widget.id == "non")
+                      ? Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
@@ -358,6 +427,22 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
                         }
                         else{
                           addExp(title.text,company.text,pickedtype.toString(),desc.text,selectedDateIN.toString().split(" ")[0],selectedDateOUT.toString().split(" ")[0]);
+                        }
+                      })
+                      : Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
+                        child: Text('Update', style: boldTextStyle(color: white, size: 18)),
+                      ).onTap(() async {
+                        if(selectedIndexCategory.toString() != 'Job Category..'){
+                          pickedtype = selectedIndexCategory.toString();
+                        }
+                        if(_isSelected_agree == true){
+                          updateExp(title.text,company.text,pickedtype.toString(),desc.text,selectedDateIN.toString().split(" ")[0],"current");
+                        }
+                        else{
+                          updateExp(title.text,company.text,pickedtype.toString(),desc.text,selectedDateIN.toString().split(" ")[0],selectedDateOUT.toString().split(" ")[0]);
                         }
                       }),
                       20.height,
