@@ -8,6 +8,7 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInSc
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employer/JTAccountScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/post-vacancy/JTPostVacancyScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employer/JTProfileScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
@@ -174,42 +175,42 @@ class _JTDrawerWidgetNomadState extends State<JTDrawerWidgetNomad> {
                               child: Text('Manage Job', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              JTManageJobScreen().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Shortlisted Candidate', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              // JTAccountScreenEmployee().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Verify Clocking', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              // JTAccountScreenEmployee().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Vacancy History', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              // JTAccountScreenEmployee().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Transaction', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              // JTAccountScreenEmployee().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Change Password', style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               appStore.setDrawerItemIndex(-1);
-                              JTAccountScreenEmployee().launch(context, isNewTask: true);
+                              // JTAccountScreenEmployee().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),
