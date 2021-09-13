@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -10,11 +9,7 @@ import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile-settings/employee/JTBankingScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile-settings/employee/JTExperienceScreen.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
-
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTAddressScreenUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTBankScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTContactScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTEmergencyScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTPersonalScreenUser.dart';
@@ -23,7 +18,6 @@ import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../main.dart';
-import 'JTProfileExperienceEmployee.dart';
 
 
 class JTProfileScreenEmployee extends StatefulWidget {

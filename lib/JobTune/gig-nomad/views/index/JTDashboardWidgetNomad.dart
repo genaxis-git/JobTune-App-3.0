@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTServiceListCategory.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardWidgetUser.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/job-detail/JTJobDetailScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/main.dart';
@@ -56,7 +58,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> checkCategory(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectavailablecategory&city="+city
+            dev + "jtnew_user_selectavailablejob&city="+city
                 +"&state="+state
                 +"&country="+country
         ),
@@ -68,7 +70,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["job_category"], icon: 'images/defaultTheme/category/Man.png'));
     }
   }
 
@@ -76,7 +78,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectcategory"),
+            dev + "jtnew_user_selectavailablejob&city=&state=&country="),
         headers: {"Accept": "application/json"}
     );
 
@@ -85,7 +87,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["job_category"], icon: 'images/defaultTheme/category/Man.png'));
     }
   }
 
@@ -128,7 +130,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
-                expandedHeight: (clocking.length > 0) ? 500.0 : 240.0,
+                expandedHeight: 240.0,
                 floating: true,
                 pinned: true,
                 snap: false,
@@ -188,7 +190,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
                             ],
                           ),
                           10.height,
-                          Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
+                          Text(' Job Categories', style: boldTextStyle()).paddingAll(8),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             padding: EdgeInsets.only(right: 8, top: 8),
@@ -238,9 +240,143 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
             ];
           },
           body: Container(
-              height: 500,
+              child: JTJobListUser(),
           ),
         )
+    );
+  }
+}
+
+class JTJobListUser extends StatefulWidget {
+  @override
+  _JTJobListUserState createState() => _JTJobListUserState();
+}
+
+class _JTJobListUserState extends State<JTJobListUser> {
+
+  // functions starts //
+
+  List profile = [];
+  Future<void> checkProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    if(lgid == "null"){
+      serviceList();
+    }
+    else {
+      http.Response response = await http.get(
+          Uri.parse(
+              dev + "jtnew_user_selectprofile&lgid=" + lgid),
+          headers: {"Accept": "application/json"}
+      );
+
+      this.setState(() {
+        profile = json.decode(response.body);
+      });
+
+      checkFeatured(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+    }
+  }
+
+  List joblist = [];
+  Future<void> checkFeatured(city,state,country) async {
+    http.Response response = await http.get(
+        Uri.parse(
+            dev + "jtnew_user_selectfeaturedjob&city="+city
+                +"&state="+state
+                +"&country="+country
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      joblist = json.decode(response.body);
+    });
+  }
+
+  Future<void> serviceList() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            dev + "jtnew_user_selectfeaturedjob&city=&state=&country="
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      joblist = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkProfile();
+  }
+
+  // functions ends //
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        padding: EdgeInsets.all(8),
+        itemCount: joblist == null ? 0 : joblist.length,
+        itemBuilder: (BuildContext context, int index) {
+          final DateFormat formatter = DateFormat('d MMM yyyy');
+          final String formatted = formatter.format(DateTime.parse(joblist[index]["job_startdate"]));
+          return GestureDetector(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTJobDetailScreen(
+                      id: joblist[index]["job_id"],
+                    )),
+              );
+            },
+            child: Container(
+              decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+              margin: EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 110,
+                    width: 126,
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          imagedev + joblist[index]["profile_pic"],
+                          fit: BoxFit.cover,
+                          height: 110,
+                          width: 126,
+                        ).cornerRadiusWithClipRRect(8),
+                      ],
+                    ),
+                  ),
+                  8.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(joblist[index]["job_name"],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                              fontSize: 17
+                          )
+                      ),
+                      3.height,
+                      JTpriceWidget(double.parse(double.parse(joblist[index]["job_rate"]).toStringAsFixed(2))),
+                      5.height,
+                      Text("Starts at " + formatted, style: secondaryTextStyle(size: 13)),
+                      10.height,
+                      Text(joblist[index]["job_city"], style: secondaryTextStyle(size: 13)),
+                    ],
+                  ).paddingAll(8).expand(),
+                ],
+              ),
+            ),
+          );
+        }
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardSc
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
@@ -52,6 +53,16 @@ class _JTDrawerWidgetEmployeeState extends State<JTDrawerWidgetEmployee> {
         loginstat = 1;
       }
     });
+  }
+
+  Future<void> gotoEmployer() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgemployer = prefs.getString('employerID').toString();
+    if (lgemployer == "null") {
+      JTSignInScreenEmployer().launch(context, isNewTask: true);
+    } else {
+      JTDashboardScreenNomad(id: "Employer").launch(context, isNewTask: true);
+    }
   }
 
   @override
@@ -158,6 +169,13 @@ class _JTDrawerWidgetEmployeeState extends State<JTDrawerWidgetEmployee> {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('For Employer',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              gotoEmployer();
+                            }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),

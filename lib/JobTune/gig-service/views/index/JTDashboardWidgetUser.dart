@@ -83,7 +83,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            server + "jtnew_provider_selectcategory"),
+            dev + "jtnew_user_selectavailablecategory&city=&state=&country="),
         headers: {"Accept": "application/json"}
     );
 

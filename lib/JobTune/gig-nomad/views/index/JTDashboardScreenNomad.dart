@@ -4,6 +4,7 @@ import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScr
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardWidgetUser.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import '../../../../main.dart';
+import 'JTDashboardWidgetNomad.dart';
 import 'JTDrawerWidgetEmployee.dart';
 import 'JTDrawerWidgetNomad.dart';
 
@@ -48,7 +49,7 @@ class _JTDashboardScreenNomadState extends State<JTDashboardScreenNomad> {
                   title: appBarTitleWidget(context, 'Gig Nomad'),
                 ),
                 drawer: JTDrawerWidgetEmployee(),
-                body: JTDashboardWidgetUser(),
+                body: JTDashboardWidgetNomad(),
               ),
             ),
     );

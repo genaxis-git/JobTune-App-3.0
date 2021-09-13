@@ -248,7 +248,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
+                          backgroundImage: NetworkImage(imagedev + img),
                           radius: 50,
                         ),
                       ),
@@ -395,7 +395,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
                         jtprofile_profileText(
                             (address == "")
                                 ? "Full Address.."
-                                : address.replaceAll(",", ",\n")
+                                : " "+address.replaceAll(",", ",\n")
                         ),
                         SizedBox(height: 8),
                       ],

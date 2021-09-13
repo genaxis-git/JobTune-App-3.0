@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/resume/JTResumeScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -11,47 +9,44 @@ import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 
 import '../../../../main.dart';
-// import 'DTOrderSummaryScreen.dart';
-// import 'DTProductDetailScreen.dart';
 
-// ignore: must_be_immutable
-class BrowseCoDeBooking extends StatefulWidget {
+
+class JTJobAlertScreen extends StatefulWidget {
   static String tag = '/CartListView';
 
   bool? mIsEditable;
   bool? isOrderSummary;
 
-  BrowseCoDeBooking({this.mIsEditable, this.isOrderSummary});
+  JTJobAlertScreen({this.mIsEditable, this.isOrderSummary});
 
   @override
-  BrowseCoDeBookingState createState() => BrowseCoDeBookingState();
+  JTJobAlertScreenState createState() => JTJobAlertScreenState();
 }
 
-class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
-  List codebookinglist = [];
+class JTJobAlertScreenState extends State<JTJobAlertScreen> {
 
-  Future<void> getCoDeRequest() async {
+  List alertlist = [];
+  Future<void> readAlert() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('employerID').toString();
     http.Response response = await http.get(
-        Uri.parse(server.server + "jtnew_product_selectcodebooking"),
+        Uri.parse(dev + "jtnew_employer_selectjobalert&id="+lgid),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-      codebookinglist = json.decode(response.body);
+      alertlist = json.decode(response.body);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    init();
+    this.readAlert();
   }
 
-  init() async {
-    getCoDeRequest();
-  }
 
   @override
   void setState(fn) {
@@ -61,7 +56,7 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: codebookinglist == null ? 0 : codebookinglist.length,
+        itemCount: alertlist == null ? 0 : alertlist.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
             decoration: boxDecorationRoundedWithShadow(8,
@@ -76,22 +71,16 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
                     width: 80,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          server.image + codebookinglist[index]["profile_pic"]),
+                          imagedev + alertlist[index]["profile_pic"]),
                       // radius: 35,
                     )
-                    // child: Image.network(
-                    //   server.image + codebookinglist[index]["profile_pic"],
-                    //   fit: BoxFit.cover,
-                    //   height: 100,
-                    //   width: 100,
-                    // ).cornerRadiusWithClipRRect(8),
                     ),
                 12.width,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(codebookinglist[index]["role"],
+                    Text(alertlist[index]["job_type"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -99,7 +88,7 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
                     Row(
                       children: [
                         Text(
-                          '\RM ' + codebookinglist[index]["payment"],
+                          alertlist[index]["job_name"],
                           style: TextStyle(
                             decoration: TextDecoration.none,
                             color: appStore.textPrimaryColor,
@@ -110,25 +99,42 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
                       ],
                     ),
                     8.height,
-                    Text('Provider : ' + codebookinglist[index]["name"],
+                    Text('Applicant : ' + alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     8.height,
-                    Text('Date : ' + codebookinglist[index]["start_date"],
-                        style: primaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.height,
-                    Text(
-                        'Description : ' +
-                            codebookinglist[index]["job_description"],
+                    Text('Specialize : ' + alertlist[index]["category"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     8.height,
                     Row(
                       children: [
+                        Container(
+                          decoration: boxDecorationWithRoundedCorners(
+                            borderRadius: BorderRadius.circular(4),
+                            backgroundColor: appDark_parrot_green,
+                          ),
+                          padding: EdgeInsets.all(6.5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              6.width,
+                              Text('View',
+                                  style: boldTextStyle(color: whiteColor)),
+                              6.width,
+                            ],
+                          ),
+                        ).onTap(() async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => JTResumeScreen(
+                              id: alertlist[index]["employee_id"],
+                            )),
+                          );
+                        }),
+                        10.width,
                         Container(
                           decoration: boxDecorationWithRoundedCorners(
                             borderRadius: BorderRadius.circular(4),
@@ -156,7 +162,7 @@ class BrowseCoDeBookingState extends State<BrowseCoDeBooking> {
                           ),
                         ).onTap(() async {
                           var bookingid =
-                              codebookinglist[index]["co_de_booking_id"];
+                              alertlist[index]["co_de_booking_id"];
                           showInDialog(context,
                               child: AcceptRequestDialog(bookingid: bookingid),
                               backgroundColor: Colors.transparent,
@@ -346,7 +352,7 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
     // final jobtuneUser = "shahirah0397@gmail.com";
 
     http.get(
-        Uri.parse(server.server +
+        Uri.parse(server +
             "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
             widget.bookingid +
             "&j_codeid=" +

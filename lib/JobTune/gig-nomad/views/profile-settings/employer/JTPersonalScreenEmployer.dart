@@ -177,7 +177,7 @@ class _JTPersonalScreenEmployerState extends State<JTPersonalScreenEmployer> {
 
   PickedFile? _image;
   File? _showimg;
-  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/jtnew_uploadPhoto_employer.php';
+  final String uploadUrl = imagedev+ 'jtnew_uploadPhoto_employer.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -254,7 +254,7 @@ class _JTPersonalScreenEmployerState extends State<JTPersonalScreenEmployer> {
                           ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(imagedev + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,

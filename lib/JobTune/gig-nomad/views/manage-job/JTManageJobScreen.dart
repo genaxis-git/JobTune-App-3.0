@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -269,11 +268,6 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
               drawer: JTDrawerWidgetNomad(),
               appBar: AppBar(
                 backgroundColor: appStore.appBarColor,
-                // title: Text(
-                //   'Provider Account',
-                //   style: boldTextStyle(
-                //       color: appStore.textPrimaryColor, size: 20),
-                // ),
                 title: appBarTitleWidget(context, 'Manage Job'),
                 bottom: TabBar(
                   onTap: (index) {
@@ -295,20 +289,10 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
               body: TabBarView(
                 children: [
                   ContainerX(
-                    mobile: BrowseCoDeBooking(),
-                    web: Column(
-                      children: [
-                        webWidget(),
-                      ],
-                    ),
+                    mobile: JTJobAlertScreen(),
                   ),
                   ContainerX(
                     mobile: AcceptedCoDeBooking(),
-                    web: Column(
-                      children: [
-                        webWidget(),
-                      ],
-                    ),
                   ),
                 ],
               ),
