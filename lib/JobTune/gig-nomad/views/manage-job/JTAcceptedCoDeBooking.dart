@@ -98,7 +98,7 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                       ],
                     ),
                     8.height,
-                    Text('Applicant : ' + alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
+                    Text('Candidate : ' + alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -130,6 +130,8 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                             context,
                             MaterialPageRoute(builder: (context) => JTResumeScreen(
                               id: alertlist[index]["employee_id"],
+                              job: alertlist[index]["job_id"],
+                              empr: alertlist[index]["employer_id"],
                             )),
                           );
                         }),

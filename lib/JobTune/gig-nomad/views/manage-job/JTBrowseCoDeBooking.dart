@@ -39,6 +39,31 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
     this.setState(() {
       alertlist = json.decode(response.body);
     });
+
+    for(var m=0; m<alertlist.length; m++){
+      readAccept(alertlist[m]["job_id"],alertlist[m]["employee_id"],m);
+    }
+  }
+
+  List slindex = [];
+  List accepted = [];
+  Future<void> readAccept(jobid,empid,m) async {
+    http.Response response = await http.get(
+        Uri.parse(server + "jtnew_employer_checkshortlist&id="+jobid+"&empid="+empid),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      accepted = json.decode(response.body);
+    });
+
+    if(accepted.length>0){
+      slindex.add("shortlisted");
+    }
+    else{
+      slindex.add("no");
+    }
+
+    print(slindex);
   }
 
   @override
@@ -131,6 +156,8 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
                             context,
                             MaterialPageRoute(builder: (context) => JTResumeScreen(
                               id: alertlist[index]["employee_id"],
+                              job: alertlist[index]["job_id"],
+                              empr: alertlist[index]["employer_id"],
                             )),
                           );
                         }),
@@ -153,19 +180,14 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
                             ],
                           ),
                         ).onTap(() async {
-                          var bookingid =
-                              alertlist[index]["co_de_booking_id"];
                           showInDialog(context,
-                              child: AcceptRequestDialog(bookingid: bookingid),
+                              child: AcceptRequestDialog(
+                                id: alertlist[index]["job_id"],
+                                emp: alertlist[index]["employee_id"],
+                              ),
                               backgroundColor: Colors.transparent,
                               contentPadding: EdgeInsets.all(0));
-
-                          // if (model != null) {
-                          //   list.add(model);
-
-                          //   setState(() {});
-                          // }
-                        }),
+                        })
                       ],
                     ),
                   ],
@@ -178,9 +200,13 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
 }
 
 class AcceptRequestDialog extends StatefulWidget {
-  var bookingid;
+  var id;
+  var emp;
 
-  AcceptRequestDialog({this.bookingid});
+  AcceptRequestDialog({
+    this.id,
+    this.emp,
+  });
 
   @override
   _AcceptRequestDialogState createState() => _AcceptRequestDialogState();
@@ -194,15 +220,18 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('employerID');
 
-    // http.get(
-    //     Uri.parse(server +
-    //         "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
-    //         widget.bookingid +
-    //         "&j_codeid=" +
-    //         jobtuneUser.toString()),
-    //     headers: {"Accept": "application/json"});
+    http.get(
+        Uri.parse(server +
+            "jtnew_employer_insertshortlist&jpostid=" + widget.id +
+            "&jemployeeid=" + widget.emp +
+            "&jemployerid=" + jobtuneUser.toString()
+        ),
+        headers: {"Accept": "application/json"});
 
     Navigator.pop(context);
+    showInDialog(context,
+        child: AlertAdded(),
+        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
 
     toast("Request accepted successfully");
   }
@@ -294,6 +323,134 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
                 16.height,
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertAdded extends StatefulWidget {
+  @override
+  _AlertAddedState createState() => _AlertAddedState();
+}
+
+class _AlertAddedState extends State<AlertAdded> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/shortlist.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Candidate Shortlisted!",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "You can now view the list of candidates you have added to the shortlist and send offers to those who qualify.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Later", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => JTSignUpScreen()),
+                          // );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("View Now", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
           ),
         ),
       ),

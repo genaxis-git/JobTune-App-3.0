@@ -15,8 +15,16 @@ import 'package:http/http.dart' as http;
 import '../../../../main.dart';
 
 class JTResumeScreen extends StatefulWidget {
-  const JTResumeScreen({Key? key, required this.id}) : super(key: key);
+  const JTResumeScreen({
+    Key? key,
+    required this.id,
+    required this.job,
+    required this.empr
+  })
+      : super(key: key);
   final String id;
+  final String job;
+  final String empr;
   @override
   _JTResumeScreenState createState() => _JTResumeScreenState();
 }
@@ -78,6 +86,23 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
         img = "no profile.png";
       }
     });
+  }
+
+  Future<void> addShortlist() async {
+    http.get(
+        Uri.parse(server +
+            "jtnew_employer_insertshortlist&jpostid=" + widget.job +
+            "&jemployeeid=" + widget.id +
+            "&jemployerid=" + widget.empr
+        ),
+        headers: {"Accept": "application/json"});
+
+    Navigator.pop(context);
+    showInDialog(context,
+        child: AlertAdded(),
+        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+
+    toast("Request accepted successfully");
   }
 
   // function ends //
@@ -286,9 +311,7 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
                       decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
                       child: Text('Shortlist Candidate', style: boldTextStyle(color: white)),
                     ).onTap(() {
-                      showInDialog(context,
-                          child: AlertAdded(),
-                          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                      addShortlist();
                     })
                   ],
                 )
