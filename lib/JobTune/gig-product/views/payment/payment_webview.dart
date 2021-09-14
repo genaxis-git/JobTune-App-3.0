@@ -82,7 +82,7 @@ class _WebviewPaymentState extends State<WebviewPayment> {
         padding: EdgeInsets.all(16),
         child: WebView(
           initialUrl:
-              'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Product/gig-product-checkout-mobile.php?postproductid=' +
+              'http://jobtune.ai/gig/JobTune/Product/gig-product-checkout-mobile.php?postproductid=' +
                   widget.productid.toString() +
                   '&postproviderid=' +
                   widget.providerid.toString() +

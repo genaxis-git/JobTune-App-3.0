@@ -21,8 +21,7 @@ final imagedev =
     "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/";
 
 //server img Product
-final productImage =
-    "http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/assets/img/product/";
+final productImage = "https://jobtune.ai/gig/JobTune/assets/img/product/";
 
 //server img Clock - in
 final clockingIn =
