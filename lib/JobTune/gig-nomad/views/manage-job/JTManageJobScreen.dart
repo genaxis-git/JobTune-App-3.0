@@ -292,7 +292,7 @@ class JTManageJobScreenState extends State<JTManageJobScreen> {
                     mobile: JTJobAlertScreen(),
                   ),
                   ContainerX(
-                    mobile: AcceptedCoDeBooking(),
+                    mobile: JTJobMatchScreen(),
                   ),
                 ],
               ),

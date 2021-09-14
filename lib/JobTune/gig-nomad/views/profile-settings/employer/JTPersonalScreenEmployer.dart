@@ -41,7 +41,7 @@ class _JTPersonalScreenEmployerState extends State<JTPersonalScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_employer_selectprofile&lgid=" + lgid),
+            server + "jtnew_employer_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -153,7 +153,7 @@ class _JTPersonalScreenEmployerState extends State<JTPersonalScreenEmployer> {
 
     http.get(
         Uri.parse(
-            dev + "jtnew_employer_updateprofile&id=" + lgid
+            server + "jtnew_employer_updateprofile&id=" + lgid
                 + "&compname=" + name
                 + "&type=" + category
                 + "&telno=" + profile[0]["phone_no"]
@@ -254,7 +254,7 @@ class _JTPersonalScreenEmployerState extends State<JTPersonalScreenEmployer> {
                           ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network(imagedev + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(imageserver + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,

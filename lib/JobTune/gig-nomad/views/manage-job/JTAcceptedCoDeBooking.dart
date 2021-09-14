@@ -1,62 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/resume/JTResumeScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
-import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 
 import '../../../../main.dart';
-// import 'DTOrderSummaryScreen.dart';
-// import 'DTProductDetailScreen.dart';
 
-// ignore: must_be_immutable
-class AcceptedCoDeBooking extends StatefulWidget {
+
+class JTJobMatchScreen extends StatefulWidget {
   static String tag = '/CartListView';
 
   bool? mIsEditable;
   bool? isOrderSummary;
 
-  AcceptedCoDeBooking({this.mIsEditable, this.isOrderSummary});
+  JTJobMatchScreen({this.mIsEditable, this.isOrderSummary});
 
   @override
-  AcceptedCoDeBookingState createState() => AcceptedCoDeBookingState();
+  JTJobMatchScreenState createState() => JTJobMatchScreenState();
 }
 
-class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
-  List codebookinglist = [];
+class JTJobMatchScreenState extends State<JTJobMatchScreen> {
 
-  Future<void> getCoDeAccepted() async {
+  List alertlist = [];
+  Future<void> readAlert() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final jobtuneUser = prefs.getString('email').toString();
-
+    final String lgid = prefs.getString('employerID').toString();
     http.Response response = await http.get(
-        Uri.parse(server.server +
-            "jtnew_product_selectcodebookingaccepted&j_providerid=" +
-            jobtuneUser),
+        Uri.parse(server + "jtnew_employer_selectjobalert&id="+lgid),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-      codebookinglist = json.decode(response.body);
+      alertlist = json.decode(response.body);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    init();
+    this.readAlert();
   }
 
-  init() async {
-    getCoDeAccepted();
-  }
 
   @override
   void setState(fn) {
@@ -66,7 +55,7 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: codebookinglist == null ? 0 : codebookinglist.length,
+        itemCount: alertlist == null ? 0 : alertlist.length,
         itemBuilder: (BuildContext context, int index) {
           return Container(
             decoration: boxDecorationRoundedWithShadow(8,
@@ -77,26 +66,20 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 80,
-                  width: 80,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        server.image + codebookinglist[index]["profile_pic"]),
-                    // radius: 35,
-                  ),
-                  // child: Image.network(
-                  //   server.image + codebookinglist[index]["profile_pic"],
-                  //   fit: BoxFit.cover,
-                  //   height: 100,
-                  //   width: 100,
-                  // ).cornerRadiusWithClipRRect(8),
+                    height: 80,
+                    width: 80,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          imageserver + alertlist[index]["profile_pic"]),
+                      // radius: 35,
+                    )
                 ),
                 12.width,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(codebookinglist[index]["role"],
+                    Text(alertlist[index]["job_type"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -104,7 +87,7 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                     Row(
                       children: [
                         Text(
-                          '\RM ' + codebookinglist[index]["payment"],
+                          alertlist[index]["job_name"],
                           style: TextStyle(
                             decoration: TextDecoration.none,
                             color: appStore.textPrimaryColor,
@@ -115,19 +98,12 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                       ],
                     ),
                     8.height,
-                    Text('Provider : ' + codebookinglist[index]["name"],
+                    Text('Applicant : ' + alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
                     8.height,
-                    Text('Date : ' + codebookinglist[index]["start_date"],
-                        style: primaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.height,
-                    Text(
-                        'Description : ' +
-                            codebookinglist[index]["job_description"],
+                    Text('Specialize : ' + alertlist[index]["category"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -137,55 +113,58 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
                         Container(
                           decoration: boxDecorationWithRoundedCorners(
                             borderRadius: BorderRadius.circular(4),
-                            backgroundColor:
-                                (codebookinglist[index]["status"] == "verified")
-                                    ? Colors.lightGreen
-                                    : appColorPrimaryDark,
+                            backgroundColor: appDark_parrot_green,
+                          ),
+                          padding: EdgeInsets.all(6.5),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              6.width,
+                              Text('View',
+                                  style: boldTextStyle(color: whiteColor)),
+                              6.width,
+                            ],
+                          ),
+                        ).onTap(() async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => JTResumeScreen(
+                              id: alertlist[index]["employee_id"],
+                            )),
+                          );
+                        }),
+                        10.width,
+                        Container(
+                          decoration: boxDecorationWithRoundedCorners(
+                            borderRadius: BorderRadius.circular(4),
+                            backgroundColor: appColorPrimaryDark,
                           ),
                           padding: EdgeInsets.all(4),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Icon(Icons.remove, color: whiteColor).onTap(() {
-                              //   var qty = data.qty!;
-                              //   if (qty <= 1) return;
-                              //   var q = qty - 1;
-                              //   data.qty = q;
-
-                              //   calculate();
-                              // }),
                               6.width,
-                              (codebookinglist[index]["status"] == "verified")
-                                  ? Text('Verified',
-                                      style: boldTextStyle(color: whiteColor))
-                                  : (codebookinglist[index]["status"] ==
-                                          "completed")
-                                      ? Text('Completed',
-                                          style:
-                                              boldTextStyle(color: whiteColor))
-                                      : Text('Pending',
-                                          style:
-                                              boldTextStyle(color: whiteColor)),
+                              Text('Shortlist',
+                                  style: boldTextStyle(color: whiteColor)),
                               6.width,
-                              (codebookinglist[index]["status"] == "accepted")
-                                  ? Icon(Icons.edit_outlined, color: whiteColor)
-                                  : Icon(Icons.check_rounded,
-                                      color: whiteColor),
+                              Icon(Icons.check_rounded, color: whiteColor)
+                                  .onTap(() {}),
                             ],
                           ),
-                        ).onTap((codebookinglist[index]["status"] == "verified")
-                            ? () async {}
-                            : (codebookinglist[index]["status"] == "completed")
-                                ? () async {}
-                                : () async {
-                                    var bookingid = codebookinglist[index]
-                                        ["co_de_booking_id"];
-                                    showInDialog(context,
-                                        child: UpdateStatusDialog(
-                                            bookingid: bookingid),
-                                        backgroundColor: Colors.transparent,
-                                        contentPadding: EdgeInsets.all(0));
-                                  }),
+                        ).onTap(() async {
+                          var bookingid =
+                          alertlist[index]["co_de_booking_id"];
+                          showInDialog(context,
+                              child: AcceptRequestDialog(bookingid: bookingid),
+                              backgroundColor: Colors.transparent,
+                              contentPadding: EdgeInsets.all(0));
+
+                          // if (model != null) {
+                          //   list.add(model);
+
+                          //   setState(() {});
+                          // }
+                        }),
                       ],
                     ),
                   ],
@@ -197,45 +176,34 @@ class AcceptedCoDeBookingState extends State<AcceptedCoDeBooking> {
   }
 }
 
-class UpdateStatusDialog extends StatefulWidget {
+class AcceptRequestDialog extends StatefulWidget {
   var bookingid;
 
-  UpdateStatusDialog({this.bookingid});
+  AcceptRequestDialog({this.bookingid});
 
   @override
-  _UpdateStatusDialogState createState() => _UpdateStatusDialogState();
+  _AcceptRequestDialogState createState() => _AcceptRequestDialogState();
 }
 
-class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
-  List<String> listOfCategory = [
-    'Pending',
-    'Completed',
-  ];
-  String? selectedIndexCategory = 'Pending';
-  String? dropdownNames;
-  String? dropdownScrollable = 'I';
-
+class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
   var autoValidate = false;
   var formKey = GlobalKey<FormState>();
 
-  Future<void> completeRequest() async {
+  Future<void> addShortlist() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final jobtuneUser = prefs.getString('email');
-    // final jobtuneUser = "shahirah0397@gmail.com";
+    final jobtuneUser = prefs.getString('employerID');
 
-    if (selectedIndexCategory == "Pending") {
-      Navigator.pop(context);
-    } else {
-      http.get(
-          Uri.parse(server.server +
-              "jtnew_product_updatecodebookingcompleted&j_codebookingid=" +
-              widget.bookingid),
-          headers: {"Accept": "application/json"});
+    // http.get(
+    //     Uri.parse(server +
+    //         "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
+    //         widget.bookingid +
+    //         "&j_codeid=" +
+    //         jobtuneUser.toString()),
+    //     headers: {"Accept": "application/json"});
 
-      Navigator.pop(context);
+    Navigator.pop(context);
 
-      toast("Co-De verified successfully");
-    }
+    toast("Request accepted successfully");
   }
 
   @override
@@ -267,7 +235,7 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Update Status', style: boldTextStyle(size: 18)),
+                    Text('Shortlist Candidate', style: boldTextStyle(size: 18)),
                     IconButton(
                       icon: Icon(Icons.close, color: appStore.iconColor),
                       onPressed: () {
@@ -276,58 +244,51 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
                     )
                   ],
                 ),
-                8.height,
-                DropdownButtonFormField(
-                  style: primaryTextStyle(),
-                  decoration: InputDecoration(
-                    // labelText: 'Co-De',
-                    contentPadding: EdgeInsets.all(16),
-                    labelStyle: secondaryTextStyle(),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(color: appColorPrimary)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide:
-                            BorderSide(color: appStore.textSecondaryColor!)),
-                  ),
-                  isExpanded: true,
-                  dropdownColor: appStore.appBarColor,
-                  value: selectedIndexCategory,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: appStore.iconColor,
-                  ),
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      toast(newValue);
-                      selectedIndexCategory = newValue;
-                    });
-                  },
-                  items: listOfCategory.map((category) {
-                    return DropdownMenuItem(
-                      child: Text(category, style: primaryTextStyle())
-                          .paddingLeft(8),
-                      value: category,
-                    );
-                  }).toList(),
-                ),
+                Text('Are you sure you want to add this candidate to your shortlist?'),
                 16.height,
-                GestureDetector(
-                  onTap: () {
-                    completeRequest();
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: appColorPrimary,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Center(
-                      child: Text("Submit", style: boldTextStyle(color: white)),
-                    ),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: GestureDetector(
+                          onTap: () {
+                            addShortlist();
+                          },
+                          child: Container(
+                            // width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                color: appColorPrimary,
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(5))),
+                            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                            child: Center(
+                              child: Text("Yes",
+                                  style: boldTextStyle(color: white)),
+                            ),
+                          ),
+                        )),
+                    8.width,
+                    Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          // width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: redColor,
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child:
+                            Text("Cancel", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 16.height,
               ],

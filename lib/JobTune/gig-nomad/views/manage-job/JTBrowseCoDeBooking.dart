@@ -33,7 +33,7 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('employerID').toString();
     http.Response response = await http.get(
-        Uri.parse(dev + "jtnew_employer_selectjobalert&id="+lgid),
+        Uri.parse(server + "jtnew_employer_selectjobalert&id="+lgid),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
@@ -71,7 +71,7 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
                     width: 80,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          imagedev + alertlist[index]["profile_pic"]),
+                          imageserver + alertlist[index]["profile_pic"]),
                       // radius: 35,
                     )
                     ),
@@ -144,16 +144,8 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Icon(Icons.remove, color: whiteColor).onTap(() {
-                              //   var qty = data.qty!;
-                              //   if (qty <= 1) return;
-                              //   var q = qty - 1;
-                              //   data.qty = q;
-
-                              //   calculate();
-                              // }),
                               6.width,
-                              Text('Accept',
+                              Text('Shortlist',
                                   style: boldTextStyle(color: whiteColor)),
                               6.width,
                               Icon(Icons.check_rounded, color: whiteColor)
@@ -185,154 +177,6 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
   }
 }
 
-class UpdateStatusDialog extends StatefulWidget {
-  @override
-  _UpdateStatusDialogState createState() => _UpdateStatusDialogState();
-}
-
-class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
-  List<String> listOfCategory = [
-    'Pending',
-    'Shipped',
-  ];
-  String? selectedIndexCategory = 'Pending';
-  String? dropdownNames;
-  String? dropdownScrollable = 'I';
-
-  var nameCont = TextEditingController();
-  var addressLine1Cont = TextEditingController();
-  var addressLine2Cont = TextEditingController();
-  var typeCont = TextEditingController();
-  var mobileCont = TextEditingController();
-
-  var addressLine1Focus = FocusNode();
-  var addressLine2Focus = FocusNode();
-  var typeFocus = FocusNode();
-  var mobileFocus = FocusNode();
-  var autoValidate = false;
-  var formKey = GlobalKey<FormState>();
-
-  validate() {
-    if (formKey.currentState!.validate()) {
-      hideKeyboard(context);
-      toast('Adding Successfully');
-      formKey.currentState!.save();
-
-      var addressData = DTAddressListModel();
-      addressData.name = nameCont.text.validate();
-      addressData.addressLine1 = addressLine1Cont.text.validate();
-      addressData.addressLine2 = addressLine2Cont.text.validate();
-      addressData.phoneNo = mobileCont.text.validate();
-      addressData.type = 'Office';
-
-      finish(context, addressData);
-    } else {
-      autoValidate = true;
-    }
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: dynamicBoxConstraints(),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: appStore.scaffoldBackground,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10.0,
-              offset: Offset(0.0, 10.0),
-            ),
-          ],
-        ),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min, // To make the card compact
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Update Status', style: boldTextStyle(size: 18)),
-                    IconButton(
-                      icon: Icon(Icons.close, color: appStore.iconColor),
-                      onPressed: () {
-                        finish(context);
-                      },
-                    )
-                  ],
-                ),
-                8.height,
-                DropdownButtonFormField(
-                  style: primaryTextStyle(),
-                  decoration: InputDecoration(
-                    // labelText: 'Co-De',
-                    contentPadding: EdgeInsets.all(16),
-                    labelStyle: secondaryTextStyle(),
-                    border: OutlineInputBorder(),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide(color: appColorPrimary)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide:
-                            BorderSide(color: appStore.textSecondaryColor!)),
-                  ),
-                  isExpanded: true,
-                  dropdownColor: appStore.appBarColor,
-                  value: selectedIndexCategory,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    color: appStore.iconColor,
-                  ),
-                  onChanged: (dynamic newValue) {
-                    setState(() {
-                      toast(newValue);
-                      selectedIndexCategory = newValue;
-                    });
-                  },
-                  items: listOfCategory.map((category) {
-                    return DropdownMenuItem(
-                      child: Text(category, style: primaryTextStyle())
-                          .paddingLeft(8),
-                      value: category,
-                    );
-                  }).toList(),
-                ),
-                16.height,
-                GestureDetector(
-                  onTap: () {
-                    validate();
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: appColorPrimary,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Center(
-                      child: Text("Submit", style: boldTextStyle(color: white)),
-                    ),
-                  ),
-                ),
-                16.height,
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class AcceptRequestDialog extends StatefulWidget {
   var bookingid;
 
@@ -346,18 +190,17 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
   var autoValidate = false;
   var formKey = GlobalKey<FormState>();
 
-  Future<void> acceptRequest() async {
+  Future<void> addShortlist() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final jobtuneUser = prefs.getString('email');
-    // final jobtuneUser = "shahirah0397@gmail.com";
+    final jobtuneUser = prefs.getString('employerID');
 
-    http.get(
-        Uri.parse(server +
-            "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
-            widget.bookingid +
-            "&j_codeid=" +
-            jobtuneUser.toString()),
-        headers: {"Accept": "application/json"});
+    // http.get(
+    //     Uri.parse(server +
+    //         "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
+    //         widget.bookingid +
+    //         "&j_codeid=" +
+    //         jobtuneUser.toString()),
+    //     headers: {"Accept": "application/json"});
 
     Navigator.pop(context);
 
@@ -393,7 +236,7 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Accept Request', style: boldTextStyle(size: 18)),
+                    Text('Shortlist Candidate', style: boldTextStyle(size: 18)),
                     IconButton(
                       icon: Icon(Icons.close, color: appStore.iconColor),
                       onPressed: () {
@@ -402,7 +245,7 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
                     )
                   ],
                 ),
-                Text('Are you sure you want to accept this Co-De request?'),
+                Text('Are you sure you want to add this candidate to your shortlist?'),
                 16.height,
                 Row(
                   children: [
@@ -410,7 +253,7 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
                         flex: 2,
                         child: GestureDetector(
                           onTap: () {
-                            acceptRequest();
+                            addShortlist();
                           },
                           child: Container(
                             // width: MediaQuery.of(context).size.width,
@@ -441,7 +284,7 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                           child: Center(
                             child:
-                                Text("No", style: boldTextStyle(color: white)),
+                                Text("Cancel", style: boldTextStyle(color: white)),
                           ),
                         ),
                       ),

@@ -49,7 +49,7 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -68,7 +68,7 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
 
     http.get(
         Uri.parse(
-            dev + "jtnew_user_insertexperience&id=" + lgid
+            server + "jtnew_user_insertexperience&id=" + lgid
                 + "&name=" + title
                 + "&desc=" + desc
                 + "&from=" + ins
@@ -92,7 +92,7 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
 
     http.get(
         Uri.parse(
-            dev + "jtnew_user_updateexperience&id=" + lgid
+            server + "jtnew_user_updateexperience&id=" + lgid
                 + "&name=" + title
                 + "&desc=" + desc
                 + "&from=" + ins
@@ -116,7 +116,7 @@ class _JTExperienceScreenEmployeeState extends State<JTExperienceScreenEmployee>
     if(widget.id != "non"){
       http.Response response = await http.get(
           Uri.parse(
-              dev + "jtnew_user_selectexperiencebyid&id=" + widget.id),
+              server + "jtnew_user_selectexperiencebyid&id=" + widget.id),
           headers: {"Accept": "application/json"}
       );
 

@@ -128,7 +128,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -169,7 +169,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_countbooking&id=" + lgid),
+            server + "jtnew_user_countbooking&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -189,7 +189,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_countspending&id=" + lgid),
+            server + "jtnew_user_countspending&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -205,7 +205,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectexperience&id=" + lgid),
+            server + "jtnew_user_selectexperience&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -387,7 +387,7 @@ class _JTProfileScreenEmployeeState extends State<JTProfileScreenEmployee> {
                           margin: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: FractionalOffset.center,
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(imagedev + img),
+                            backgroundImage: NetworkImage(imageserver + img),
                             radius: 50,
                           ),
                         ),
@@ -770,7 +770,7 @@ class _JTExpListState extends State<JTExpList> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectexperience&id=" + lgid),
+            server + "jtnew_user_selectexperience&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -887,7 +887,7 @@ class _AlertConfirmDeleteState extends State<AlertConfirmDelete> {
   Future<void> deleteExp() async {
     http.get(
         Uri.parse(
-            dev + "jtnew_user_deleteexperience&exp=" + widget.id),
+            server + "jtnew_user_deleteexperience&exp=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 

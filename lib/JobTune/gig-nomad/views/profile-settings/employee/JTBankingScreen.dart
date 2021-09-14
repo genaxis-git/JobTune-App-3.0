@@ -39,7 +39,7 @@ class _JTBankingScreenState extends State<JTBankingScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -65,7 +65,7 @@ class _JTBankingScreenState extends State<JTBankingScreen> {
 
     http.get(
         Uri.parse(
-            dev + "jtnew_user_updateprofile&id=" + lgid
+            server + "jtnew_user_updateprofile&id=" + lgid
                 + "&fname=" + profile[0]["first_name"]
                 + "&lname=" + profile[0]["last_name"]
                 + "&telno=" + profile[0]["phone_no"]

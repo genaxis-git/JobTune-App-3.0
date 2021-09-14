@@ -50,7 +50,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 
@@ -74,7 +74,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -129,7 +129,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     if(category == "non"){
       http.get(
           Uri.parse(
-              dev + "jtnew_user_updateprofile&id=" + lgid
+              server + "jtnew_user_updateprofile&id=" + lgid
                   + "&fname=" + fname
                   + "&lname=" + lname
                   + "&telno=" + profile[0]["phone_no"]
@@ -157,7 +157,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     else {
       http.get(
           Uri.parse(
-              dev + "jtnew_user_updateprofile&id=" + lgid
+              server + "jtnew_user_updateprofile&id=" + lgid
                   + "&fname=" + fname
                   + "&lname=" + lname
                   + "&telno=" + profile[0]["phone_no"]
@@ -188,7 +188,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   PickedFile? _image;
   File? _showimg;
-  final String uploadUrl = imagedev + 'jtnew_uploadPhoto_user.php';
+  final String uploadUrl = imageserver + 'jtnew_uploadPhoto_user.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -274,7 +274,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network(imagedev + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(imageserver + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,

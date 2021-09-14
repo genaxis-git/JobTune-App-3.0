@@ -58,7 +58,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectprofile&lgid=" + lgid),
+            server + "jtnew_user_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -96,7 +96,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
   Future<void> readService() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_employer_selectjob&id=" + widget.id),
+            server + "jtnew_employer_selectjob&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -129,10 +129,10 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
   double max = 0;
   double min = 0;
   Future<void> readPackage(b) async {
-    print(dev + "jtnew_provider_selectpackage&id=" + b);
+    print(server + "jtnew_provider_selectpackage&id=" + b);
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectpackage&id=" + b),
+            server + "jtnew_provider_selectpackage&id=" + b),
         headers: {"Accept": "application/json"}
     );
 
@@ -163,7 +163,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
   Future<void> readAverage() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectaveragerating&id=" + widget.id),
+            server + "jtnew_user_selectaveragerating&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -177,7 +177,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
     final String lgid = prefs.getString('email').toString();
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_insertapplication&id=" + widget.id + "&name=" + lgid + "&empr=" + emp),
+            server + "jtnew_user_insertapplication&id=" + widget.id + "&name=" + lgid + "&empr=" + emp),
         headers: {"Accept": "application/json"}
     );
 
@@ -193,7 +193,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
   Future<void> readTotal() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selecttotalrate&id=" + widget.id),
+            server + "jtnew_user_selecttotalrate&id=" + widget.id),
         headers: {"Accept": "application/json"}
     );
 
@@ -333,7 +333,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
                   Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      imagedev + img,
+                      imageserver + img,
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
@@ -593,7 +593,7 @@ class _DisplayPackageState extends State<DisplayPackage> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectcategory"),
+            server + "jtnew_provider_selectcategory"),
         headers: {"Accept": "application/json"}
     );
 

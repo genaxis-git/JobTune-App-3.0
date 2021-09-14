@@ -45,7 +45,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_employer_selectprofile&lgid=" + lgid),
+            server + "jtnew_employer_selectprofile&lgid=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -81,7 +81,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_countbooking&id=" + lgid),
+            server + "jtnew_user_countbooking&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -101,7 +101,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_countspending&id=" + lgid),
+            server + "jtnew_user_countspending&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -248,7 +248,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(imagedev + img),
+                          backgroundImage: NetworkImage(imageserver + img),
                           radius: 50,
                         ),
                       ),

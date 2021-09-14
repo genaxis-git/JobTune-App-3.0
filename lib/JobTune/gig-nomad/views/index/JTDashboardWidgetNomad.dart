@@ -39,7 +39,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
     if(lgid != "null") {
       http.Response response = await http.get(
           Uri.parse(
-              dev + "jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -58,7 +58,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> checkCategory(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectavailablejob&city="+city
+            server + "jtnew_user_selectavailablejob&city="+city
                 +"&state="+state
                 +"&country="+country
         ),
@@ -78,7 +78,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectavailablejob&city=&state=&country="),
+            server + "jtnew_user_selectavailablejob&city=&state=&country="),
         headers: {"Accept": "application/json"}
     );
 
@@ -98,7 +98,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
 
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_provider_selectstandby&id=" + lgid),
+            server + "jtnew_provider_selectstandby&id=" + lgid),
         headers: {"Accept": "application/json"}
     );
 
@@ -267,7 +267,7 @@ class _JTJobListUserState extends State<JTJobListUser> {
     else {
       http.Response response = await http.get(
           Uri.parse(
-              dev + "jtnew_user_selectprofile&lgid=" + lgid),
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
           headers: {"Accept": "application/json"}
       );
 
@@ -283,7 +283,7 @@ class _JTJobListUserState extends State<JTJobListUser> {
   Future<void> checkFeatured(city,state,country) async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectfeaturedjob&city="+city
+            server + "jtnew_user_selectfeaturedjob&city="+city
                 +"&state="+state
                 +"&country="+country
         ),
@@ -297,7 +297,7 @@ class _JTJobListUserState extends State<JTJobListUser> {
   Future<void> serviceList() async {
     http.Response response = await http.get(
         Uri.parse(
-            dev + "jtnew_user_selectfeaturedjob&city=&state=&country="
+            server + "jtnew_user_selectfeaturedjob&city=&state=&country="
         ),
         headers: {"Accept": "application/json"});
 
@@ -343,7 +343,7 @@ class _JTJobListUserState extends State<JTJobListUser> {
                     child: Stack(
                       children: [
                         Image.network(
-                          imagedev + joblist[index]["profile_pic"],
+                          imageserver + joblist[index]["profile_pic"],
                           fit: BoxFit.cover,
                           height: 110,
                           width: 126,
