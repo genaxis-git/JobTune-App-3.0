@@ -66,7 +66,7 @@ class _JTSignUpScreenEmployerState extends State<JTSignUpScreenEmployer> {
   Future<void> smtp(email, pass) async{
     http.get(
         Uri.parse(
-            server + "jt_mail&jemail=" + email + "&host=jobtune-dev.my1.cloudapp.myiacloud.com"),
+            server + "jt_mail&jemail=" + email + "&host=jobtune.ai"),
         headers: {"Accept": "application/json"}
     );
 
@@ -378,7 +378,7 @@ class _AlertAgreeState extends State<AlertAgree> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/termscond.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/termscond.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -472,7 +472,7 @@ class _AlertRegisteredBeforeState extends State<AlertRegisteredBefore> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

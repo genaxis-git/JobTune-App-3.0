@@ -343,11 +343,29 @@ class _JTJobListUserState extends State<JTJobListUser> {
                     child: Stack(
                       children: [
                         Image.network(
-                          imageserver + joblist[index]["profile_pic"],
+                          image + joblist[index]["profile_pic"],
                           fit: BoxFit.cover,
                           height: 110,
                           width: 126,
                         ).cornerRadiusWithClipRRect(8),
+                        Positioned(
+                          top: 0,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                            decoration: BoxDecoration(
+                                color: (joblist[index]["job_type"] == "Gig")
+                                    ? Colors.lightBlueAccent
+                                    : (joblist[index]["job_type"] == "Contract")
+                                      ? Colors.green
+                                      : Colors.orangeAccent,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8),
+                                ) // green shaped
+                            ),
+                            child: Text(joblist[index]["job_type"],style: TextStyle(color: Colors.white)),
+                          ),
+                        )
                       ],
                     ),
                   ),

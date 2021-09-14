@@ -79,10 +79,10 @@ class _WebviewPaymentState extends State<WebviewPayment> {
           navigationDelegate: (request) {
             if (request.url.contains('&status_id=1')) {
               final String paymentMessage = 'Your booking is confirmed!';
-              _closeWebview(paymentMessage);
+              _closeWebview(paymentMessage,widget.postid);
             } else if (request.url.contains('&status_id=0')) {
               final String paymentMessage = 'Your payment was not successful!';
-              _closeWebview(paymentMessage);
+              _closeWebview(paymentMessage,widget.postid);
             }
             return NavigationDecision.navigate;
           },
@@ -91,11 +91,12 @@ class _WebviewPaymentState extends State<WebviewPayment> {
     );
   }
 
-  _closeWebview(paymentMessage){
+  _closeWebview(paymentMessage,id){
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) => ConfirmationScreen(
           message: paymentMessage,
+          id: id,
         )
       )
     );

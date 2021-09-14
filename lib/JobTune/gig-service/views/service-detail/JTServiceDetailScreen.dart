@@ -9,7 +9,9 @@ import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
@@ -426,7 +428,19 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     }
     print("email"+email);
     return Scaffold(
-      appBar: JTappBar(context, 'Detail'),
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: jtprofile_appBarTitleWidget(context, 'Detail'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => JTDashboardSreenUser()),
+              );
+            }
+        ),
+      ),
       drawer: JTDrawerWidgetUser(),
       body: JTContainerX(
         mobile: Stack(

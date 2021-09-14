@@ -78,6 +78,7 @@ class _JTDrawerWidgetNomadState extends State<JTDrawerWidgetNomad> {
   Future<void> logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('employerID');
+    await prefs.remove('loginemployer');
     // await prefs.clear();
 
     JTDashboardScreenGuest().launch(context, isNewTask: true);

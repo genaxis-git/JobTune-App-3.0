@@ -296,7 +296,7 @@ class _AlertVerifyEmailState extends State<AlertVerifyEmail> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -388,7 +388,7 @@ class _AlertWrongPasswordState extends State<AlertWrongPassword> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -516,7 +516,7 @@ class _AlertNotRegisteredState extends State<AlertNotRegistered> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

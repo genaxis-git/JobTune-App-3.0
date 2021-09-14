@@ -71,7 +71,7 @@ class JTJobAlertScreenState extends State<JTJobAlertScreen> {
                     width: 80,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          imageserver + alertlist[index]["profile_pic"]),
+                          image + alertlist[index]["profile_pic"]),
                       // radius: 35,
                     )
                     ),

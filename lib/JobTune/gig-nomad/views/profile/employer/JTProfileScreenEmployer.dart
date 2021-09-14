@@ -248,7 +248,7 @@ class _JTProfileScreenEmployerState extends State<JTProfileScreenEmployer> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(imageserver + img),
+                          backgroundImage: NetworkImage(image + img),
                           radius: 50,
                         ),
                       ),

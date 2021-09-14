@@ -188,7 +188,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   PickedFile? _image;
   File? _showimg;
-  final String uploadUrl = imageserver + 'jtnew_uploadPhoto_user.php';
+  final String uploadUrl = image + 'jtnew_uploadPhoto_user.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -274,7 +274,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network(imageserver + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(image + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,

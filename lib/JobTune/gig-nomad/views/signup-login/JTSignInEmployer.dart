@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,7 +14,6 @@ import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWi
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTReviewWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/onboarding/JTWalkThroughScreenGuest.dart';
 import '../../../../main.dart';
 import 'JTSignUpEmployer.dart';
 
@@ -307,7 +305,7 @@ class _AlertVerifyEmailState extends State<AlertVerifyEmail> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -399,7 +397,7 @@ class _AlertWrongPasswordState extends State<AlertWrongPassword> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -527,7 +525,7 @@ class _AlertNotRegisteredState extends State<AlertNotRegistered> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -656,7 +654,7 @@ class _AlertChangeEmailState extends State<AlertChangeEmail> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/rsz_5239.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/shortlist.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

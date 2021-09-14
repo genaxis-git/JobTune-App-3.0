@@ -19,7 +19,7 @@ class _JTWalkThroughScreenEmployerState extends State<JTWalkThroughScreenEmploye
   List<Widget>  pages = [];
   var selectedIndex = 0;
 
-  final img1 = Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/rsz_10118.jpg');
+  final img1 = Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/resized/vacant.jpg');
   final img2 = Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/rsz_8619.jpg');
   final img3 = Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/rsz_6308.jpg');
   final img4 = Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/rsz_8732.jpg');

@@ -93,6 +93,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
   String emp = "";
   String needed = "";
   String pref = "";
+  String jobtype = "";
   Future<void> readService() async {
     http.Response response = await http.get(
         Uri.parse(
@@ -120,6 +121,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
       emp = info[0]["email"];
       needed = info[0]["worker_needed"];
       pref = info[0]["job_gender"];
+      jobtype = info[0]["job_type"];
     });
   }
 
@@ -333,7 +335,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
                   Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      imageserver + img,
+                      image + img,
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
@@ -444,7 +446,7 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
                                     ),
                                     SizedBox(width: 110,),
                                     Text(
-                                      category,
+                                      category + " (" + jobtype + ")",
                                       textAlign: TextAlign.justify,
                                       style: TextStyle(
                                         color: Colors.black87,
@@ -530,8 +532,18 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    (jobtype == "Gig")
+                                    ? Text(
                                       "Date: ",
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                    : Text(
+                                      "Start: ",
                                       textAlign: TextAlign.justify,
                                       style: TextStyle(
                                         color: Colors.black87,
@@ -544,15 +556,25 @@ class _JTJobDetailScreenState extends State<JTJobDetailScreen> {
                                         height: 35,
                                         width: 185,
                                         child: Flexible(
-                                            child: Text(
-                                              startdate + " to " + enddate,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.justify,
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 16,
-                                              ),
-                                            )
+                                            child: (jobtype == "Gig")
+                                                ? Text(
+                                                    startdate + " to " + enddate,
+                                                    maxLines: 2,
+                                                    textAlign: TextAlign.justify,
+                                                    style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 16,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                  startdate,
+                                                  maxLines: 2,
+                                                  textAlign: TextAlign.justify,
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 16,
+                                                  ),
+                                            ),
                                         )
                                     ),
                                     SizedBox(height: 10,),

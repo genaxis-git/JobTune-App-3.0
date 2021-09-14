@@ -4,6 +4,8 @@ import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/theme14/utils/T14Colors.dart';
 import 'package:prokit_flutter/theme14/utils/T14Strings.dart';
 import 'package:prokit_flutter/theme14/utils/T14Widget.dart';
@@ -137,7 +139,7 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
                               height: 45,
                               width: 45,
                               decoration: boxDecorationWithShadow(
-                                decorationImage: DecorationImage(image: Image.network(imagedev+img).image, fit: BoxFit.cover),
+                                decorationImage: DecorationImage(image: Image.network(image+img).image, fit: BoxFit.cover),
                                 boxShape: BoxShape.circle,
                               ),
                             ),
@@ -191,7 +193,7 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
                   Text('About', style: boldTextStyle(color: t14_colorBlue)).paddingOnly(top: 16, bottom: 8),
                   Text(desc, style: secondaryTextStyle()).paddingOnly(bottom: 16),
                   20.height,
-                  Text('Personal', style: boldTextStyle(color: t14_colorBlue)).paddingOnly(bottom: 8),
+                  Text('Personal', textAlign:TextAlign.justify,style: boldTextStyle(color: t14_colorBlue)).paddingOnly(bottom: 8),
                   Padding(
                     padding: EdgeInsets.only(left: 20, top:5),
                     child: Column(
@@ -230,6 +232,30 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
                       ],
                     ),
                   ),
+                  20.height,
+                  Text('Emergency Contact', style: boldTextStyle(color: t14_colorBlue)).paddingOnly(bottom: 8),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, top:5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Guardian Name: " + ecname, style: secondaryTextStyle()).paddingOnly(bottom: 7),
+                        Text("Phone No.: " + ecno, style: secondaryTextStyle()).paddingOnly(bottom: 7),
+                      ],
+                    ),
+                  ),
+                  20.height,
+                  Text('Banking Information', style: boldTextStyle(color: t14_colorBlue)).paddingOnly(bottom: 8),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, top:5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Bank Name: " + banktype, style: secondaryTextStyle()).paddingOnly(bottom: 7),
+                        Text("Account No.: " + bankno, style: secondaryTextStyle()).paddingOnly(bottom: 7),
+                      ],
+                    ),
+                  ),
 
                   // Text('Interests', style: boldTextStyle(color: t14_colorBlue)).paddingOnly(bottom: 8),
                   // Wrap(
@@ -260,7 +286,9 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
                       decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
                       child: Text('Shortlist Candidate', style: boldTextStyle(color: white)),
                     ).onTap(() {
-
+                      showInDialog(context,
+                          child: AlertAdded(),
+                          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
                     })
                   ],
                 )
@@ -269,6 +297,135 @@ class _JTResumeScreenState extends State<JTResumeScreen> {
         ),
         useFullWidth: true,
       )
+    );
+  }
+}
+
+
+class AlertAdded extends StatefulWidget {
+  @override
+  _AlertAddedState createState() => _AlertAddedState();
+}
+
+class _AlertAddedState extends State<AlertAdded> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/shortlist.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Candidate Shortlisted!",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "You can now view the list of candidates you have added to the shortlist and send offers to those who qualify.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Later", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => JTSignUpScreen()),
+                          // );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("View Now", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

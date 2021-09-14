@@ -6,21 +6,14 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotP
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/account/employee/JTAccountScreenEmployee.dart';
-import 'package:prokit_flutter/JobTune/gig-nomad/views/maintenance/JTMaintenanceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-service/models/JTNavbarUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTOnboardingScreenProvider.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDashboardScreen.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/main/model/ListModels.dart';
-import 'package:prokit_flutter/main/screens/ProKitLauncher.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/widgets/materialWidgets/mwAppStrucutreWidgets/MWDrawerWidgets/MWDrawerScreen2.dart';
 
 import '../../../../main.dart';

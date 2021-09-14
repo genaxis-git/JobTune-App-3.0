@@ -384,7 +384,7 @@ class _AlertAgreeState extends State<AlertAgree> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/termscond.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/termscond.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -478,7 +478,7 @@ class _AlertRegisteredBeforeState extends State<AlertRegisteredBefore> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg",
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

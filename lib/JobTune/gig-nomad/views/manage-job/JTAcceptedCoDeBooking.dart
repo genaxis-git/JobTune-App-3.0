@@ -70,7 +70,7 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                     width: 80,
                     child: CircleAvatar(
                       backgroundImage: NetworkImage(
-                          imageserver + alertlist[index]["profile_pic"]),
+                          image + alertlist[index]["profile_pic"]),
                       // radius: 35,
                     )
                 ),
