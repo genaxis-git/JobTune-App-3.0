@@ -18,6 +18,27 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
   String greet = "";
 
   void greeting() {
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // greeting();
+    init();
+  }
+
+  init() async {
+    setState(() {});
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
       setState(() {
@@ -34,26 +55,6 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
         greet = "Good Evening";
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    greeting();
-    init();
-  }
-
-  init() async {
-    setState(() {});
-  }
-
-  @override
-  void setState(fn) {
-    if (mounted) super.setState(fn);
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return SafeArea(
       child: Observer(
         builder: (context) => Scaffold(

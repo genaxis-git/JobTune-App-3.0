@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/resume/JTResumeScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -11,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 
 import '../../../../main.dart';
+import 'JTManageJobScreen.dart';
 
 
 class JTJobMatchScreen extends StatefulWidget {
@@ -27,23 +29,146 @@ class JTJobMatchScreen extends StatefulWidget {
 
 class JTJobMatchScreenState extends State<JTJobMatchScreen> {
 
-  List alertlist = [];
-  Future<void> readAlert() async {
+  List joblist = [];
+  List catlist = [];
+  Future<void> readJob() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('employerID').toString();
     http.Response response = await http.get(
-        Uri.parse(server + "jtnew_employer_selectjobalert&id="+lgid),
+        Uri.parse(server + "jtnew_employer_selectjobid&id="+lgid),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-      alertlist = json.decode(response.body);
+      joblist = json.decode(response.body);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    this.readAlert();
+    this.readJob();
+  }
+
+
+  @override
+  void setState(fn) {
+    if (mounted) super.setState(fn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        itemCount: joblist == null ? 0 : joblist.length,
+        itemBuilder: (BuildContext context, int index) {
+          final DateFormat formatter = DateFormat('d MMM yyyy');
+          final String formatted01 = formatter.format(DateTime.parse(joblist[index]["job_startdate"]));
+          final String formatted02 = formatter.format(DateTime.parse(joblist[index]["job_enddate"]));
+          return Card(
+            color: appStore.appBarColor,
+            margin: EdgeInsets.all(8),
+            elevation: 2,
+            child: ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MatchingScreen(id: joblist[index]["job_id"], cat: joblist[index]["job_category"])),
+                );
+              },
+              // leading: CircleAvatar(radius: 20, backgroundImage: Image.asset(userList[index].images!).image),
+              title: Text(
+                joblist[index]["job_name"],
+                style: boldTextStyle(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Container(
+                margin: EdgeInsets.only(top: 4),
+                child: Text(formatted01 + " - " + formatted02, style: secondaryTextStyle()),
+              ),
+              trailing: Container(
+                padding: EdgeInsets.only(right: 4),
+                child: Icon(Icons.chevron_right, color: appStore.iconColor),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class MatchingScreen extends StatefulWidget {
+  const MatchingScreen({
+    Key? key,
+    required this.id,
+    required this.cat
+  }) : super(key: key);
+  final String id;
+  final String cat;
+
+  @override
+  _MatchingScreenState createState() => _MatchingScreenState();
+}
+
+class _MatchingScreenState extends State<MatchingScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'Matching List'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => JTManageJobScreen()),
+              // );
+              Navigator.pop(context);
+            }),
+      ),
+      body: MatchingList(id: widget.id,cat:widget.cat),
+    );
+  }
+}
+
+
+class MatchingList extends StatefulWidget {
+
+  const MatchingList({
+    Key? key,
+    required this.id,
+    required this.cat,
+  }) : super(key: key);
+  final String id;
+  final String cat;
+
+  @override
+  MatchingListState createState() => MatchingListState();
+}
+
+class MatchingListState extends State<MatchingList> {
+
+  List alertlist = [];
+  String empr = "";
+  Future<void> readMatch() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('employerID').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(server + "jtnew_employer_selectmatching&cat="+widget.cat),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      alertlist = json.decode(response.body);
+      empr = lgid;
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    this.readMatch();
   }
 
 
@@ -79,7 +204,7 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(alertlist[index]["job_type"],
+                    Text(alertlist[index]["city"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -87,7 +212,7 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                     Row(
                       children: [
                         Text(
-                          alertlist[index]["job_name"],
+                          alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
                           style: TextStyle(
                             decoration: TextDecoration.none,
                             color: appStore.textPrimaryColor,
@@ -98,7 +223,7 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                       ],
                     ),
                     8.height,
-                    Text('Candidate : ' + alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
+                    Text('Phone No : ' + alertlist[index]["phone_no"],
                         style: primaryTextStyle(),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis),
@@ -130,8 +255,8 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                             context,
                             MaterialPageRoute(builder: (context) => JTResumeScreen(
                               id: alertlist[index]["employee_id"],
-                              job: alertlist[index]["job_id"],
-                              empr: alertlist[index]["employer_id"],
+                              job: widget.id,
+                              empr: empr,
                             )),
                           );
                         }),
@@ -154,19 +279,14 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
                             ],
                           ),
                         ).onTap(() async {
-                          var bookingid =
-                          alertlist[index]["co_de_booking_id"];
                           showInDialog(context,
-                              child: AcceptRequestDialog(bookingid: bookingid),
+                              child: AcceptRequestDialog(
+                                id: widget.id,
+                                emp: alertlist[index]["employee_id"],
+                              ),
                               backgroundColor: Colors.transparent,
                               contentPadding: EdgeInsets.all(0));
-
-                          // if (model != null) {
-                          //   list.add(model);
-
-                          //   setState(() {});
-                          // }
-                        }),
+                        })
                       ],
                     ),
                   ],
@@ -178,10 +298,15 @@ class JTJobMatchScreenState extends State<JTJobMatchScreen> {
   }
 }
 
-class AcceptRequestDialog extends StatefulWidget {
-  var bookingid;
 
-  AcceptRequestDialog({this.bookingid});
+class AcceptRequestDialog extends StatefulWidget {
+  var id;
+  var emp;
+
+  AcceptRequestDialog({
+    this.id,
+    this.emp,
+  });
 
   @override
   _AcceptRequestDialogState createState() => _AcceptRequestDialogState();
@@ -195,15 +320,18 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('employerID');
 
-    // http.get(
-    //     Uri.parse(server +
-    //         "jtnew_product_updateacceptcodebooking&j_codebookingid=" +
-    //         widget.bookingid +
-    //         "&j_codeid=" +
-    //         jobtuneUser.toString()),
-    //     headers: {"Accept": "application/json"});
+    http.get(
+        Uri.parse(server +
+            "jtnew_employer_insertshortlist&jpostid=" + widget.id +
+            "&jemployeeid=" + widget.emp +
+            "&jemployerid=" + jobtuneUser.toString()
+        ),
+        headers: {"Accept": "application/json"});
 
     Navigator.pop(context);
+    showInDialog(context,
+        child: AlertAdded(),
+        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
 
     toast("Request accepted successfully");
   }

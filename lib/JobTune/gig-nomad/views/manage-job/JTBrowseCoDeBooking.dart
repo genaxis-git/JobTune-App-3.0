@@ -3,9 +3,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/resume/JTResumeScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
-
-import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 

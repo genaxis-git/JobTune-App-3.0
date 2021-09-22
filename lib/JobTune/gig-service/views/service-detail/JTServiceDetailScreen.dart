@@ -1,30 +1,22 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../../../main.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
 import '../index/JTDrawerWidget.dart';
-import '../index/JTAddressScreen.dart';
 import '../index/JTProductDetailWidget.dart';
 import '../index/JTReviewScreenUser.dart';
-import '../index/JTReviewWidget.dart';
 import 'JTCheckSlotScreen.dart';
 
 bool package = true;
