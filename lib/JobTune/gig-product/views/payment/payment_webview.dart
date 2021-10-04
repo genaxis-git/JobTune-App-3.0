@@ -46,7 +46,7 @@ class _WebviewPaymentState extends State<WebviewPayment> {
 
   init() async {
     final url =
-        'http://jobtune-dev.my1.cloudapp.myiacloud.com/gig/JobTune/Product/gig-product-checkout.php?postproductid=' +
+        'https://jobtune.ai/gig/JobTune/Product/gig-product-checkout.php?postproductid=' +
             widget.productid.toString() +
             '&postproviderid=' +
             widget.providerid.toString() +

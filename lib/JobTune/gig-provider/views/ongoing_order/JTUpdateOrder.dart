@@ -51,6 +51,8 @@ class _UpdateOrderDialogState extends State<UpdateOrderDialog> {
           headers: {"Accept": "application/json"});
 
       Navigator.pop(context);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => DTCartScreen()));
 
       toast("Order shipped successfully");
     }

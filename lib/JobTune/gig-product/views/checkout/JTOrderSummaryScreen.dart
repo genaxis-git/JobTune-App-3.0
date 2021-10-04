@@ -119,15 +119,15 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
             totalamount: posttotalamount.toString(),
             productname: widget.name.toString())));
 
-    print(widget.productid);
-    print(widget.providerid);
-    print(jobtuneUser);
-    print(addressUser);
-    print(expectedDelivery);
-    print(nameUser);
-    print(phoneUser);
-    print(posttotalamount.toString());
-    print(widget.name);
+    // print(widget.productid);
+    // print(widget.providerid);
+    // print(jobtuneUser);
+    // print(addressUser);
+    // print(expectedDelivery);
+    // print(nameUser);
+    // print(phoneUser);
+    // print(posttotalamount.toString());
+    // print(widget.name);
 
     // http.get(
     //     Uri.parse(server.server +
@@ -136,7 +136,7 @@ class DTOrderSummaryScreenState extends State<DTOrderSummaryScreen> {
     //         "&j_providerid=" +
     //         widget.providerid +
     //         "&j_userid=" +
-    //         jobtuneUser +
+    //         jobtuneUser.toString() +
     //         "&j_location=" +
     //         addressUser +
     //         "&j_expecteddelivery=" +

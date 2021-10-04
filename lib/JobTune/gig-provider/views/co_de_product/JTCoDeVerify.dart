@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 import '../../../../main.dart';
-// import 'DTOrderSummaryScreen.dart';
+import 'JTCoDeBookingScreen.dart';
 // import 'DTProductDetailScreen.dart';
 
 class JTCoDeVerify extends StatefulWidget {
@@ -53,6 +53,10 @@ class _JTCoDeVerifyState extends State<JTCoDeVerify> {
           headers: {"Accept": "application/json"});
 
       Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => JTCoDeProduct()));
 
       toast("Your work will be verified soon");
     }

@@ -9,6 +9,7 @@ import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 
 import '../../../../main.dart';
+import './JTOrderScreen.dart';
 // import 'DTOrderSummaryScreen.dart';
 // import 'DTProductDetailScreen.dart';
 
@@ -43,6 +44,8 @@ class ConfirmOrderDialogState extends State<ConfirmOrderDialog> {
         headers: {"Accept": "application/json"});
 
     Navigator.pop(context);
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (BuildContext context) => DTCartScreen()));
 
     toast("Order confirmed successfully");
   }

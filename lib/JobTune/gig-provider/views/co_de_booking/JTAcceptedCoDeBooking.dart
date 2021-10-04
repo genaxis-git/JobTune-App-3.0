@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart' as server;
 
 import '../../../../main.dart';
-// import 'DTOrderSummaryScreen.dart';
+import 'JTCoDeBookingScreen.dart';
 // import 'DTProductDetailScreen.dart';
 
 // ignore: must_be_immutable
@@ -233,6 +233,10 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
           headers: {"Accept": "application/json"});
 
       Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => DTCartScreen1()));
 
       toast("Co-De verified successfully");
     }
