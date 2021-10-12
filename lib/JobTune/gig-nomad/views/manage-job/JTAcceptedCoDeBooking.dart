@@ -4,15 +4,10 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/resume/JTResumeScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
-
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-
 import '../../../../main.dart';
-import 'JTManageJobScreen.dart';
 
 
 class JTJobMatchScreen extends StatefulWidget {
@@ -182,118 +177,129 @@ class MatchingListState extends State<MatchingList> {
     return ListView.builder(
         itemCount: alertlist == null ? 0 : alertlist.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            decoration: boxDecorationRoundedWithShadow(8,
-                backgroundColor: appStore.appBarColor!),
-            margin: EdgeInsets.all(8),
-            padding: EdgeInsets.all(8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          if(alertlist.length > 0){
+            return Container(
+              decoration: boxDecorationRoundedWithShadow(8,
+                  backgroundColor: appStore.appBarColor!),
+              margin: EdgeInsets.all(8),
+              padding: EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      height: 80,
+                      width: 80,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            image + alertlist[index]["profile_pic"]),
+                        // radius: 35,
+                      )
+                  ),
+                  12.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(alertlist[index]["city"],
+                          style: primaryTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      4.height,
+                      Row(
+                        children: [
+                          Text(
+                            alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
+                            style: TextStyle(
+                              decoration: TextDecoration.none,
+                              color: appStore.textPrimaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      8.height,
+                      Text('Phone No : ' + alertlist[index]["phone_no"],
+                          style: primaryTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      8.height,
+                      Text('Specialize : ' + alertlist[index]["category"],
+                          style: primaryTextStyle(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      8.height,
+                      Row(
+                        children: [
+                          Container(
+                            decoration: boxDecorationWithRoundedCorners(
+                              borderRadius: BorderRadius.circular(4),
+                              backgroundColor: appDark_parrot_green,
+                            ),
+                            padding: EdgeInsets.all(6.5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                6.width,
+                                Text('View',
+                                    style: boldTextStyle(color: whiteColor)),
+                                6.width,
+                              ],
+                            ),
+                          ).onTap(() async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => JTResumeScreen(
+                                id: alertlist[index]["email"],
+                                job: widget.id,
+                                empr: empr,
+                              )),
+                            );
+                          }),
+                          10.width,
+                          Container(
+                            decoration: boxDecorationWithRoundedCorners(
+                              borderRadius: BorderRadius.circular(4),
+                              backgroundColor: appColorPrimaryDark,
+                            ),
+                            padding: EdgeInsets.all(4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                6.width,
+                                Text('Shortlist',
+                                    style: boldTextStyle(color: whiteColor)),
+                                6.width,
+                                Icon(Icons.check_rounded, color: whiteColor)
+                                    .onTap(() {}),
+                              ],
+                            ),
+                          ).onTap(() async {
+                            showInDialog(context,
+                                child: AcceptRequestDialog(
+                                  id: widget.id,
+                                  emp: alertlist[index]["email"],
+                                ),
+                                backgroundColor: Colors.transparent,
+                                contentPadding: EdgeInsets.all(0));
+                          })
+                        ],
+                      ),
+                    ],
+                  ).expand(),
+                ],
+              ),
+            );
+          }
+          else{
+            return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                    height: 80,
-                    width: 80,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          image + alertlist[index]["profile_pic"]),
-                      // radius: 35,
-                    )
-                ),
-                12.width,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(alertlist[index]["city"],
-                        style: primaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    4.height,
-                    Row(
-                      children: [
-                        Text(
-                          alertlist[index]["first_name"] + " " + alertlist[index]["last_name"],
-                          style: TextStyle(
-                            decoration: TextDecoration.none,
-                            color: appStore.textPrimaryColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    8.height,
-                    Text('Phone No : ' + alertlist[index]["phone_no"],
-                        style: primaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.height,
-                    Text('Specialize : ' + alertlist[index]["category"],
-                        style: primaryTextStyle(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                    8.height,
-                    Row(
-                      children: [
-                        Container(
-                          decoration: boxDecorationWithRoundedCorners(
-                            borderRadius: BorderRadius.circular(4),
-                            backgroundColor: appDark_parrot_green,
-                          ),
-                          padding: EdgeInsets.all(6.5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              6.width,
-                              Text('View',
-                                  style: boldTextStyle(color: whiteColor)),
-                              6.width,
-                            ],
-                          ),
-                        ).onTap(() async {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => JTResumeScreen(
-                              id: alertlist[index]["employee_id"],
-                              job: widget.id,
-                              empr: empr,
-                            )),
-                          );
-                        }),
-                        10.width,
-                        Container(
-                          decoration: boxDecorationWithRoundedCorners(
-                            borderRadius: BorderRadius.circular(4),
-                            backgroundColor: appColorPrimaryDark,
-                          ),
-                          padding: EdgeInsets.all(4),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              6.width,
-                              Text('Shortlist',
-                                  style: boldTextStyle(color: whiteColor)),
-                              6.width,
-                              Icon(Icons.check_rounded, color: whiteColor)
-                                  .onTap(() {}),
-                            ],
-                          ),
-                        ).onTap(() async {
-                          showInDialog(context,
-                              child: AcceptRequestDialog(
-                                id: widget.id,
-                                emp: alertlist[index]["employee_id"],
-                              ),
-                              backgroundColor: Colors.transparent,
-                              contentPadding: EdgeInsets.all(0));
-                        })
-                      ],
-                    ),
-                  ],
-                ).expand(),
+                Image.network('https://jobtune.ai/gig/JobTune/assets/mobile/database.jpg'),
+                Text("No matching candidate can be suggested yet.", textAlign: TextAlign.center, style: secondaryTextStyle()).paddingAll(8),
               ],
-            ),
-          );
+            );
+          }
         });
   }
 }
@@ -317,9 +323,9 @@ class _AcceptRequestDialogState extends State<AcceptRequestDialog> {
   var formKey = GlobalKey<FormState>();
 
   Future<void> addShortlist() async {
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final jobtuneUser = prefs.getString('employerID');
-
     http.get(
         Uri.parse(server +
             "jtnew_employer_insertshortlist&jpostid=" + widget.id +

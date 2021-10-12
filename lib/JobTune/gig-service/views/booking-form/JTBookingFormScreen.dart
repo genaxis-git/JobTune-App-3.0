@@ -827,7 +827,7 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
                     print(daystatus);
                   }
                   DateTime nows = DateTime.now();
-                  String now = DateFormat('yyyy-MM-d').format(nows);
+                  String now = DateFormat('yyyy-MM-dd').format(nows);
                   var jams;
                   var mins;
                   if(selectedTimeIN.hour < 10){

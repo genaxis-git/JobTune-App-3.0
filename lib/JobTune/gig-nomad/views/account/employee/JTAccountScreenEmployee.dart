@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/clocking/JTClockingScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
@@ -133,7 +134,7 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
             );
           }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
           settingItem(context, 'Clocking', onTap: () {
-            JTVerifyScreenUser().launch(context);
+            JTClockingScreenEmployee().launch(context);
           }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
           settingItem(context, 'My Jobs', onTap: () {
             JTVerifyScreenUser().launch(context);

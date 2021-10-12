@@ -570,11 +570,12 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                            child: Column(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       "Tags: ",
@@ -585,21 +586,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(width: 120,),
-                                    Text(
-                                      category,
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
+                                    SizedBox(height: 10,),
                                     Text(
                                       "Operating Hours: ",
                                       textAlign: TextAlign.justify,
@@ -609,22 +596,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(width: 52,),
-                                    Text(
-                                      hours,
-                                      textAlign: TextAlign.justify,
-                                      style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                                    SizedBox(height: 10,),
                                     Text(
                                       "Available Day: ",
                                       textAlign: TextAlign.justify,
@@ -634,41 +606,169 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(width: 68,),
-                                    (days.length > 3)
-                                        ? Container(
-                                        height: 35,
-                                        width: 185,
-                                        child: Flexible(
-                                            child: Text(
-                                              days,
-                                              // overflow: TextOverflow.fade,
-                                              maxLines: 2,
-                                              textAlign: TextAlign.justify,
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 16,
-                                              ),
-                                            )
-                                        )
-                                    )
-                                        : Text(
-                                      days,
+                                    SizedBox(height: 20,),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      category,
                                       textAlign: TextAlign.justify,
                                       style: TextStyle(
                                         color: Colors.black87,
                                         fontSize: 16,
                                       ),
                                     ),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      hours,
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10,),
+                                    (days.split(",").length <= 3)
+                                    ? Text(
+                                      days,
+                                      textAlign: TextAlign.justify,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                      ),
+                                    )
+                                    : (days.split(",").length == 4)
+                                    ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          days.split(",")[0] + "," + days.split(",")[1] + "," + days.split(",")[2],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          days.split(",")[3],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                    : (days.split(",").length == 5)
+                                    ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          days.split(",")[0] + "," + days.split(",")[1] + "," + days.split(",")[2],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          days.split(",")[3] + "," + days.split(",")[4],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                    : (days.split(",").length ==6)
+                                    ? Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          days.split(",")[0] + "," + days.split(",")[1] + "," + days.split(",")[2],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          days.split(",")[3] + "," + days.split(",")[4] + "," + days.split(",")[5],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                    : Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          days.split(",")[0] + "," + days.split(",")[1] + "," + days.split(",")[2],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          days.split(",")[3] + "," + days.split(",")[4] + "," + days.split(",")[5],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          days.split(",")[6],
+                                          textAlign: TextAlign.justify,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 20,),
                                   ],
                                 ),
-                                SizedBox(height: 20,),
                               ],
-                            ),
+                            )
                           ),
                           Divider(height: 0),
                         ],
                       ).paddingAll(16),
+                      (by == "Package" || by == "Package ")
+                          ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: appStore.scaffoldBackground,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+                          ),
+                          builder: (builder) {
+                            return SingleChildScrollView(
+                              padding: EdgeInsets.all(16),
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: _package,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      })
+                          : Container(),
                       JTsettingItem(context, 'Location Available', leading: Icon(MaterialCommunityIcons.map_marker, color: Color(0xFF0A79DF)), textSize: 15, padding: 0.0, onTap: () {
                         showModalBottomSheet(
                           context: context,
@@ -689,28 +789,6 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           },
                         );
                       }),
-                      (by == "Package" || by == "Package ")
-                      ? JTsettingItem(context, 'Packages', leading: Icon(FontAwesome.list, color: Color(0xFF0A79DF), size: 18), textSize: 15, padding: 0.0, onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          backgroundColor: appStore.scaffoldBackground,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-                          ),
-                          builder: (builder) {
-                            return SingleChildScrollView(
-                              padding: EdgeInsets.all(16),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: _package,
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      })
-                      : Container(),
                     ],
                   ),
                 ],

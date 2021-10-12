@@ -210,7 +210,10 @@ print(server + "jtnew_provider_selectpending&id="+lgid);
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              trans_text(spendinglist[index]["package_name"], fontSize: 14.0),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                child: trans_text(spendinglist[index]["package_name"], fontSize: 14.0),
+                              ),
                               trans_text("- RM "+spendinglist[index]["insurance_fee"], textColor: Colors.red, fontSize: 14.0, fontFamily: 'Semibold'),
                             ],
                           ),

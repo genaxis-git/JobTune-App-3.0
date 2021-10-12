@@ -162,7 +162,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: (clocking.length > 0) ? 500.0 : 240.0,
+              expandedHeight: (clocking.length > 0) ? 520.0 : 240.0,
               floating: true,
               pinned: true,
               snap: false,
@@ -271,9 +271,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                                 Text(' Standby List', style: boldTextStyle()).paddingAll(8),
                               ],
                             ),
-                            4.height,
+                            6.height,
                             SizedBox(
-                                height: width * 0.58,
+                                height: width * 0.63,
                                 child: JTNextList()
                             ),
                           ],
@@ -290,7 +290,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         },
         body: Container(
             height: 500,
-            child: JTServiceListUser()
+            child: JTServiceListUser(),
         ),
       )
     );

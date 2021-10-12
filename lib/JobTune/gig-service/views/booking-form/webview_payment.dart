@@ -54,6 +54,11 @@ class _WebviewPaymentState extends State<WebviewPayment> {
 
   @override
   Widget build(BuildContext context) {
+    print(servicePayments + 'name='+widget.username+
+        '&package='+widget.packname+'&email='+widget.clientid+'&phone='+widget.teluser+'&amount='+widget.total+
+        '&detail='+widget.postid+'&proid='+widget.proemail+'&jempid=&jemprid=&timein='+widget.starts+'&timeout='+widget.ends+
+        '&dayin=&dayout=&address='+widget.address+'&desc='+widget.desc+'&user_id='+widget.clientid+'&platformfee=&servicename='+widget.servicename+
+        '&proname='+widget.proname+'&hours='+widget.quantity+'&proemail='+widget.proemail+'&protel='+widget.protel+'&insurance=&adminfee=');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
