@@ -86,6 +86,10 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
     );
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenProvider()),
+    );
   }
 
   @override

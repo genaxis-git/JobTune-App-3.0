@@ -10,6 +10,7 @@ import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardSc
 import 'package:prokit_flutter/JobTune/gig-nomad/views/clocking/JTClockingScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/index/JTDashboardScreenNomad.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/matching-quiz/JTMatchingQuiz.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
@@ -163,6 +164,13 @@ class _JTAccountScreenEmployeeState extends State<JTAccountScreenEmployee> {
           // settingItem(context, 'About', onTap: () {
           //   DTAboutScreen().launch(context);
           // }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
+          settingItem(context, 'Daily Job Matching', onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => JTMatchingScreen1()),
+            );
+          }, leading: Icon(MaterialIcons.bubble_chart), detail: SizedBox()),
           settingItem(context, 'Logout', onTap: () {
             logout();
           }, leading: Icon(MaterialIcons.logout), detail: SizedBox()),

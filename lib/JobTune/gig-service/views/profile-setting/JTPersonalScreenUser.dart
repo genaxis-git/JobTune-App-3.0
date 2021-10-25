@@ -184,6 +184,10 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     }
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
+    );
   }
 
   PickedFile? _image;
@@ -452,6 +456,7 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                       16.height,
                       TextFormField(
                         controller: description,
+                        maxLines: 4,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
                           labelText: 'Description (optional)',

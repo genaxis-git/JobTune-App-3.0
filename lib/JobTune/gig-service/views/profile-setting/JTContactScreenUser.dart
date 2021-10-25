@@ -86,6 +86,10 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
     );
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
+    );
   }
 
   @override

@@ -870,6 +870,7 @@ class _WriteReviewDialogState extends State<WriteReviewDialog> {
               16.height,
               TextField(
                 controller: reviewCont,
+                maxLength: 250,
                 focusNode: reviewFocus,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(

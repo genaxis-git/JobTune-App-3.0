@@ -97,6 +97,10 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
     );
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenProvider()),
+    );
   }
 
   @override
@@ -149,6 +153,7 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                       20.height,
                       TextFormField(
                         controller: full,
+                        maxLines: 3,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
                           labelText: 'Full Address',

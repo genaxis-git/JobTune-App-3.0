@@ -77,6 +77,10 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
     );
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenProvider()),
+    );
   }
 
   @override

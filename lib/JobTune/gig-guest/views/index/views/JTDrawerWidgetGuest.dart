@@ -122,19 +122,19 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                     appStore.setDrawerItemIndex(-1);
                     JTDashboardSreenUser().launch(context, isNewTask: true);
                   }),
-                  // Container(
-                  //   padding: EdgeInsets.all(16),
-                  //   child: Text('Gig Nomad',
-                  //       style: boldTextStyle(color: Colors.black)),
-                  // ).onTap(() {
-                  //   appStore.setDrawerItemIndex(-1);
-                  //   JTDashboardScreenNomad(id: "Employee")
-                  //       .launch(context, isNewTask: true);
-                  //   // Navigator.push(
-                  //   //   context,
-                  //   //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
-                  //   // );
-                  // }),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Gig Nomad',
+                        style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+                    JTDashboardScreenNomad(id: "Employee")
+                        .launch(context, isNewTask: true);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),
+                    // );
+                  }),
                   Container(
                     padding: EdgeInsets.all(16),
                     child: Text('Gig Product',
@@ -148,13 +148,13 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   padding: EdgeInsets.all(16),
-                            //   child: Text('For Employer',
-                            //       style: boldTextStyle(color: Colors.black)),
-                            // ).onTap(() {
-                            //   gotoEmployer();
-                            // }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('For Employer',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              gotoEmployer();
+                            }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Log In/ Create account',
@@ -177,13 +177,13 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   padding: EdgeInsets.all(16),
-                            //   child: Text('For Employer',
-                            //       style: boldTextStyle(color: Colors.black)),
-                            // ).onTap(() {
-                            //   gotoEmployer();
-                            // }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('For Employer',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              gotoEmployer();
+                            }),
                             Container(
                               padding: EdgeInsets.all(16),
                               child: Text('Logout',

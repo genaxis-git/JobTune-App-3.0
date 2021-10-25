@@ -51,6 +51,17 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, widget.searchkey),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.pop(
+                context,
+              );
+            }),
+      ),
       body: ContainerX(
         mobile: Container(
           child: ListView(

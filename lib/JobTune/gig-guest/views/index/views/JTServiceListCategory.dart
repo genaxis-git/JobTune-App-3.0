@@ -225,10 +225,8 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
+              Navigator.pop(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => JTDashboardScreenGuest()),
               );
             }),
       ),

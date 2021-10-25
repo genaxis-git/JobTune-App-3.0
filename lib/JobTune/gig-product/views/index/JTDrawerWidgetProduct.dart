@@ -93,24 +93,24 @@ class _JTDrawerWidgetProductState extends State<JTDrawerWidgetProduct> {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
                   }),
-//                   Container(
-//                     padding: EdgeInsets.all(16),
-//                     child: Text('Gig Nomad',
-//                         style: boldTextStyle(color: Colors.black)),
-//                   ).onTap(() {
-//                     appStore.setDrawerItemIndex(-1);
-//
-//                     if (isMobile) {
-// //                      ProKitLauncher().launch(context, isNewTask: true);
-// //                       JTDashboardScreenNomad().launch(context, isNewTask: true);
-//                       Navigator.push(
-//                         context,
-//                         MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employee")),
-//                       );
-//                     } else {
-//                       DTDashboardScreen().launch(context, isNewTask: true);
-//                     }
-//                   }),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Gig Nomad',
+                        style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+
+                    if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+//                       JTDashboardScreenNomad().launch(context, isNewTask: true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employee")),
+                      );
+                    } else {
+                      DTDashboardScreen().launch(context, isNewTask: true);
+                    }
+                  }),
                   Container(
                     padding: EdgeInsets.all(16),
                     child: Text('Gig Product',

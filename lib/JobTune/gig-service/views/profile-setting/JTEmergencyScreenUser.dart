@@ -86,6 +86,10 @@ class _JTEmergencyScreenUserState extends State<JTEmergencyScreenUser> {
     );
 
     toast("Updated!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
+    );
   }
 
   @override
