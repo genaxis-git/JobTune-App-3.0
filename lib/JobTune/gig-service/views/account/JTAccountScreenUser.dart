@@ -66,8 +66,8 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
 
   Future<void> logout() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await prefs.remove('email');
-    await prefs.clear();
+    await prefs.remove('email');
+    // await prefs.clear();
 
     JTDashboardScreenGuest().launch(context, isNewTask: true);
   }
@@ -153,6 +153,9 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
           // settingItem(context, 'About', onTap: () {
           //   DTAboutScreen().launch(context);
           // }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
+          settingItem(context, 'Change Password', onTap: () {
+            JTChangePasswordScreen().launch(context);
+          }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
           settingItem(context, 'Logout', onTap: () {
             logout();
           }, leading: Icon(MaterialIcons.logout), detail: SizedBox()),

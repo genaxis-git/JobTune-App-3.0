@@ -133,23 +133,23 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                       DTDashboardScreen().launch(context, isNewTask: true);
                     }
                   }),
-//                   Container(
-//                     padding: EdgeInsets.all(16),
-//                     child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
-//                   ).onTap(() {
-//                     appStore.setDrawerItemIndex(-1);
-//
-//                     if (isMobile) {
-// //                      ProKitLauncher().launch(context, isNewTask: true);
-// //                       JTDashboardScreenNomad().launch(context, isNewTask: true);
-//                       Navigator.push(
-//                         context,
-//                         MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employee")),
-//                       );
-//                     } else {
-//                       JTDashboardScreenNomad(id:"Employee").launch(context, isNewTask: true);
-//                     }
-//                   }),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    child: Text('Gig Nomad', style: boldTextStyle(color: Colors.black)),
+                  ).onTap(() {
+                    appStore.setDrawerItemIndex(-1);
+
+                    if (isMobile) {
+//                      ProKitLauncher().launch(context, isNewTask: true);
+//                       JTDashboardScreenNomad().launch(context, isNewTask: true);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employee")),
+                      );
+                    } else {
+                      JTDashboardScreenNomad(id:"Employee").launch(context, isNewTask: true);
+                    }
+                  }),
                   Container(
                     padding: EdgeInsets.all(16),
                     child: Text('Gig Product', style: boldTextStyle(color: Colors.black)),
@@ -168,13 +168,13 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                   ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Container(
-                      //   padding: EdgeInsets.all(16),
-                      //   child: Text('For Employer',
-                      //       style: boldTextStyle(color: Colors.black)),
-                      // ).onTap(() {
-                      //   gotoEmployer();
-                      // }),
+                      Container(
+                        padding: EdgeInsets.all(16),
+                        child: Text('For Employer',
+                            style: boldTextStyle(color: Colors.black)),
+                      ).onTap(() {
+                        gotoEmployer();
+                      }),
                       Container(
                         padding: EdgeInsets.all(16),
                         child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),

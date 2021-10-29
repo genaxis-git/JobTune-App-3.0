@@ -32,6 +32,7 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
   // functions starts //
 
   List user = [];
+  String acc = "";
   Future<void> checkpass(old, newpass, cfm) async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -86,17 +87,21 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
     );
   }
 
+  Future<void> checkacc() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    setState(() {
+      acc = lgid;
+    });
+  }
 
   // functions ends //
 
   @override
   void initState() {
     super.initState();
-    init();
-  }
-
-  init() async {
-    //
+    checkacc();
   }
 
   @override
@@ -114,9 +119,8 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
+              Navigator.pop(
                 context,
-                MaterialPageRoute(builder: (context) => JTDashboardScreenGuest()),
               );
             }
         ),
@@ -134,6 +138,7 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('Change Password', style: boldTextStyle(size: 24)),
+                  Text('Changing password for account ('+acc+')', style: secondaryTextStyle()),
                   30.height,
                   TextFormField(
                     controller: oldpass,

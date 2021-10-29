@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/manage-job/JTManageJobScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/onboarding/JTWalkThroughScreenEmployer.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/signup-login/JTSignInEmployer.dart';
@@ -183,6 +184,14 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                                   style: boldTextStyle(color: Colors.black)),
                             ).onTap(() {
                               gotoEmployer();
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Change Password',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTChangePasswordScreen().launch(context, isNewTask: true);
                             }),
                             Container(
                               padding: EdgeInsets.all(16),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/forgot-password/JTForgotPasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
@@ -205,6 +206,14 @@ class _JTDrawerWidgetEmployeeState extends State<JTDrawerWidgetEmployee> {
                                 context,
                                 MaterialPageRoute(builder: (context) => JTDashboardScreenNomad(id:"Employer")),
                               );
+                            }),
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              child: Text('Change Password',
+                                  style: boldTextStyle(color: Colors.black)),
+                            ).onTap(() {
+                              appStore.setDrawerItemIndex(-1);
+                              JTChangePasswordScreen().launch(context, isNewTask: true);
                             }),
                           ],
                         )
