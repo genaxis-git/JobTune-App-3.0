@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
@@ -31,6 +35,9 @@ class JTSearchingResultUser extends StatefulWidget {
 
 class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
 
+  var formKey = GlobalKey<FormState>();
+  var searchCont = TextEditingController();
+
   // functions starts //
 
   List category = [];
@@ -44,6 +51,25 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
     this.setState(() {
       category = json.decode(response.body);
     });
+  }
+
+  List servicelist = [];
+  Future<void> checkFeatured() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_filterservice&keyword="+widget.searchkey
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkFeatured();
   }
 
   // functions ends //
@@ -63,27 +89,153 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
             }),
       ),
       body: ContainerX(
-        mobile: Container(
-          child: ListView(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(' Results from searching  "' + widget.searchkey + '"  ...', style: boldTextStyle()).paddingAll(15),
-                  Container(
-                      height: 1000,
-                      child: JTServiceListUser(keyword: widget.searchkey)
+        mobile: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Observer(
+                builder: (_) => Container(
+                  color: appStore.scaffoldBackground,
+                  child: (servicelist.length>0)
+                      ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      10.height,
+                      Padding(
+                        padding: EdgeInsets.all(17),
+                        child: Column(
+                          children: [
+                            Text('We have '+servicelist.length.toString()+' results from searching  "' + widget.searchkey + '"...', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black87, fontFamily: "Bold"), maxLines: 3),
+                            Text("\nSelect a service to view details", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.black54), maxLines: 3),
+                          ],
+                        ),
+                      ),
+                      Container(
+                          height: 610,
+                          child: JTServiceListUser(keyword: widget.searchkey)
+                      ),
+                      Container(
+                          height: 250,
+                          color: Colors.white,
+                      ),
+                    ],
+                  )
+                      : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      80.height,
+                      Image.network(
+                          "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
+                          width: 250
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(17),
+                        child: Column(
+                          children: [
+                            Text("WE COULDN'T FIND ANY SERVICES MATCHING YOUR SEARCH", textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black87, fontFamily: "Bold"), maxLines: 3),
+                            Text("\nCheck the spelling of the keyword you used, or try search with another keyword.", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.black54), maxLines: 3),
+                          ],
+                        ),
+                      ),
+                      Stack(
+                        children: [
+                          Container(
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: appColorPrimary,
+                              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+                            ),
+                          ).visible(false),
+                          Column(
+                            children: [
+                              10.height,
+                              Padding(
+                                padding: EdgeInsets.all(20),
+                                child: Form(
+                                  key: formKey,
+                                  child: TextFormField(
+                                    controller: searchCont,
+                                    style: primaryTextStyle(),
+                                    decoration: InputDecoration(
+                                      labelText: 'Search',
+                                      suffixIcon: IconButton(
+                                        onPressed: (){
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => JTSearchingResultUser(
+                                              searchkey: searchCont.text,
+                                            )),
+                                          );
+                                        },
+                                        icon: Icon(Icons.search),
+                                      ),
+                                      contentPadding: EdgeInsets.all(16),
+                                      labelStyle: secondaryTextStyle(),
+                                      border: OutlineInputBorder(),
+                                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      190.height,
+                    ],
                   ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+            Positioned(bottom: 0,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                        height: 50,
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        alignment: Alignment.center,
+                        width: context.width(),
+                        decoration: BoxDecoration(gradient: LinearGradient(colors: <Color>[Colors.white12, Colors.white]), boxShadow: defaultBoxShadow()),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Back to Home ",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.blueAccent,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            7.width,
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                              color: Colors.blueAccent,
+                            ),
+                          ],
+                        )
+                    ).onTap(() {
+                      // Do your logic
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => JTDashboardSreenUser()),
+                      );
+                    })
+                  ],
+                )
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
 
 class JTServiceListUser extends StatefulWidget {
   const JTServiceListUser({Key? key, required this.keyword}) : super(key: key);
@@ -98,6 +250,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
 
   List servicelist = [];
   Future<void> checkFeatured() async {
+    print(server + "jtnew_user_filterservice&keyword="+widget.keyword);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_filterservice&keyword="+widget.keyword
@@ -122,50 +275,66 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
         padding: EdgeInsets.all(8),
         itemCount: servicelist == null ? 0 : servicelist.length,
         itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => JTServiceDetailScreen(
-                      id: servicelist[index]["service_id"],
-                    )),
-              );
-            },
-            child: Container(
-              decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
-              margin: EdgeInsets.all(8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 110,
-                    width: 126,
-                    child: Stack(
-                      children: [
-                        Image.network(
-                          "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
-                          fit: BoxFit.cover,
-                          height: 110,
-                          width: 126,
-                        ).cornerRadiusWithClipRRect(8),
-                      ],
+          if(servicelist[index]["status"] == "1"){
+            return GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => JTServiceDetailScreen(
+                        id: servicelist[index]["service_id"],
+                      )),
+                );
+              },
+              child: Container(
+                decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+                margin: EdgeInsets.all(8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 110,
+                      width: 126,
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                            fit: BoxFit.cover,
+                            height: 110,
+                            width: 126,
+                          ).cornerRadiusWithClipRRect(8),
+                        ],
+                      ),
                     ),
-                  ),
-                  8.width,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(servicelist[index]["name"], style: primaryTextStyle(), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      4.height,
-                      DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                    ],
-                  ).paddingAll(8).expand(),
-                ],
+                    8.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(servicelist[index]["name"],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                                fontSize: 17
+                            )
+                        ),
+                        3.height,
+                        DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                        13.height,
+                        DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                        5.height,
+                        Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
+                      ],
+                    ).paddingAll(8).expand(),
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          }
+          else{
+            return Container();
+          }
         }
     );
   }

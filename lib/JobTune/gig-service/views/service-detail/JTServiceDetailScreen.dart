@@ -426,9 +426,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
+              Navigator.pop(
                 context,
-                MaterialPageRoute(builder: (context) => JTDashboardSreenUser()),
               );
             }
         ),

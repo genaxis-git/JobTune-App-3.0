@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUsers.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import '../../../../main.dart';
 import 'JTChangePasswordWidget.dart';
@@ -22,8 +25,69 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
   var retype = TextEditingController();
   var oldpass = TextEditingController();
 
-//  var emailFocus = FocusNode();
-//  var passFocus = FocusNode();
+  String oldstatus = "false";
+  String newstatus = "false";
+  String cfmstatus = "false";
+
+  // functions starts //
+
+  List user = [];
+  Future<void> checkpass(old, newpass, cfm) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    if(old == ""){
+      toast("Changing password is not allowed until you verify your previous password with us.");
+    }
+    else{
+      if(newpass != cfm){
+        toast("Your New Password and Confirm New Password are not matched. Please re-try to verify.");
+      }
+      else{
+        http.Response response = await http.get(
+            Uri.parse(
+                server + "jtnew_selectlogins&lgid=" + lgid),
+            headers: {"Accept": "application/json"}
+        );
+
+        this.setState(() {
+          user = json.decode(response.body);
+        });
+
+        if(newpass == user[0]["password"]){
+          toast("This action is not necessary if you still want to stay with your old password.");
+        }
+        else{
+          if(old != user[0]["password"]){
+            toast("Keyed-in password is not matched as your old password. Please re-try.");
+          }
+          else{
+            updatePass(old, newpass, cfm);
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> updatePass(old, newpass, cfm) async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_changepassword&jUname="+lgid+"&jNew="+cfm),
+        headers: {"Accept": "application/json"}
+    );
+
+    toast("Password Changed!");
+    toast("You may log in to your account with the new set up password after this.");
+    Navigator.pop(
+      context,
+    );
+  }
+
+
+  // functions ends //
 
   @override
   void initState() {
@@ -84,8 +148,14 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
                     ),
                     keyboardType: TextInputType.text,
                     validator: (s) {
-                      if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      return null;
+                      if (s!.trim().isEmpty) {
+                        oldstatus = "false";
+                        return errorThisFieldRequired;
+                      }
+                      else{
+                        oldstatus = "true";
+                        return null;
+                      }
                     },
 //                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(emailFocus),
 //                    textInputAction: TextInputAction.next,
@@ -105,8 +175,30 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
                     ),
                     keyboardType: TextInputType.emailAddress,
                     validator: (s) {
-                      if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      return null;
+                      if (s!.isEmpty) {
+                        newstatus = "false";
+                        return 'Password cannot be empty';
+                      }
+                      else if (s.length < 8) {
+                        newstatus = "false";
+                        return 'Must be at least 8 characters long';
+                      }
+                      else if (s.contains(new RegExp(r'[A-Z]')) == false) {
+                        newstatus = "false";
+                        return 'Must be at least contain 1 Uppercase Alphabets';
+                      }
+                      else if (s.contains(new RegExp(r'[a-z]')) == false) {
+                        newstatus = "false";
+                        return 'Must be at least contain 1 Lowercase Alphabets';
+                      }
+                      else if (s.contains(new RegExp(r'[0-9]')) == false) {
+                        newstatus = "false";
+                        return 'Must be at least contain 1 Numbers';
+                      }
+                      else{
+                        newstatus = "true";
+                        return null;
+                      }
                     },
 //                    onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(passFocus),
 //                    textInputAction: TextInputAction.next,
@@ -130,8 +222,18 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
                       }),
                     ),
                     validator: (s) {
-                      if (s!.trim().isEmpty) return errorThisFieldRequired;
-                      return null;
+                      if (s!.isEmpty) {
+                        cfmstatus = "false";
+                        return 'Password cannot be empty';
+                      }
+                      else if(s != newpass.text.toString()) {
+                        cfmstatus = "false";
+                        return 'Password not matched.';
+                      }
+                      else{
+                        cfmstatus = "true";
+                        return null;
+                      }
                     },
                   ),
                   40.height,
@@ -141,16 +243,12 @@ class _JTChangePasswordScreenState extends State<JTChangePasswordScreen> {
                     decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                     child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                   ).onTap(() {
-                    finish(context);
-
-                    /// Remove comment if you want enable validation
-                    /* if (formKey.currentState.validate()) {
-                        formKey.currentState.save();
-                        finish(context);
-                      } else {
-                        autoValidate = true;
-                      }
-                      setState(() {});*/
+                    if(oldstatus == "true" && newstatus == "true" && cfmstatus == "true") {
+                      checkpass(oldpass.text,newpass.text,retype.text);
+                    }
+                    else{
+                      toast("Your inputs are not meeting our requirements.");
+                    }
                   }),
                   20.height,
                 ],

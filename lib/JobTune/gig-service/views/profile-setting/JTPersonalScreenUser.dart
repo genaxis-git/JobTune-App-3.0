@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 
@@ -87,8 +89,11 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
       fname = TextEditingController(text: profile[0]["first_name"]);
       lname = TextEditingController(text: profile[0]["last_name"]);
       nric = TextEditingController(text: profile[0]["nric"]);
-      dob = TextEditingController(text: profile[0]["dob"]);
       description = TextEditingController(text: profile[0]["description"]);
+
+      if(profile[0]["dob"] != "0000-00-00"){
+        selectedDate = DateTime.parse(profile[0]["dob"]);
+      }
 
       if(profile[0]["category"] == ""){
         selectedIndexCategory = 'Job category specialize/ in priority..';
@@ -118,6 +123,35 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
         img = "no profile.png";
       }
     });
+  }
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        helpText: 'Select your birth date',
+        cancelText: 'Not Now',
+        confirmText: "Pick",
+        fieldLabelText: 'Birth Date',
+        fieldHintText: 'Month/Date/Year',
+        errorFormatText: 'Enter valid date',
+        errorInvalidText: 'Enter date in valid range',
+        context: context,
+        builder: (BuildContext context, Widget? child) {
+          return JTCustomTheme(
+            child: child,
+          );
+        },
+        initialDate: selectedDate,
+        firstDate: DateTime(1930, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+        var pickedday = selectedDate.toString().split(" ")[0];
+        print(pickedday);
+
+      });
   }
 
   Future<void> updateProfile(fname,lname,nric,gender,race,desc,dob,category) async {
@@ -231,6 +265,8 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
   void setState(fn) {
     if (mounted) super.setState(fn);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -369,20 +405,29 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         textInputAction: TextInputAction.next,
                       ),
                       16.height,
-                      TextFormField(
-                        controller: dob,
-                        style: primaryTextStyle(),
-                        decoration: InputDecoration(
-                          labelText: 'Date of birth',
-                          labelStyle: secondaryTextStyle(),
-                          contentPadding: EdgeInsets.all(16),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-                        ),
-                        keyboardType: TextInputType.datetime,
-                        textInputAction: TextInputAction.next,
-                      ),
+                      Card(
+                          child: ListTile(
+                            onTap: () {
+                              _selectDate(context);
+                            },
+                            title: Text(
+                              'Date of birth',
+                              style: primaryTextStyle(),
+                            ),
+                            subtitle: Text(
+                              "${selectedDate.toLocal()}".split(' ')[0],
+                              style: secondaryTextStyle(),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                Icons.date_range,
+                                color: appStore.iconColor,
+                              ),
+                              onPressed: () {
+                                _selectDate(context);
+                              },
+                            ),
+                          )),
                       16.height,
                       Container(
                         height: 60,
@@ -513,6 +558,10 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() async {
+                        var pickedday = selectedDate.toString().split(" ")[0];
+                        String formattedDate = DateFormat('yyMMdd').format(DateTime.parse(pickedday));
+                        String bodnric = nric.text[0]+nric.text[1]+nric.text[2]+nric.text[3]+nric.text[4]+nric.text[5];
+
                         if(selectedIndexGender.toString() != 'Choose Gender..'){
                           pickedgender = selectedIndexGender.toString();
                         }
@@ -523,11 +572,21 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                           if(selectedIndexCategory.toString() != 'Job category specialize/ in priority..'){
                             pickedjob = selectedIndexCategory.toString();
                           }
-                          updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text,pickedjob);
+                          if(bodnric == formattedDate.toString()){
+                            updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,pickedday,pickedjob);
+                          }
+                          else{
+                            toast("Please check your NRIC No. and Date of birth.");
+                          }
                         }
                         else{
                           pickedjob = "non";
-                          updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,dob.text,pickedjob);
+                          if(bodnric == formattedDate.toString()){
+                            updateProfile(fname.text,lname.text,nric.text,pickedgender,pickedrace,description.text,pickedday,pickedjob);
+                          }
+                          else{
+                            toast("Please check your NRIC No. and Date of birth.");
+                          }
                         }
                       }),
                       20.height,
