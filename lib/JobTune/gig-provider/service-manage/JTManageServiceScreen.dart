@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+
+import 'JTEditServiceScreen.dart';
 
 
 class ServiceScreen extends StatefulWidget {
@@ -38,9 +41,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Service"),
+        title: Text("My Service", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
-        centerTitle: true,
+        centerTitle: false,
         elevation: 2,
       ),
       body: (indexlist.length > 0)
@@ -113,6 +116,18 @@ class _ServiceListState extends State<ServiceList> {
 
   }
 
+  Future<void> deletePost(a) async {
+    // print(server + 'jtnew_provider_deleteservice&id=' + a);
+    http.get(
+        Uri.parse(
+            server + 'jtnew_provider_deleteservice&id=' + a),
+        headers: {"Accept": "application/json"});
+
+    // toast("Loading..");
+    toast("Deleted!");
+    getData();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,133 +138,166 @@ class _ServiceListState extends State<ServiceList> {
   Widget build(BuildContext context) {
     final deviceData = MediaQuery.of(context).size;
     var fontScaling = MediaQuery.of(context).textScaleFactor;
-    print(deviceData);
     return ListView.builder(
       itemCount: indexlist == null ? 0 : indexlist.length,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: (){
-            Navigator.push(context,
-              MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-                  id: indexlist[index]["service_id"]
-              )),
-            );
-          },
-          child: Stack(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                height: 190,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(9.0, 10.0, 7.0, 10.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(width: deviceData.width/30,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: deviceData.width - 175,
-                                child: Text( indexlist[index]["name"],
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                ),
-                              ),
-                              (indexlist[index]["rate"] != "undefined" || indexlist[index]["rate"] != "0.00")
-                                  ? (double.parse(indexlist[index]["rate"]) > 100) ? Container(width: 0,) :  Container(width: 10,)
-                                  : Container(),
-                              (indexlist[index]["rate"] != "undefined" || indexlist[index]["rate"] != "0.00")
-                                  ? Column(
-                                children: <Widget>[
-                                  (double.parse(indexlist[index]["rate"]) > 100)
-                                      ? Text( ">RM 100.00",
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.green,
-                                    ),
-                                  )
-                                      : Text( "RM " + double.parse(indexlist[index]["rate"]).toStringAsFixed(2).toString(),
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                  Text(
-                                    'per hour',
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 13
-                                    ),
-                                  ),
-                                ],
-                              )
-                                  : displayRate(id:indexlist[index]["service_id"]),
-                            ],
-                          ),
-                          SizedBox(height: 5.0),
-                          Container(
-                            width: deviceData.width/1.7,
-                            child: Text( indexlist[index]["available_day"],
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
+        // print(indexlist[index]["status"]);
+        if(indexlist[index]["status"] != "100"){
+          return GestureDetector(
+            onTap: (){
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
+                    id: indexlist[index]["service_id"]
+                )),
+              );
+            },
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              height: 190,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 10.0, 9.0, 10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: deviceData.width - 175,
+                          child: Text( indexlist[index]["name"],
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
                             ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 2),
-                                child: LiteRollingSwitch(
-                                  value: (indexlist[index]["status"]=="1") ? true : false,
-                                  textOn: 'active',
-                                  textOff: 'inactive',
-                                  colorOn: Colors.greenAccent,
-                                  colorOff: Colors.blueGrey,
-                                  iconOn: Icons.lightbulb_outline,
-                                  iconOff: Icons.power_settings_new,
-                                  onChanged: (bool state) {
-                                    print(state);
-                                    if(state == false){
-                                      deletejob(indexlist[index]["service_id"]);
-                                    }
-                                    else{
-                                      addjob(indexlist[index]["service_id"]);
-                                    }
-                                  },
-                                ),
-                              )
-                          )
-                        ],
+                        ),
+                        (indexlist[index]["rate"] != "undefined" && indexlist[index]["rate"] != "0.00")
+                            ? Column(
+                          children: <Widget>[
+                            (double.parse(indexlist[index]["rate"]) > 100)
+                                ? Text( ">RM 100.00",
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.green,
+                              ),
+                            )
+                                : Text( "RM " + double.parse(indexlist[index]["rate"]).toStringAsFixed(2).toString(),
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.green,
+                              ),
+                            ),
+                            Text(
+                              'per hour',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 13
+                              ),
+                            ),
+                          ],
+                        )
+                            : displayRate(id:indexlist[index]["service_id"]),
+                      ],
+                    ),
+                    SizedBox(height: 5.0),
+                    Container(
+                      width: deviceData.width/1.7,
+                      child: Text( indexlist[index]["available_day"],
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 2),
+                              child: LiteRollingSwitch(
+                                value: (indexlist[index]["status"]=="1") ? true : false,
+                                textOn: 'active',
+                                textOff: 'inactive',
+                                colorOn: Colors.greenAccent,
+                                colorOff: Colors.blueGrey,
+                                iconOn: Icons.lightbulb_outline,
+                                iconOff: Icons.power_settings_new,
+                                onChanged: (bool state) {
+                                  // print(state);
+                                  if(state == false){
+                                    deletejob(indexlist[index]["service_id"]);
+                                  }
+                                  else{
+                                    addjob(indexlist[index]["service_id"]);
+                                  }
+                                },
+                              ),
+                            )
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                                child: Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.blueAccent
+                                    )
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => EditService(
+                                        id: indexlist[index]["service_id"]
+                                    )),
+                                  );
+                                }
+                            ),
+                            Text(' | '),
+                            TextButton(
+                                child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.red
+                                    )
+                                ),
+                                onPressed: () {
+                                  deletePost(indexlist[index]["service_id"]);
+                                }
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        );
+            ),
+          );
+        }
+        else{
+          return Container();
+        }
       },
     );
   }
@@ -265,7 +313,6 @@ class displayRate extends StatefulWidget {
 class _displayRateState extends State<displayRate> {
   List servicelist = [];
   List numbers = [];
-  String packagelist = "";
   double max = 0;
   double min = 0;
   Future<void> readPackage() async {
@@ -279,6 +326,10 @@ class _displayRateState extends State<displayRate> {
       servicelist = json.decode(response.body);
     });
 
+    for(var m=0;m<servicelist.length;m++) {
+      numbers.add(servicelist[m]["package_rate"]);
+    }
+
     min = double.parse(servicelist[0]["package_rate"]);
     for(var m=0;m<servicelist.length;m++) {
       if(double.parse(servicelist[m]["package_rate"])>max){
@@ -290,13 +341,15 @@ class _displayRateState extends State<displayRate> {
     }
 
     setState(() {
-      print("result:" + min.toString()+" "+max.toString());
+      // print("result:" + min.toString()+" "+max.toString());
       min = min;
       max = max;
     });
   }
+
   @override
   Widget build(BuildContext context) {
+    // print("ayam");
     readPackage();
     return Column(
       children: <Widget>[
@@ -311,7 +364,7 @@ class _displayRateState extends State<displayRate> {
           ),
         )
             : Text(
-          "RM " + min.toStringAsFixed(2) + "\n to \n" + "RM " + max.toStringAsFixed(2),
+          "RM " + min.toStringAsFixed(2) + " to \n" + "RM " + max.toStringAsFixed(2),
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18.0,

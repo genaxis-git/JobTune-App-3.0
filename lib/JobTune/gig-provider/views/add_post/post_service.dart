@@ -1024,7 +1024,7 @@ class _PostServiceState extends State<PostService> {
                        if(selectedIndexCategory != 'Category') {
                          if(selectedRateBy == 'Hour') {
                            rateperhour = rateCont.text;
-                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
+                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
                          }
                          else {
                            rateperhour = "0.00";
