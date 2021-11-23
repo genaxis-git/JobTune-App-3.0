@@ -36,86 +36,86 @@ class BarChart2ScreenState extends State<BarChart2Screen> {
             ),
             titlesData: FlTitlesData(
               show: true,
-              topTitles: SideTitles(
-                showTitles: true,
-                getTextStyles: (value) =>  boldTextStyle(size: 10,color: white),
-                margin: 10,
-                rotateAngle: 0,
-                getTitles: (double value) {
-                  switch (value.toInt()) {
-                    case 0:
-                      return 'Mon';
-                    case 1:
-                      return 'Tue';
-                    case 2:
-                      return 'Wed';
-                    case 3:
-                      return 'Thu';
-                    case 4:
-                      return 'Fri';
-                    case 5:
-                      return 'Sat';
-                    case 6:
-                      return 'Sun';
-                    default:
-                      return '';
-                  }
-                },
-              ),
-              bottomTitles: SideTitles(
-                showTitles: true,
-                getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
-                margin: 10,
-                rotateAngle: 0,
-                getTitles: (double value) {
-                  switch (value.toInt()) {
-                    case 0:
-                      return 'Mon';
-                    case 1:
-                      return 'Tue';
-                    case 2:
-                      return 'Wed';
-                    case 3:
-                      return 'Thu';
-                    case 4:
-                      return 'Fri';
-                    case 5:
-                      return 'Sat';
-                    case 6:
-                      return 'Sun';
-                    default:
-                      return '';
-                  }
-                },
-              ),
-              leftTitles: SideTitles(
-                showTitles: true,
-                getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
-                rotateAngle: 45,
-                getTitles: (double value) {
-                  if (value == 0) {
-                    return '0';
-                  }
-                  return '${value.toInt()}0k';
-                },
-                interval: 5,
-                margin: 8,
-                reservedSize: 30,
-              ),
-              rightTitles: SideTitles(
-                showTitles: true,
-                getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
-                rotateAngle: 90,
-                getTitles: (double value) {
-                  if (value == 0) {
-                    return '0';
-                  }
-                  return '${value.toInt()}0k';
-                },
-                interval: 5,
-                margin: 8,
-                reservedSize: 30,
-              ),
+              // topTitles: SideTitles(
+              //   showTitles: true,
+              //   getTextStyles: (value) =>  boldTextStyle(size: 10,color: white),
+              //   margin: 10,
+              //   rotateAngle: 0,
+              //   getTitles: (double value) {
+              //     switch (value.toInt()) {
+              //       case 0:
+              //         return 'Mon';
+              //       case 1:
+              //         return 'Tue';
+              //       case 2:
+              //         return 'Wed';
+              //       case 3:
+              //         return 'Thu';
+              //       case 4:
+              //         return 'Fri';
+              //       case 5:
+              //         return 'Sat';
+              //       case 6:
+              //         return 'Sun';
+              //       default:
+              //         return '';
+              //     }
+              //   },
+              // ),
+              // bottomTitles: SideTitles(
+              //   showTitles: true,
+              //   getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
+              //   margin: 10,
+              //   rotateAngle: 0,
+              //   getTitles: (double value) {
+              //     switch (value.toInt()) {
+              //       case 0:
+              //         return 'Mon';
+              //       case 1:
+              //         return 'Tue';
+              //       case 2:
+              //         return 'Wed';
+              //       case 3:
+              //         return 'Thu';
+              //       case 4:
+              //         return 'Fri';
+              //       case 5:
+              //         return 'Sat';
+              //       case 6:
+              //         return 'Sun';
+              //       default:
+              //         return '';
+              //     }
+              //   },
+              // ),
+              // leftTitles: SideTitles(
+              //   showTitles: true,
+              //   getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
+              //   rotateAngle: 45,
+              //   getTitles: (double value) {
+              //     if (value == 0) {
+              //       return '0';
+              //     }
+              //     return '${value.toInt()}0k';
+              //   },
+              //   interval: 5,
+              //   margin: 8,
+              //   reservedSize: 30,
+              // ),
+              // rightTitles: SideTitles(
+              //   showTitles: true,
+              //   getTextStyles: (value) =>  boldTextStyle(color: white,size: 10),
+              //   rotateAngle: 90,
+              //   getTitles: (double value) {
+              //     if (value == 0) {
+              //       return '0';
+              //     }
+              //     return '${value.toInt()}0k';
+              //   },
+              //   interval: 5,
+              //   margin: 8,
+              //   reservedSize: 30,
+              // ),
             ),
             gridData: FlGridData(
               show: true,

@@ -66,40 +66,40 @@ class MonthlySale1ScreenState extends State<MonthlySale1Screen> {
         show: false,
       ),
       titlesData: FlTitlesData(
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (value) => boldTextStyle(color: borderText),
-          getTitles: (value) {
-            switch (value.toInt()) {
-              case 2:
-                return 'SEPT';
-              case 7:
-                return 'OCT';
-              case 12:
-                return 'DEC';
-            }
-            return '';
-          },
-        ),
-        leftTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (value) => boldTextStyle(color: borderText),
-          getTitles: (value) {
-            switch (value.toInt()) {
-              case 1:
-                return '1m';
-              case 2:
-                return '2m';
-              case 3:
-                return '3m';
-              case 4:
-                return '5m';
-              case 5:
-                return '6m';
-            }
-            return '';
-          },
-        ),
+        // bottomTitles: SideTitles(
+        //   showTitles: true,
+        //   getTextStyles: (value) => boldTextStyle(color: borderText),
+        //   getTitles: (value) {
+        //     switch (value.toInt()) {
+        //       case 2:
+        //         return 'SEPT';
+        //       case 7:
+        //         return 'OCT';
+        //       case 12:
+        //         return 'DEC';
+        //     }
+        //     return '';
+        //   },
+        // ),
+        // leftTitles: SideTitles(
+        //   showTitles: true,
+        //   getTextStyles: (value) => boldTextStyle(color: borderText),
+        //   getTitles: (value) {
+        //     switch (value.toInt()) {
+        //       case 1:
+        //         return '1m';
+        //       case 2:
+        //         return '2m';
+        //       case 3:
+        //         return '3m';
+        //       case 4:
+        //         return '5m';
+        //       case 5:
+        //         return '6m';
+        //     }
+        //     return '';
+        //   },
+        // ),
       ),
       borderData: FlBorderData(
           show: true,

@@ -84,38 +84,38 @@ class LineChartScreenState extends State<LineChartScreen> {
 
 class LineTitles {
   static getTitleData() => FlTitlesData(
-        leftTitles: SideTitles(
-            showTitles: true,
-            getTextStyles: (val) => primaryTextStyle(color: borderText),
-            getTitles: (val) {
-              switch (val.toInt()) {
-                case 2:
-                  return '10k';
-                case 5:
-                  return '30k';
-                case 8:
-                  return '50k';
-              }
-              return '';
-            },
-            reservedSize: 35),
-        show: true,
-        bottomTitles: SideTitles(
-          getTextStyles: (value) => boldTextStyle(color: borderText),
-          showTitles: true,
-          margin: 8,
-          reservedSize: 38,
-          getTitles: (val) {
-            switch (val.toInt()) {
-              case 2:
-                return 'MAR';
-              case 5:
-                return 'JUN';
-              case 8:
-                return 'SEP';
-            }
-            return '';
-          },
-        ),
+        // leftTitles: SideTitles(
+        //     showTitles: true,
+        //     getTextStyles: (val) => primaryTextStyle(color: borderText),
+        //     getTitles: (val) {
+        //       switch (val.toInt()) {
+        //         case 2:
+        //           return '10k';
+        //         case 5:
+        //           return '30k';
+        //         case 8:
+        //           return '50k';
+        //       }
+        //       return '';
+        //     },
+        //     reservedSize: 35),
+        // show: true,
+        // bottomTitles: SideTitles(
+        //   getTextStyles: (value) => boldTextStyle(color: borderText),
+        //   showTitles: true,
+        //   margin: 8,
+        //   reservedSize: 38,
+        //   getTitles: (val) {
+        //     switch (val.toInt()) {
+        //       case 2:
+        //         return 'MAR';
+        //       case 5:
+        //         return 'JUN';
+        //       case 8:
+        //         return 'SEP';
+        //     }
+        //     return '';
+        //   },
+        // ),
       );
 }

@@ -54,42 +54,42 @@ class MonthlySale2ScreenState extends State<MonthlySale2Screen> {
         show: false,
       ),
       titlesData: FlTitlesData(
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (value) {
-            return boldTextStyle(color: TransactionRight);
-          },
-          margin: 10,
-          getTitles: (value) {
-            switch (value.toInt()) {
-              case 2:
-                return 'SEPT';
-              case 7:
-                return 'OCT';
-              case 12:
-                return 'DEC';
-            }
-            return '';
-          },
-        ),
-        leftTitles: SideTitles(
-          margin: 10,
-          showTitles: true,
-          getTextStyles: (value) => boldTextStyle(color: TransactionRight),
-          getTitles: (value) {
-            switch (value.toInt()) {
-              case 1:
-                return '1m';
-              case 2:
-                return '2m';
-              case 3:
-                return '3m';
-              case 4:
-                return '5m';
-            }
-            return '';
-          },
-        ),
+        // bottomTitles: SideTitles(
+        //   showTitles: true,
+        //   getTextStyles: (value) {
+        //     return boldTextStyle(color: TransactionRight);
+        //   },
+        //   margin: 10,
+        //   getTitles: (value) {
+        //     switch (value.toInt()) {
+        //       case 2:
+        //         return 'SEPT';
+        //       case 7:
+        //         return 'OCT';
+        //       case 12:
+        //         return 'DEC';
+        //     }
+        //     return '';
+        //   },
+        // ),
+        // leftTitles: SideTitles(
+        //   margin: 10,
+        //   showTitles: true,
+        //   getTextStyles: (value) => boldTextStyle(color: TransactionRight),
+        //   getTitles: (value) {
+        //     switch (value.toInt()) {
+        //       case 1:
+        //         return '1m';
+        //       case 2:
+        //         return '2m';
+        //       case 3:
+        //         return '3m';
+        //       case 4:
+        //         return '5m';
+        //     }
+        //     return '';
+        //   },
+        // ),
       ),
       borderData: FlBorderData(
         show: true,
