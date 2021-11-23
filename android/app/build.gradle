@@ -39,8 +39,8 @@ android {
         applicationId "com.bobdomo.jobtuneai"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 26
-        versionName "6.1.0"
+        versionCode 30
+        versionName "2.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

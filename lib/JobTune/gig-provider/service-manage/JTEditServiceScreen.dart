@@ -111,6 +111,17 @@ class _EditServiceState extends State<EditService> {
         headers: {"Accept": "application/json"}
     );
 
+    readlatestService(by);
+
+  }
+
+  String service = "";
+  Future<void> readlatestService(by) async {
+    readAgain(by);
+  }
+
+  String again = "";
+  Future<void> readAgain(by) async {
     if(by == "Package") {
       insertPackage(widget.id);
     }
@@ -124,55 +135,7 @@ class _EditServiceState extends State<EditService> {
     }
   }
 
-  String service = "";
-  Future<void> readlatestService(by) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String lgid = prefs.getString('email').toString();
-
-    http.Response response = await http.get(
-        Uri.parse(
-            server + "jtnew_provider_selectmaxservice&lgid=" + lgid),
-        headers: {"Accept": "application/json"}
-    );
-
-    this.setState(() {
-      service = response.body;
-    });
-
-    readAgain(by);
-  }
-
-  String again = "";
-  Future<void> readAgain(by) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final String lgid = prefs.getString('email').toString();
-
-    http.Response response = await http.get(
-        Uri.parse(
-            server + "jtnew_provider_selectmaxservice&lgid=" + lgid),
-        headers: {"Accept": "application/json"}
-    );
-
-    this.setState(() {
-      again = response.body;
-    });
-
-    if(by == "Package") {
-      insertPackage(again);
-    }
-    else {
-      // navigate: product detail
-      Navigator.push(context,
-        MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-          id: again,
-        )),
-      );
-    }
-  }
-
   Future<void> insertPackage(serviceid) async {
-    print(packagearr);
-    print(packagearr.length);
     if(packagearr.length == 0) {
       http.get(
           Uri.parse(
@@ -185,35 +148,83 @@ class _EditServiceState extends State<EditService> {
       );
     }
     else {
-      print("totalling:" + packagearr.length.toString());
       for(var a=0;a<packagearr.length;a++) {
-        print("turn = " + a.toString());
-        var name = packagearr[a].toString().split(" | ")[0];
-        var price = packagearr[a].toString().split(" | ")[1].split(" ")[1];
-        var time = packagearr[a].toString().split(" | ")[2].split(" ")[1];
-
-        print(server + "jtnew_provider_insertpackage&serviceid=" + serviceid
-            + "&name=" + name
-            + "&rate=" + price
-            + "&time=" + time);
-        http.get(
-            Uri.parse(
-                server + "jtnew_provider_insertpackage&serviceid=" + serviceid
-                    + "&name=" + name
-                    + "&rate=" + price
-                    + "&time=" + time
-            ),
-            headers: {"Accept": "application/json"}
-        );
+        sendPackage(packagearr[a], serviceid);
       }
-      // alert: post success
-      toast("Post Updated!");
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-          id: serviceid,
-        )),
-      );
     }
+
+    checkAllPackage();
+  }
+
+  List checking = [];
+  List checkedarr = [];
+  Future<void> checkAllPackage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      checking = json.decode(response.body);
+    });
+
+    print("ni dari db satu kali: ");
+    print(checking);
+    checkAllPackage2();
+  }
+
+  Future<void> checkAllPackage2() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      checking = json.decode(response.body);
+    });
+
+    print("ni dari db dua kali: ");
+    print(checking);
+
+    for(var k=0;k<checking.length;k++){
+      var packname = checking[k]["package_name"] + " | RM " + double.parse(checking[k]["package_rate"]).toStringAsFixed(2) + " | est: " + checking[k]["package_time"] + " Hr";
+      checkedarr.add(packname);
+    }
+
+    for(var p=0;p<packagearr.length;p++) {
+      if(checkedarr.contains(packagearr[p]) == false) {
+        print(packagearr[p]);
+        print(checkedarr);
+        sendPackage(packagearr[p], widget.id);
+      }
+    }
+    // checkAllPackage();
+    // alert: post success
+    toast("Post Updated!");
+    checkedarr = [];
+    Navigator.pushReplacement(context,
+      MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
+        id: widget.id,
+      )),
+    );
+  }
+
+  Future<void> sendPackage(arr,serviceid) async {
+    var name = arr.toString().split(" | ")[0];
+    var price = arr.toString().split(" | ")[1].split(" ")[1];
+    var time = arr.toString().split(" | ")[2].split(" ")[1];
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_provider_insertpackage&serviceid=" + serviceid
+                + "&name=" + Uri.encodeComponent(name)
+                + "&rate=" + price
+                + "&time=" + time
+        ),
+        headers: {"Accept": "application/json"}
+    );
   }
 
   List info = [];
@@ -396,61 +407,62 @@ class _EditServiceState extends State<EditService> {
   void _add(a) {
     _children =
     List.from(_children)
-      ..add(Column(
-        children: [
-          8.height,
-          Row(
+      ..add(
+          Column(
             children: [
-              Container(
-                  width: MediaQuery.of(context).size.width / 1.27,
-                  child:TextFormField(
-                    readOnly: true,
-                    style: primaryTextStyle(),
-                    decoration: InputDecoration(
-                      hintText: a,
-                      contentPadding: EdgeInsets.all(16),
-                      labelStyle: secondaryTextStyle(),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(color: appColorPrimary)),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                          BorderSide(color: appStore.textSecondaryColor!)),
-                    ),
-                  )
-              ),
-              SizedBox(width: 10,),
-              Container(
-                width: MediaQuery.of(context).size.width / 10,
-                height: 40,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _children =
-                      List.of(_children)
-                        ..removeAt(packagearr.indexWhere((packagearr) => packagearr.startsWith(a)));
-                    });
-                    packagearr.remove(a);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.all(Radius.circular(50))),
-                    child: Center(
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
+              8.height,
+              Row(
+                children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width / 1.27,
+                      child:TextFormField(
+                        readOnly: true,
+                        style: primaryTextStyle(),
+                        decoration: InputDecoration(
+                          hintText: a,
+                          contentPadding: EdgeInsets.all(16),
+                          labelStyle: secondaryTextStyle(),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: BorderSide(color: appColorPrimary)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide:
+                              BorderSide(color: appStore.textSecondaryColor!)),
+                        ),
+                      )
+                  ),
+                  SizedBox(width: 10,),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 10,
+                    height: 40,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _children =
+                          List.of(_children)
+                            ..removeAt(packagearr.indexWhere((packagearr) => packagearr.startsWith(a)));
+                        });
+                        packagearr.remove(a);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.all(Radius.circular(50))),
+                        child: Center(
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+                ],
+              )
             ],
           )
-        ],
-      )
       );
     setState(() => ++_count);
   }
@@ -1156,10 +1168,12 @@ class _EditServiceState extends State<EditService> {
                               if(selectedIndexCategory != 'Category') {
                                 if(selectedRateBy == 'Hour') {
                                   rateperhour = rateCont.text;
+                                  toast("Loading..");
                                   insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
                                 }
                                 else {
                                   rateperhour = "0.00";
+                                  toast("Loading..");
                                   insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
                                 }
                               }

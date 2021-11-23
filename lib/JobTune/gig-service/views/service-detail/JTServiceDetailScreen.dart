@@ -10,6 +10,7 @@ import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreen
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
+import 'package:prokit_flutter/defaultTheme/screen/DTAddressScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
@@ -17,6 +18,7 @@ import '../../../../main.dart';
 import '../index/JTDrawerWidget.dart';
 import '../index/JTProductDetailWidget.dart';
 import '../index/JTReviewScreenUser.dart';
+import 'JTChangeAddress.dart';
 import 'JTCheckSlotScreen.dart';
 
 bool package = true;
@@ -548,6 +550,17 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                       Text(fullname, style: boldTextStyle()).expand(),
                                     ],
                                   ).expand(),
+                                  Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                                    child: Text('Change', style: primaryTextStyle()),
+                                  ).onTap(() async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => JTChangeAddressScreen(),
+                                        ));
+                                  }),
                                 ],
                               ),
                               4.height,
