@@ -57,7 +57,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                       // Navigator.of(context).popUntil((_) => count++ >= 3);
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (BuildContext context) => JTServiceDetailScreen(
-                            id:widget.id
+                            id:widget.id,
+                            page: "detail"
                           )
                       ));
                     },

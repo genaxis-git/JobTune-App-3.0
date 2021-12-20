@@ -147,7 +147,8 @@ class _ServiceListState extends State<ServiceList> {
             onTap: (){
               Navigator.push(context,
                 MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-                    id: indexlist[index]["service_id"]
+                    id: indexlist[index]["service_id"],
+                    page: "detail"
                 )),
               );
             },

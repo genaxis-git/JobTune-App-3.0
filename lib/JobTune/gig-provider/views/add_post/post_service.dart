@@ -145,6 +145,7 @@ class _PostServiceState extends State<PostService> {
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
           id: again,
+          page: "detail"
         )),
       );
     }
@@ -185,6 +186,7 @@ class _PostServiceState extends State<PostService> {
     Navigator.push(context,
       MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
         id: serviceid,
+        page: "detail"
       )),
     );
   }

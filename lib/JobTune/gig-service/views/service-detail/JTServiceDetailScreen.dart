@@ -26,8 +26,13 @@ bool package = true;
 class JTServiceDetailScreen extends StatefulWidget {
   static String tag = '/JTServiceDetailScreen';
 
-  const JTServiceDetailScreen({Key? key, required this.id}) : super(key: key);
+  const JTServiceDetailScreen({
+    Key? key,
+    required this.id,
+    required this.page
+  }) : super(key: key);
   final String id;
+  final String page;
 
   @override
   _JTServiceDetailScreenState createState() => _JTServiceDetailScreenState();
@@ -74,8 +79,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
 
     setState(() {
       email = lgid;
-      fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
-      address = profile[0]["address"] ;
+      // fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
+      // address = profile[0]["address"] ;
       telno = profile[0]["phone_no"] ;
       gender = profile[0]["gender"] ;
       race = profile[0]["race"] ;
@@ -221,10 +226,36 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     });
   }
 
+  List selectedaddress = [];
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      selectedaddress = json.decode(response.body);
+    });
+
+    for(var m=0; m<selectedaddress.length; m++){
+      if(selectedaddress[m]["added_status"] == "1"){
+        setState(() {
+          address = selectedaddress[m]["added_address"];
+          fullname = selectedaddress[m]["added_name"];
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     this.readService();
+    this.readAddress();
     this.readProfile();
     this.readAverage();
     this.readTotal();
@@ -428,9 +459,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.pop(
-                context,
-              );
+              JTDashboardSreenUser().launch(context, isNewTask: true);
             }
         ),
       ),
@@ -535,7 +564,42 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           (fullname == "" && address == "")
-                          ? Container()
+                          ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Please come to', style: primaryTextStyle()),
+                                      10.width,
+                                      Text('[ add receiver ]', style: boldTextStyle()).expand(),
+                                    ],
+                                  ).expand(),
+                                  Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                                    child: Text('Add address', style: primaryTextStyle()),
+                                  ).onTap(() async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => JTChangeAddressScreen(
+                                            id: widget.id,
+                                            page: widget.page,
+                                          ),
+                                        ));
+                                  }),
+                                ],
+                              ),
+                              4.height,
+                              Text(address, style: secondaryTextStyle()),
+                              16.height,
+                              Divider(height: 0),
+                            ],
+                          )
                           : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -558,7 +622,10 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => JTChangeAddressScreen(),
+                                          builder: (context) => JTChangeAddressScreen(
+                                            id: widget.id,
+                                            page: widget.page,
+                                          ),
                                         ));
                                   }),
                                 ],

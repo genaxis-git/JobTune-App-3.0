@@ -13,9 +13,19 @@ import 'package:prokit_flutter/theme2/utils/T2Colors.dart';
 import 'package:prokit_flutter/theme7/utils/T7Colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'JTServiceDetailScreen.dart';
+
 
 class JTChangeAddressScreen extends StatefulWidget {
   static String tag = '/JTChangeAddressScreen';
+
+  const JTChangeAddressScreen({
+    Key? key,
+    required this.id,
+    required this.page,
+  }) : super(key: key);
+  final String id;
+  final String page;
 
   @override
   JTChangeAddressScreenState createState() => JTChangeAddressScreenState();
@@ -24,10 +34,117 @@ class JTChangeAddressScreen extends StatefulWidget {
 class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
   List<DTAddressListModel> list = getAddressList();
 
+  // function starts //
+
+  List addresslist = [];
+  List ids = [];
+  Future<void> readAddress(a) async {
+    print(a);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      addresslist = json.decode(response.body);
+
+      for(var m=0; m<addresslist.length; m++){
+        if(addresslist[m]["added_status"] == "1"){
+          ids.add(addresslist[m]["address_id"]);
+        }
+      }
+    });
+
+    if(a == "repeat"){
+      readAddress("last");
+    }
+    else if(a == "last"){
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => JTServiceDetailScreen(
+              id: widget.id,
+              page: widget.page,
+            )),
+      );
+    }
+  }
+
+  Future<void> goto() async {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => JTChangeAddressScreen(id: widget.id,page:widget.page),
+        ));
+  }
+
+  Future<void> allzero(id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updatealladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    selectedone(id);
+  }
+
+  Future<void> selectedone(id) async {
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updateoneaddress&id=" + id),
+        headers: {"Accept": "application/json"}
+    );
+
+    checkSelected(id);
+  }
+
+  List checkinglist = [];
+  List arrlist = [];
+  Future<void> checkSelected(a) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      checkinglist = json.decode(response.body);
+    });
+
+    for(var m=0;m<checkinglist.length;m++){
+      arrlist.add(checkinglist[m]["added_status"]);
+    }
+
+    if(arrlist.contains("1") == false){
+      print(arrlist);
+      print("belum");
+      print(a);
+      selectedone(a);
+    }
+    else{
+      print(arrlist);
+      print("dah");
+      readAddress("last");
+    }
+  }
+
+
   @override
   void initState() {
     super.initState();
+    this.readAddress("start");
   }
+
+  // function ends //
 
   @override
   void setState(fn) {
@@ -43,9 +160,19 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.pop(
-                context,
-              );
+              if(widget.page == "detail"){
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => JTServiceDetailScreen(
+                        id: widget.id,
+                        page: widget.page,
+                      )),
+                );
+              }
+              else{
+                // other page
+              }
             }
         ),
       ),
@@ -65,9 +192,76 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
                     decoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor), borderRadius: BorderRadius.circular(8)),
                     child: Text('Add New Address', style: boldTextStyle(color: appColorPrimary)),
                   ).onTap(() async {
-                    showInDialog(context, child: AddAddressDialog(), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                    showInDialog(context, child: AddAddressDialog(id: widget.id,page:widget.page), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
                   }),
-                  JTAddressList(),
+                  // JTAddressList(id:widget.id,page:widget.page),
+                  ListView.builder(
+                    itemCount: addresslist == null ? 0 : addresslist.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        padding: EdgeInsets.all(16),
+                        margin: EdgeInsets.all(8),
+                        decoration: (ids.contains(addresslist[index]["address_id"]))
+                            ? boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xfffcefc7))
+                            : boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(addresslist[index]["added_name"], style: boldTextStyle(size: 18)),
+                                    10.width,
+                                    (addresslist[index]["added_tag"] != "null" && addresslist[index]["added_tag"] != null)
+                                        ? Container(
+                                            child: Text(addresslist[index]["added_tag"], overflow: TextOverflow.ellipsis, style: secondaryTextStyle(size: 10, color: appColorPrimary)),
+                                            padding: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+                                            decoration: BoxDecoration(color: appColorPrimary.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.edit, color: appColorPrimary).onTap(() {
+                                      showInDialog(context, child: UpdateAddressDialog(
+                                        id: addresslist[index]["address_id"],
+                                        ids: widget.id,
+                                        page: widget.page,
+                                      ), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                                    }),
+                                    10.width,
+                                    Icon(Icons.delete, color: Colors.redAccent).onTap(() {
+                                      showInDialog(context,
+                                          child: AlertDelete(),
+                                          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                                    }),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 50, 0),
+                              child: Text(addresslist[index]["added_address"], style: primaryTextStyle()),
+                            ),
+                            Text(addresslist[index]["email"], style: primaryTextStyle()),
+                            Text(addresslist[index]["added_telno"], style: primaryTextStyle()),
+                            6.height,
+                          ],
+                        ),
+                      ).onTap(() {
+                        ids.clear();
+                        setState(() {
+                          ids.add(addresslist[index]["address_id"]);
+                        });
+                      });
+                    },
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                  ),
                 ],
               ),
             ),
@@ -77,7 +271,7 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
                   8.height,
                   GestureDetector(
                     onTap: () async {
-
+                      allzero(ids[0]);
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -99,7 +293,13 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
 }
 
 class JTAddressList extends StatefulWidget {
-  const JTAddressList({Key? key}) : super(key: key);
+  const JTAddressList({
+    Key? key,
+    required this.id,
+    required this.page,
+  }) : super(key: key);
+  final String id;
+  final String page;
 
   @override
   _JTAddressListState createState() => _JTAddressListState();
@@ -107,11 +307,10 @@ class JTAddressList extends StatefulWidget {
 
 class _JTAddressListState extends State<JTAddressList> {
 
-  String status = "not selected";
-
   // function starts //
 
   List addresslist = [];
+  List ids = [];
   Future<void> readAddress(a) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -123,6 +322,12 @@ class _JTAddressListState extends State<JTAddressList> {
 
     this.setState(() {
       addresslist = json.decode(response.body);
+
+      for(var m=0; m<addresslist.length; m++){
+        if(addresslist[m]["added_status"] == "1"){
+          ids.add(addresslist[m]["address_id"]);
+        }
+      }
     });
 
     if(a == "repeat"){
@@ -134,8 +339,39 @@ class _JTAddressListState extends State<JTAddressList> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => JTChangeAddressScreen(),
+          builder: (context) => JTChangeAddressScreen(id: widget.id,page:widget.page),
         ));
+  }
+
+  Future<void> allzero(id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updatealladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    for(var m=0; m<20; m++){
+      print("sleep=" + m.toString());
+    }
+
+    selectedone(id);
+  }
+
+  Future<void> selectedone(id) async {
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updateoneaddress&id=" + id),
+        headers: {"Accept": "application/json"}
+    );
+
+    for(var m=0; m<20; m++){
+      print("sleep=" + m.toString());
+    }
+
+    readAddress("repeat");
   }
 
 
@@ -154,9 +390,9 @@ class _JTAddressListState extends State<JTAddressList> {
         return Container(
           padding: EdgeInsets.all(16),
           margin: EdgeInsets.all(8),
-          decoration: (addresslist[index]["added_status"] == "0")
-              ? boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!)
-              : boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xfffcefc7)),
+          decoration: (ids.contains(addresslist[index]["address_id"]))
+              ? boxDecorationRoundedWithShadow(8, backgroundColor: Color(0xfffcefc7))
+              : boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -181,7 +417,9 @@ class _JTAddressListState extends State<JTAddressList> {
                     children: [
                       Icon(Icons.edit, color: appColorPrimary).onTap(() {
                         showInDialog(context, child: UpdateAddressDialog(
-                            id: addresslist[index]["address_id"]
+                            id: addresslist[index]["address_id"],
+                            ids: widget.id,
+                            page: widget.page,
                         ), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
                       }),
                       10.width,
@@ -202,30 +440,14 @@ class _JTAddressListState extends State<JTAddressList> {
               6.height,
             ],
           ),
-        ).onTap(() async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-          final String lgid = prefs.getString('email').toString();
+        ).onTap(() {
+          toast("Loading..");
+          ids.clear();
+          setState(() {
+            ids.add(addresslist[index]["address_id"]);
+          });
 
-          // update all address = 0
-          print(server + "jtnew_user_updatealladdress&id=" + lgid);
-          http.get(
-              Uri.parse(
-                  server + "jtnew_user_updatealladdress&id=" + lgid),
-              headers: {"Accept": "application/json"}
-          );
-
-          // update chosen address = 1
-          print(server + "jtnew_user_updateoneaddress&id=" + addresslist[index]["address_id"]);
-          http.get(
-              Uri.parse(
-                  server + "jtnew_user_updateoneaddress&id=" + addresslist[index]["address_id"]),
-              headers: {"Accept": "application/json"}
-          );
-
-          for(var m=0; m<20; m++){
-            print("sleep=" + m.toString());
-          }
-          readAddress("repeat");
+          allzero(addresslist[index]["address_id"]);
         });
       },
       physics: NeverScrollableScrollPhysics(),
@@ -308,7 +530,7 @@ class _AlertDeleteState extends State<AlertDelete> {
                       GestureDetector(
                         onTap: () {
                           finish(context);
-                        },
+  },
                         child: Container(
                           width: MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.all(Radius.circular(5))),
@@ -348,6 +570,15 @@ class _AlertDeleteState extends State<AlertDelete> {
 
 
 class AddAddressDialog extends StatefulWidget {
+
+  const AddAddressDialog({
+    Key? key,
+    required this.id,
+    required this.page,
+  }) : super(key: key);
+  final String id;
+  final String page;
+
   @override
   _AddAddressDialogState createState() => _AddAddressDialogState();
 }
@@ -359,12 +590,16 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
   var state = TextEditingController();
   var country = TextEditingController();
   var label = TextEditingController();
+  var name = TextEditingController();
+  var email = TextEditingController();
+  var telno = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
   List<String> listOfState = ['Choose State..','Johor', 'Kedah', 'Kelantan', 'Pahang', 'Melaka', 'Negeri Sembilan', 'Perak', 'Perlis', 'Penang', 'Sabah', 'Sarawak', 'Selangor', 'Terengganu', 'Wilayah Persekutuan Kuala Lumpur', 'Wilayah Persekutuan Labuan', 'Wilayah Persekutuan Putrajaya'];
   String? selectedIndexState = 'Choose State..';
 
-  List<String> listOfCountry = ['Choose Country..','Malaysia', 'Indonesia', 'Singapore', 'Brunei','Philippines','Thailand','Myanmar','Vietnam','Cambodia','Laos','Timor-Leste'];
+  // List<String> listOfCountry = ['Choose Country..','Malaysia', 'Indonesia', 'Singapore', 'Brunei','Philippines','Thailand','Myanmar','Vietnam','Cambodia','Laos','Timor-Leste'];
+  List<String> listOfCountry = ['Choose Country..','Malaysia'];
   String? selectedIndexCountry = 'Choose Country..';
 
   String home_selected = "false";
@@ -379,7 +614,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => JTChangeAddressScreen(),
+          builder: (context) => JTChangeAddressScreen(id: widget.id,page:widget.page),
         ));
   }
 
@@ -422,6 +657,66 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                       },
                     )
                   ],
+                ),
+                8.height,
+                TextFormField(
+                  controller: name,
+                  style: primaryTextStyle(),
+                  decoration: InputDecoration(
+                    labelText: 'Receiver Name',
+                    contentPadding: EdgeInsets.all(16),
+                    labelStyle: secondaryTextStyle(),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                  ),
+                  keyboardType: TextInputType.name,
+                  validator: (s) {
+                    if (s!.trim().isEmpty) return errorThisFieldRequired;
+                    return null;
+                  },
+                  // onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(mobileFocus),
+                  textInputAction: TextInputAction.newline, // when user presses enter it will adapt to it
+                ),
+                8.height,
+                TextFormField(
+                  controller: email,
+                  style: primaryTextStyle(),
+                  decoration: InputDecoration(
+                    labelText: 'Receiver Email',
+                    contentPadding: EdgeInsets.all(16),
+                    labelStyle: secondaryTextStyle(),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (s) {
+                    if (s!.trim().isEmpty) return errorThisFieldRequired;
+                    return null;
+                  },
+                  // onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(mobileFocus),
+                  textInputAction: TextInputAction.newline, // when user presses enter it will adapt to it
+                ),
+                8.height,
+                TextFormField(
+                  controller: telno,
+                  style: primaryTextStyle(),
+                  decoration: InputDecoration(
+                    labelText: 'Receiver Phone No.',
+                    contentPadding: EdgeInsets.all(16),
+                    labelStyle: secondaryTextStyle(),
+                    border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  validator: (s) {
+                    if (s!.trim().isEmpty) return errorThisFieldRequired;
+                    return null;
+                  },
+                  // onFieldSubmitted: (s) => FocusScope.of(context).requestFocus(mobileFocus),
+                  textInputAction: TextInputAction.newline, // when user presses enter it will adapt to it
                 ),
                 8.height,
                 TextFormField(
@@ -788,7 +1083,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                 20.height,
                 GestureDetector(
                   onTap: () async {
-                    if(fulladdress.text != "" || postcode.text != "" || city.text != "" || selectedIndexState.toString() != 'Choose State..' || selectedIndexCountry.toString() != 'Choose Country..'){
+                    if(fulladdress.text != "" || postcode.text != "" || city.text != "" || selectedIndexState.toString() != 'Choose State..' || selectedIndexCountry.toString() != 'Choose Country..' || name.text != "" || telno.text != ""){
                       final SharedPreferences prefs = await SharedPreferences.getInstance();
                       final String lgid = prefs.getString('email').toString();
 
@@ -823,6 +1118,9 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                           + "&state=" + selectedIndexState.toString()
                           + "&country=" + selectedIndexCountry.toString()
                           + "&tag=" + selected_tag.toString()
+                          + "&name=" + name.text
+                          + "&email=" + email.text
+                          + "&telno=" + telno.text
                           ),
                           headers: {"Accept": "application/json"}
                       );
@@ -852,8 +1150,15 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
 
 class UpdateAddressDialog extends StatefulWidget {
 
-  const UpdateAddressDialog({Key? key, required this.id}) : super(key: key);
+  const UpdateAddressDialog({
+    Key? key,
+    required this.id,
+    required this.ids,
+    required this.page,
+  }) : super(key: key);
   final String id;
+  final String ids;
+  final String page;
 
   @override
   _UpdateAddressDialogState createState() => _UpdateAddressDialogState();
@@ -936,7 +1241,7 @@ class _UpdateAddressDialogState extends State<UpdateAddressDialog> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => JTChangeAddressScreen(),
+          builder: (context) => JTChangeAddressScreen(id: widget.ids,page:widget.page),
         ));
   }
 

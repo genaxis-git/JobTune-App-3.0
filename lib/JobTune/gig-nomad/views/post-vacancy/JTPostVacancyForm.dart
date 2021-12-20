@@ -142,6 +142,7 @@ class _JTPostVacancyFormState extends State<JTPostVacancyForm> {
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
           id: again,
+          page: "detail"
         )),
       );
     }
@@ -182,6 +183,7 @@ class _JTPostVacancyFormState extends State<JTPostVacancyForm> {
     Navigator.push(context,
       MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
         id: serviceid,
+        page: "detail"
       )),
     );
   }

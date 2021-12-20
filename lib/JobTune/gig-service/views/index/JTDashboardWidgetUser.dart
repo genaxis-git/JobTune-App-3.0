@@ -381,6 +381,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
               MaterialPageRoute(
                   builder: (context) => JTServiceDetailScreen(
                     id: servicelist[index]["service_id"],
+                    page: "detail",
                   )),
             );
           },

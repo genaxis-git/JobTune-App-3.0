@@ -106,6 +106,28 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
+    addAddress(full,postcode,city,country,state);
+
+  }
+
+  Future<void> addAddress(full,postcode,city,country,state) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_insertaddress&id=" + lgid
+                + "&address=" + full
+                + "&postcode=" + postcode
+                + "&city=" + city
+                + "&state=" + state
+                + "&country=" + country
+                + "&name=" + profile[0]["first_name"] + " " + profile[0]["last_name"]
+                + "&tag=Home"
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
     toast("Updated!");
     Navigator.pushReplacement(
       context,

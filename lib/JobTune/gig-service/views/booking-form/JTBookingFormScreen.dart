@@ -75,9 +75,9 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
 
     setState(() {
       email = lgid;
-      fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
-      userloc = profile[0]["address"] ;
-      usercall = profile[0]["phone_no"] ;
+      // fullname = profile[0]["first_name"] + " " + profile[0]["last_name"] ;
+      // userloc = profile[0]["address"] ;
+      // usercall = profile[0]["phone_no"] ;
     });
   }
 
@@ -335,10 +335,39 @@ class _JTBookingFormScreenState extends State<JTBookingFormScreen> {
     toast("Booking Success!");
   }
 
+  List selectedaddress = [];
+  String receiveremail = "";
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      selectedaddress = json.decode(response.body);
+    });
+
+    for(var m=0; m<selectedaddress.length; m++){
+      if(selectedaddress[m]["added_status"] == "1"){
+        setState(() {
+          userloc = selectedaddress[m]["added_address"];
+          fullname = selectedaddress[m]["added_name"];
+          receiveremail = selectedaddress[m]["added_email"];
+          usercall = selectedaddress[m]["added_telno"];
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     this.readProfile();
+    this.readAddress();
     this.readProvider();
     this.readService();
   }

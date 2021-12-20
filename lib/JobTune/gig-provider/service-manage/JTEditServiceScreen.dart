@@ -130,6 +130,7 @@ class _EditServiceState extends State<EditService> {
       Navigator.push(context,
         MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
           id: widget.id,
+          page: "detail"
         )),
       );
     }
@@ -207,6 +208,7 @@ class _EditServiceState extends State<EditService> {
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
         id: widget.id,
+        page: "detail"
       )),
     );
   }
