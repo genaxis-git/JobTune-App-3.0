@@ -1,4 +1,8 @@
+// @dart=2.9
+
 //region imports
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +30,16 @@ List<CSDataModel> getCloudboxList = getCloudboxData();
 List<CSDrawerModel> getCSDrawerList = getCSDrawer();
 int currentIndex = 0;
 
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 void main() async {
+  HttpOverrides.global = MyHttpOverrides();
   //region Entry Point
   WidgetsFlutterBinding.ensureInitialized();
 

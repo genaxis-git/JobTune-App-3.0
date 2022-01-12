@@ -313,7 +313,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 375.0,
+              expandedHeight: 400.0,
               floating: true,
               pinned: true,
               snap: false,
