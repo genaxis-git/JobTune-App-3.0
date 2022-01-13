@@ -45,7 +45,7 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
         greet = "Good Morning";
       });
     }
-    if (hour >= 12 && hour < 17) {
+    else if (hour >= 12 && hour < 17) {
       setState(() {
         greet = "Good Afternoon";
       });

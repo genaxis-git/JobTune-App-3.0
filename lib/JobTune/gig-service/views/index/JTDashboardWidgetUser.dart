@@ -75,7 +75,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
     }
   }
 
@@ -92,7 +92,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
     }
   }
 
@@ -506,8 +506,8 @@ class _DisplayRateState extends State<DisplayRate> {
           children: [
             JTpriceWidget(min),
             Text(
-              " to ",
-              style: TextStyle(
+              " ~ ",
+            style: TextStyle(
                 fontSize: 18,
               ),
             ),

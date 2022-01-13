@@ -83,11 +83,14 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
     }
   }
 
   Future<void> checkCategory(city,state,country) async {
+    print(server + "jtnew_user_selectavailablecategory&city="+city
+        +"&state="+state
+        +"&country="+country);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectavailablecategory&city="+city
@@ -102,7 +105,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     });
 
     for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/Man.png'));
+      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
     }
   }
 
