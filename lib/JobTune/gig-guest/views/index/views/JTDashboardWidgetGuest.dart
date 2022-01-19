@@ -62,11 +62,70 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         profile = json.decode(response.body);
       });
 
-      print(profile[0]["city"]+profile[0]["state"]+profile[0]["country"]);
-      checkCategory(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+      if(profile[0]["address"] != ""){
+        readAddress();
+      }
+      else{
+        readCategory();
+      }
     }
     else {
       readCategory();
+    }
+  }
+
+  List selectedaddress = [];
+  String fullname = "";
+  String address = "";
+  String tag = "";
+  String tagname = "";
+  String city = "";
+  String state = "";
+  String addressread = "";
+  String displayaddress = "";
+  String displaystatus = "false";
+  List displaylist = [];
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    print("ini:"+server + "jtnew_user_selectalladdress&id=" + lgid);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      selectedaddress = json.decode(response.body);
+    });
+
+    for(var m=0; m<selectedaddress.length; m++){
+      if(selectedaddress[m]["added_status"] == "1"){
+        displaystatus = "true";
+        setState(() {
+          fullname = selectedaddress[m]["added_name"];
+          city = selectedaddress[m]["added_city"];
+          state = selectedaddress[m]["added_state"];
+          addressread = selectedaddress[m]["added_address"];
+          tagname = selectedaddress[m]["added_tag"];
+          if(selectedaddress[m]["added_tag"] != "Home" && selectedaddress[m]["added_tag"] != "Work" && selectedaddress[m]["added_tag"] != "School" && selectedaddress[m]["added_tag"] != "Family") {
+            tag = "pin";
+          }
+          else{
+            tag = selectedaddress[m]["added_tag"];
+          }
+
+          if(addressread.split(",").length > 3) {
+            displayaddress = addressread.split(",")[0] + "," + addressread.split(",")[1] + "," + addressread.split(",")[2];
+          }
+          else{
+            displayaddress = addressread;
+          }
+        });
+
+        checkCategory(selectedaddress[m]["added_city"],selectedaddress[m]["added_state"],selectedaddress[m]["added_country"]);
+      }
     }
   }
 
@@ -104,8 +163,15 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
       category = json.decode(response.body);
     });
 
-    for(var m=0;m<category.length;m++) {
-      categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
+    if(category.length > 4){
+      for(var m=0;m<4;m++) {
+        categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
+      }
+    }
+    else{
+      for(var m=0;m<category.length;m++) {
+        categories.add(CategoryModel(name: category[m]["category"], icon: 'images/defaultTheme/category/'+category[m]["icon"]));
+      }
     }
   }
 
@@ -316,7 +382,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 400.0,
+              expandedHeight: 440.0,
               floating: true,
               pinned: true,
               snap: false,
@@ -334,10 +400,54 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                       ).visible(false),
                       Column(
                         children: [
-                          15.height,
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Card(
+                                child: InkWell(
+                                  onTap: (){
+                                    mExpandedSheet(context);
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0, bottom: 0.0),
+                                    child: ListTile(
+                                      leading: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 0.0, left: 12.0, right: 0.0, bottom: 0.0),
+                                            child: Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: Image.asset(
+                                                      'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/'+tag+'.png',
+                                                    ).image),
+                                                shape: BoxShape.rectangle,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      title: Text(
+                                        city + ", " + state,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        displayaddress,
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -436,6 +546,215 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         },
         body: Container(height: 390, child: JTProductList()),
       )
+    );
+  }
+}
+
+mExpandedSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    isDismissible: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+    ),
+    backgroundColor: Colors.transparent,
+    builder: (context) => DraggableScrollableSheet(
+      initialChildSize: 0.45,
+      minChildSize: 0.2,
+      maxChildSize: 1,
+      builder: (context, scrollController) {
+        return Container(
+          color: appStore.scaffoldBackground,
+          child: GestureDetector(
+            onTap: () {
+              finish(context);
+            },
+            child: AddressList(),
+          ),
+        );
+      },
+    ),
+  );
+}
+
+class AddressList extends StatefulWidget {
+  const AddressList({Key? key}) : super(key: key);
+
+  @override
+  _AddressListState createState() => _AddressListState();
+}
+
+class _AddressListState extends State<AddressList> {
+
+  List addresslist = [];
+  List ids = [];
+  var gender1;
+
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      addresslist = json.decode(response.body);
+
+      for(var m=0; m<addresslist.length; m++){
+        if(addresslist[m]["added_status"] == "1"){
+          ids.add(addresslist[m]["address_id"]);
+        }
+      }
+    });
+  }
+
+  Future<void> allzero(id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updatealladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    selectedone(id);
+  }
+
+  Future<void> selectedone(id) async {
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updateoneaddress&id=" + id),
+        headers: {"Accept": "application/json"}
+    );
+
+    checkSelected(id);
+  }
+
+  List checkinglist = [];
+  List arrlist = [];
+  Future<void> checkSelected(a) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      checkinglist = json.decode(response.body);
+    });
+
+    for(var m=0;m<checkinglist.length;m++){
+      arrlist.add(checkinglist[m]["added_status"]);
+    }
+
+    if(arrlist.contains("1") == false){
+      print(arrlist);
+      print("belum");
+      print(a);
+      selectedone(a);
+    }
+    else{
+      print(arrlist);
+      print("dah");
+      arrlist = [];
+      Navigator.pop(context);
+      Navigator.pop(context);
+      JTDashboardScreenGuest().launch(context, isNewTask: true);
+      // readAddress("last");
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.readAddress();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    void _onHorizontalLoading1() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: appStore.scaffoldBackground,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            contentPadding: EdgeInsets.all(0.0),
+            content: Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Row(
+                children: [
+                  16.width,
+                  CircularProgressIndicator(
+                    backgroundColor: Color(0xffD6D6D6),
+                    strokeWidth: 4,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                  ),
+                  16.width,
+                  Text(
+                    "Please Wait....",
+                    style: primaryTextStyle(color: appStore.textPrimaryColor),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return ListView.builder(
+        itemCount: addresslist == null ? 0 : addresslist.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                unselectedWidgetColor: appStore.textPrimaryColor,
+              ),
+              child: RadioListTile(
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  secondary: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: (addresslist[index]["added_tag"] != "Home" && addresslist[index]["added_tag"] != "Work" && addresslist[index]["added_tag"] != "School" && addresslist[index]["added_tag"] != "Family")
+                              ? Image.asset(
+                            'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/pin.png',
+                          ).image
+                              : Image.asset(
+                            'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/'+addresslist[index]["added_tag"]+'.png',
+                          ).image
+                      ),
+                      shape: BoxShape.rectangle,
+                    ),
+                  ),
+                  title: Text(
+                    addresslist[index]["added_city"] + ", " + addresslist[index]["added_state"],
+                    style: boldTextStyle(),
+                  ),
+                  subtitle: Text(
+                    addresslist[index]["added_address"],
+                    style: secondaryTextStyle(),
+                  ),
+                  value: addresslist[index]["address_id"],
+                  groupValue: gender1,
+                  onChanged: (dynamic value) {
+                    _onHorizontalLoading1();
+                    allzero(addresslist[index]["address_id"]);
+                  }),
+            ),
+          );
+        }
     );
   }
 }

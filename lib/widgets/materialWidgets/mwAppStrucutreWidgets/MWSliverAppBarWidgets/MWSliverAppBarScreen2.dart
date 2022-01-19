@@ -34,7 +34,10 @@ class _MWSliverAppBarScreen2State extends State<MWSliverAppBarScreen2> {
           return <Widget>[
             SliverAppBar(
               expandedHeight: 250,
+              floating: true,
               pinned: true,
+              snap: false,
+              automaticallyImplyLeading : false,
               flexibleSpace: FlexibleSpaceBar(
                 background: CachedNetworkImage(
                   imageUrl: "https://images.pexels.com/photos/443356/pexels-photo-443356.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",

@@ -133,6 +133,7 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
     else{
       print(arrlist);
       print("dah");
+      arrlist = [];
       readAddress("last");
     }
   }
