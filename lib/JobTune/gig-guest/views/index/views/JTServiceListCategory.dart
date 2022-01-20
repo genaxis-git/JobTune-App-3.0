@@ -327,8 +327,12 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
         profile = json.decode(response.body);
       });
 
-      print(profile[0]["city"]+profile[0]["state"]+profile[0]["country"]);
-      checkFeatured(profile[0]["city"],profile[0]["state"],profile[0]["country"]);
+      if(profile[0]["address"] != ""){
+        readAddress();
+      }
+      else{
+        checkService();
+      }
     }
     else {
       setState(() {
@@ -338,8 +342,67 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
     }
   }
 
+  List selectedaddress = [];
+  String fullname = "";
+  String address = "";
+  String tag = "";
+  String tagname = "";
+  String city = "";
+  String state = "";
+  String addressread = "";
+  String displayaddress = "";
+  String displaystatus = "false";
+  List displaylist = [];
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    print("ini:"+server + "jtnew_user_selectalladdress&id=" + lgid);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      selectedaddress = json.decode(response.body);
+    });
+
+    for(var m=0; m<selectedaddress.length; m++){
+      if(selectedaddress[m]["added_status"] == "1"){
+        displaystatus = "true";
+        setState(() {
+          fullname = selectedaddress[m]["added_name"];
+          city = selectedaddress[m]["added_city"];
+          state = selectedaddress[m]["added_state"];
+          addressread = selectedaddress[m]["added_address"];
+          tagname = selectedaddress[m]["added_tag"];
+          if(selectedaddress[m]["added_tag"] != "Home" && selectedaddress[m]["added_tag"] != "Work" && selectedaddress[m]["added_tag"] != "School" && selectedaddress[m]["added_tag"] != "Family") {
+            tag = "pin";
+          }
+          else{
+            tag = selectedaddress[m]["added_tag"];
+          }
+
+          if(addressread.split(",").length > 3) {
+            displayaddress = addressread.split(",")[0] + "," + addressread.split(",")[1] + "," + addressread.split(",")[2];
+          }
+          else{
+            displayaddress = addressread;
+          }
+        });
+
+        checkFeatured(selectedaddress[m]["added_city"],selectedaddress[m]["added_state"],selectedaddress[m]["added_country"]);
+      }
+    }
+  }
+
   List servicelist = [];
   Future<void> checkFeatured(city,state,country) async {
+    print(server + "jtnew_user_selectservicecategory&city="+city
+        +"&state="+state
+        +"&country="+country
+        +"&category=" + widget.searchkey);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectservicecategory&city="+city
@@ -445,7 +508,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
         itemCount: servicelist == null ? 0 : servicelist.length,
         itemBuilder: (BuildContext context, int index) {
           if(email != "null"){
-            if(servicelist[index]["category"] == widget.searchkey) {
+            if(servicelist[index]["category"] == widget.searchkey && servicelist[index]["status"] == "1") {
               return GestureDetector(
                 onTap: (){
                   Navigator.push(

@@ -147,9 +147,6 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   }
 
   Future<void> checkCategory(city,state,country) async {
-    print(server + "jtnew_user_selectavailablecategory&city="+city
-        +"&state="+state
-        +"&country="+country);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectavailablecategory&city="+city
