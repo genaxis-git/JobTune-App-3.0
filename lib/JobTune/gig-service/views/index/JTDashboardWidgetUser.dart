@@ -1047,18 +1047,18 @@ class _DisplayRateState extends State<DisplayRate> {
         (widget.rate != "0.00")
         ? JTpriceWidget(double.parse(double.parse(widget.rate).toStringAsFixed(2)))
         : (min != max)
-        ? Row(
-          children: [
-            JTpriceWidget(min),
-            Text(
-              " ~ ",
-            style: TextStyle(
+        ? Flexible(
+            child: Text(
+              "RM " + min.toStringAsFixed(2) + " ~ RM " + max.toStringAsFixed(2),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                decoration: TextDecoration.none,
+                color: appStore.textPrimaryColor,
                 fontSize: 18,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            JTpriceWidget(max),
-          ],
-        )
+          )
         : JTpriceWidget(min),
       ],
     );
