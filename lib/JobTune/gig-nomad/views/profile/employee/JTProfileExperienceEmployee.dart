@@ -46,57 +46,57 @@ class _JTProfileExperienceEmployeeState extends State<JTProfileExperienceEmploye
     return SafeArea(
       child: Scaffold(
         appBar: appBar(context, 'Stepper'),
-        body: Theme(
-          data: ThemeData(backgroundColor: appStore.scaffoldBackground),
-          child: Stepper(
-            steps: steps,
-            physics: BouncingScrollPhysics(),
-            type: StepperType.vertical,
-            currentStep: this.currStep,
-            controlsBuilder: (BuildContext context, {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) {
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: onStepContinue,
-                    child: Text('CONTINUE', style: secondaryTextStyle()),
-                  ),
-                  10.width,
-                  TextButton(
-                    onPressed: onStepCancel,
-                    child: Text('CANCEL', style: secondaryTextStyle()),
-                  ),
-                ],
-              );
-            },
-            onStepContinue: () {
-              setState(() {
-                if (currStep < steps.length - 1) {
-                  currStep = currStep + 1;
-                } else {
-                  //currStep = 0;
-                  finish(context);
-                }
-              });
-            },
-            onStepCancel: () {
-              finish(context);
-              setState(() {
-                if (currStep > 0) {
-                  currStep = currStep - 1;
-                } else {
-                  currStep = 0;
-                }
-              });
-            },
-            onStepTapped: (step) {
-              setState(() {
-                currStep = step;
-              });
-            },
-          ),
-        ),
+        // body: Theme(
+        //   data: ThemeData(backgroundColor: appStore.scaffoldBackground),
+        //   child: Stepper(
+        //     steps: steps,
+        //     physics: BouncingScrollPhysics(),
+        //     type: StepperType.vertical,
+        //     currentStep: this.currStep,
+        //     controlsBuilder: (BuildContext context, {VoidCallback? onStepContinue, VoidCallback? onStepCancel}) {
+        //       return Row(
+        //         mainAxisSize: MainAxisSize.max,
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         children: <Widget>[
+        //           TextButton(
+        //             onPressed: onStepContinue,
+        //             child: Text('CONTINUE', style: secondaryTextStyle()),
+        //           ),
+        //           10.width,
+        //           TextButton(
+        //             onPressed: onStepCancel,
+        //             child: Text('CANCEL', style: secondaryTextStyle()),
+        //           ),
+        //         ],
+        //       );
+        //     },
+        //     onStepContinue: () {
+        //       setState(() {
+        //         if (currStep < steps.length - 1) {
+        //           currStep = currStep + 1;
+        //         } else {
+        //           //currStep = 0;
+        //           finish(context);
+        //         }
+        //       });
+        //     },
+        //     onStepCancel: () {
+        //       finish(context);
+        //       setState(() {
+        //         if (currStep > 0) {
+        //           currStep = currStep - 1;
+        //         } else {
+        //           currStep = 0;
+        //         }
+        //       });
+        //     },
+        //     onStepTapped: (step) {
+        //       setState(() {
+        //         currStep = step;
+        //       });
+        //     },
+        //   ),
+        // ),
       ),
     );
   }

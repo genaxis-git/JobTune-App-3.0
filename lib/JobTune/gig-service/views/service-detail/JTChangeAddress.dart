@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
@@ -183,11 +184,11 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(5),
         child: Column(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height / 1.23,
+              height: (Platform.isIOS == true) ? MediaQuery.of(context).size.height / 1.26 : MediaQuery.of(context).size.height / 1.23,
               child: ListView(
                 children: [
                   8.height,
@@ -280,7 +281,7 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
                       allzero(ids[0]);
                     },
                     child: Container(
-                      width: MediaQuery.of(context).size.width,
+                      width: MediaQuery.of(context).size.width / 1.07,
                       decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
                       padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Center(

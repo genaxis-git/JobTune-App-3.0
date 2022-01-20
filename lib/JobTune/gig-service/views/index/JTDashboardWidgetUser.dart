@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTChangeAddress.dart';
@@ -1273,7 +1274,7 @@ class _JTNextListState extends State<JTNextList> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text("Starts at: "+clocking[index]["service_start"] + " (" + clocking[index]["package_quantity"]+" Hr)",
+                                  Text("Start: " + DateFormat('dd MMM yyyy kk:mm').format(DateTime.parse(clocking[index]["service_start"])).toString() + " (" + clocking[index]["package_quantity"]+" Hr)",
                                     style: TextStyle(
                                       fontSize: 13.0,
                                     ),),
@@ -1352,7 +1353,7 @@ class _BookingDetailState extends State<BookingDetail> {
     return ConstrainedBox(
       constraints: dynamicBoxConstraints(),
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: appStore.scaffoldBackground,
           shape: BoxShape.rectangle,
@@ -1413,8 +1414,11 @@ class _BookingDetailState extends State<BookingDetail> {
                             fontWeight: FontWeight.bold
                         ),
                       ),
-                      Text(
-                        widget.name,
+                      Flexible(
+                        child: Text(
+                          widget.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
@@ -1462,7 +1466,7 @@ class _BookingDetailState extends State<BookingDetail> {
                         ),
                       ),
                       Text(
-                        widget.start + " ( est: " + widget.hr + " Hr )",
+                        DateFormat('dd MMM yyyy kk:mm').format(DateTime.parse(widget.start)).toString()  + " ( est: " + widget.hr + " Hr )",
                       ),
                     ],
                   ),
@@ -1482,8 +1486,11 @@ class _BookingDetailState extends State<BookingDetail> {
                             fontWeight: FontWeight.bold
                         ),
                       ),
-                      Text(
-                        widget.guest,
+                      Flexible(
+                        child: Text(
+                          widget.guest,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),

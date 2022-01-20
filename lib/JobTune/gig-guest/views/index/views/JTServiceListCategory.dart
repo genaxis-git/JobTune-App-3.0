@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
+import'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
@@ -240,7 +241,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
               20.height,
               Text(' Services for Category ' + widget.searchkey, style: boldTextStyle()).paddingAll(8),
               Container(
-                height: MediaQuery.of(context).size.height - 420,
+                height: (Platform.isIOS == true) ? MediaQuery.of(context).size.height - 440 : MediaQuery.of(context).size.height - 420,
                   child: JTServiceListUser(searchkey: widget.searchkey)
               ),
               10.height,
