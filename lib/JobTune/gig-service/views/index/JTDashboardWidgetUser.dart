@@ -4,6 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:geocoding/geocoding.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTChangeAddress.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
@@ -484,14 +485,44 @@ mExpandedSheet(BuildContext context) {
       minChildSize: 0.2,
       maxChildSize: 1,
       builder: (context, scrollController) {
-        return Container(
-          color: appStore.scaffoldBackground,
-          child: GestureDetector(
-            onTap: () {
-              finish(context);
-            },
-            child: AddressList(),
-          ),
+        return Stack(
+          children: [
+            Container(
+              color: appStore.scaffoldBackground,
+              child: GestureDetector(
+                onTap: () {
+                  finish(context);
+                },
+                child: AddressList(),
+              ),
+            ),
+            Positioned(
+              bottom: 2,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => JTChangeAddressScreen(
+                            id: "0",
+                            page: "gig-index",
+                          ),
+                        ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: getColorFromHex('#87afe0'),
+                  ),
+                  child: Text(
+                    "Manage Address",
+                    style: primaryTextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     ),
@@ -632,49 +663,120 @@ class _AddressListState extends State<AddressList> {
     }
 
     return ListView.builder(
-      itemCount: addresslist == null ? 0 : addresslist.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              unselectedWidgetColor: appStore.textPrimaryColor,
-            ),
-            child: RadioListTile(
-                controlAffinity: ListTileControlAffinity.trailing,
-                secondary: Container(
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: (addresslist[index]["added_tag"] != "Home" && addresslist[index]["added_tag"] != "Work" && addresslist[index]["added_tag"] != "School" && addresslist[index]["added_tag"] != "Family")
-                      ? Image.asset(
-                          'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/pin.png',
-                        ).image
-                      : Image.asset(
-                         'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/'+addresslist[index]["added_tag"]+'.png',
-                        ).image
+        itemCount: addresslist == null ? 0 : addresslist.length,
+        itemBuilder: (BuildContext context, int index) {
+          if(index == (addresslist.length -1)){
+            return Column(
+              children: [
+                Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      unselectedWidgetColor: appStore.textPrimaryColor,
                     ),
-                    shape: BoxShape.rectangle,
+                    child: RadioListTile(
+                        controlAffinity: ListTileControlAffinity.trailing,
+                        secondary: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: (addresslist[index]["added_tag"] != "Home" && addresslist[index]["added_tag"] != "Work" && addresslist[index]["added_tag"] != "School" && addresslist[index]["added_tag"] != "Family")
+                                    ? Image.asset(
+                                  'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/pin.png',
+                                ).image
+                                    : Image.asset(
+                                  'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/'+addresslist[index]["added_tag"]+'.png',
+                                ).image
+                            ),
+                            shape: BoxShape.rectangle,
+                          ),
+                        ),
+                        title: Text(
+                          addresslist[index]["added_name"],
+                          style: boldTextStyle(),
+                        ),
+                        subtitle: Text(
+                          addresslist[index]["added_address"],
+                          style: secondaryTextStyle(),
+                        ),
+                        value: addresslist[index]["address_id"],
+                        groupValue: gender1,
+                        onChanged: (dynamic value) {
+                          _onHorizontalLoading1();
+                          allzero(addresslist[index]["address_id"]);
+                        }),
                   ),
                 ),
-                title: Text(
-                  addresslist[index]["added_city"] + ", " + addresslist[index]["added_state"],
-                  style: boldTextStyle(),
+                Card(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      unselectedWidgetColor: appStore.textPrimaryColor,
+                    ),
+                    child: RadioListTile(
+                        controlAffinity: ListTileControlAffinity.trailing,
+                        title: Text(
+                          " ",
+                          style: boldTextStyle(),
+                        ),
+                        subtitle: Text(
+                          " ",
+                          style: secondaryTextStyle(),
+                        ),
+                        value: " ",
+                        groupValue: gender1,
+                        onChanged: (dynamic value) {
+
+                        }),
+                  ),
                 ),
-                subtitle: Text(
-                  addresslist[index]["added_address"],
-                  style: secondaryTextStyle(),
+              ],
+            );
+          }
+          else{
+            return Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  unselectedWidgetColor: appStore.textPrimaryColor,
                 ),
-                value: addresslist[index]["address_id"],
-                groupValue: gender1,
-                onChanged: (dynamic value) {
-                  _onHorizontalLoading1();
-                  allzero(addresslist[index]["address_id"]);
-                }),
-          ),
-        );
-      }
+                child: RadioListTile(
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    secondary: Container(
+                      height: 30,
+                      width: 30,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: (addresslist[index]["added_tag"] != "Home" && addresslist[index]["added_tag"] != "Work" && addresslist[index]["added_tag"] != "School" && addresslist[index]["added_tag"] != "Family")
+                                ? Image.asset(
+                              'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/pin.png',
+                            ).image
+                                : Image.asset(
+                              'images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/'+addresslist[index]["added_tag"]+'.png',
+                            ).image
+                        ),
+                        shape: BoxShape.rectangle,
+                      ),
+                    ),
+                    title: Text(
+                      addresslist[index]["added_name"],
+                      style: boldTextStyle(),
+                    ),
+                    subtitle: Text(
+                      addresslist[index]["added_address"],
+                      style: secondaryTextStyle(),
+                    ),
+                    value: addresslist[index]["address_id"],
+                    groupValue: gender1,
+                    onChanged: (dynamic value) {
+                      _onHorizontalLoading1();
+                      allzero(addresslist[index]["address_id"]);
+                    }),
+              ),
+            );
+          }
+        }
     );
   }
 }

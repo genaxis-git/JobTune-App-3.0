@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
@@ -171,8 +173,11 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
                       )),
                 );
               }
-              else{
-                // other page
+              else if (widget.page == "gig-index"){
+                JTDashboardSreenUser().launch(context, isNewTask: true);
+              }
+              else if (widget.page == "home-index"){
+                JTDashboardScreenGuest().launch(context, isNewTask: true);
               }
             }
         ),
