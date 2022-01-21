@@ -454,7 +454,7 @@ class _AlertWrongPasswordState extends State<AlertWrongPassword> {
                           decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                           child: Center(
-                            child: Text("Reset Password", style: boldTextStyle(color: white)),
+                            child: Text("Reset Password", textAlign: TextAlign.center, style: boldTextStyle(color: white)),
                           ),
                         ),
                       ),
