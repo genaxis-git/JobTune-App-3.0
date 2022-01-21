@@ -297,17 +297,17 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
             SliverAppBar(
               expandedHeight: (clocking.length > 0) ? 520.0 : 240.0,
               floating: true,
-              pinned: true,
+              pinned: false,
               snap: false,
-              automaticallyImplyLeading : false,
+              automaticallyImplyLeading : true,
               backgroundColor: appStore.appBarColor,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'Featured',
-                  style: boldTextStyle(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ).visible(innerBoxIsScrolled),
+                // title: Text(
+                //   'Featured',
+                //   style: boldTextStyle(),
+                //   maxLines: 1,
+                //   overflow: TextOverflow.ellipsis,
+                // ).visible(innerBoxIsScrolled),
                 background: Container(
                   child: SingleChildScrollView(
                     child: Column(
@@ -446,15 +446,14 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                                 Text(' Standby List', style: boldTextStyle()).paddingAll(8),
                               ],
                             ),
-                            6.height,
+                            // 6.height,
                             SizedBox(
-                                height: width * 0.63,
+                                height: width * 0.598,
                                 child: JTNextList()
                             ),
                           ],
                         )
                             : Container(),
-                        Text('    Featured', style: boldTextStyle()).paddingBottom(8),
                       ],
                     ),
                   ),
@@ -919,62 +918,129 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
       padding: EdgeInsets.all(8),
       itemCount: servicelist == null ? 0 : servicelist.length,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => JTServiceDetailScreen(
-                    id: servicelist[index]["service_id"],
-                    page: "detail",
-                  )),
-            );
-          },
-          child: Container(
-            decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
-            margin: EdgeInsets.all(8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 110,
-                  width: 126,
-                  child: Stack(
+        if(index == 0){
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('    Featured', style: boldTextStyle()).paddingBottom(8),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => JTServiceDetailScreen(
+                          id: servicelist[index]["service_id"],
+                          page: "detail",
+                        )),
+                  );
+                },
+                child: Container(
+                  decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+                  margin: EdgeInsets.all(8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
-                        fit: BoxFit.cover,
+                      Container(
                         height: 110,
                         width: 126,
-                      ).cornerRadiusWithClipRRect(8),
+                        child: Stack(
+                          children: [
+                            Image.network(
+                              "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                              fit: BoxFit.cover,
+                              height: 110,
+                              width: 126,
+                            ).cornerRadiusWithClipRRect(8),
+                          ],
+                        ),
+                      ),
+                      8.width,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(servicelist[index]["name"],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                  fontSize: 17
+                              )
+                          ),
+                          3.height,
+                          DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                          13.height,
+                          DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                          5.height,
+                          Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
+                        ],
+                      ).paddingAll(8).expand(),
                     ],
                   ),
                 ),
-                8.width,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(servicelist[index]["name"],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                            fontSize: 17
-                        )
+              ),
+            ],
+          );
+        }
+        else{
+          return GestureDetector(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTServiceDetailScreen(
+                      id: servicelist[index]["service_id"],
+                      page: "detail",
+                    )),
+              );
+            },
+            child: Container(
+              decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+              margin: EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 110,
+                    width: 126,
+                    child: Stack(
+                      children: [
+                        Image.network(
+                          "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                          fit: BoxFit.cover,
+                          height: 110,
+                          width: 126,
+                        ).cornerRadiusWithClipRRect(8),
+                      ],
                     ),
-                    3.height,
-                    DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                    13.height,
-                    DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
-                    5.height,
-                    Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
-                  ],
-                ).paddingAll(8).expand(),
-              ],
+                  ),
+                  8.width,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(servicelist[index]["name"],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            // fontWeight: FontWeight.bold,
+                              fontSize: 17
+                          )
+                      ),
+                      3.height,
+                      DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                      13.height,
+                      DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                      5.height,
+                      Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
+                    ],
+                  ).paddingAll(8).expand(),
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        }
       }
     );
   }

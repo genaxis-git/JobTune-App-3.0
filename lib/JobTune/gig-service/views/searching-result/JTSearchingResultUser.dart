@@ -5,6 +5,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'dart:math';
+import'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
@@ -110,7 +111,7 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
                         ),
                       ),
                       Container(
-                          height: 610,
+                          height: (Platform.isIOS == true) ? 540 : 610,
                           child: JTServiceListUser(keyword: widget.searchkey)
                       ),
                       Container(
@@ -312,8 +313,8 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(servicelist[index]["name"],
-                            maxLines: 1,
+                        Text(servicelist[index]["service_name"],
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               // fontWeight: FontWeight.bold,
@@ -408,17 +409,17 @@ class _DisplayRateState extends State<DisplayRate> {
         (widget.rate != "0.00")
             ? JTpriceWidget(double.parse(double.parse(widget.rate).toStringAsFixed(2)))
             : (min != max)
-            ? Row(
-          children: [
-            JTpriceWidget(min),
-            Text(
-              " to ",
-              style: TextStyle(
-                fontSize: 18,
-              ),
+            ? Flexible(
+          child: Text(
+            "RM " + min.toStringAsFixed(2) + " ~ RM " + max.toStringAsFixed(2),
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              decoration: TextDecoration.none,
+              color: appStore.textPrimaryColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
-            JTpriceWidget(max),
-          ],
+          ),
         )
             : JTpriceWidget(double.parse(min.toStringAsFixed(2))),
       ],

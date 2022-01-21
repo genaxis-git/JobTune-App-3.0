@@ -381,9 +381,9 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
             SliverAppBar(
               expandedHeight: 440.0,
               floating: true,
-              pinned: true,
+              pinned: false,
               snap: false,
-              automaticallyImplyLeading : false,
+              automaticallyImplyLeading : true,
               backgroundColor: appStore.appBarColor,
               flexibleSpace: FlexibleSpaceBar(
                   background: Stack(

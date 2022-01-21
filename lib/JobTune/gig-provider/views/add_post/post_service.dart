@@ -283,6 +283,8 @@ class _PostServiceState extends State<PostService> {
   String rateperhour = "0.00";
   List choosenday = [];
   String stringList = " ";
+  var choice;
+  String style = "false";
 
   void _add(a) {
     _children =
@@ -581,8 +583,63 @@ class _PostServiceState extends State<PostService> {
                 ),
                 textInputAction: TextInputAction.next,
               ),
+              16.height,
+              Text(
+                ' Working style',
+                style: primaryTextStyle(),
+              ),
               8.height,
-              TextFormField(
+              Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Theme(
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: appStore.textPrimaryColor),
+                        child: Radio(
+                          value: 'Remote',
+                          groupValue: choice,
+                          onChanged: (dynamic value) {
+                            setState(() {
+                              choice = value;
+                              toast("$choice Selected");
+                              style = "false";
+                            });
+                          },
+                        ),
+                      ),
+                      Text('Online/ Remote/ From home', style: primaryTextStyle()),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                          unselectedWidgetColor: appStore.textPrimaryColor,
+                        ),
+                        child: Radio(
+                          value: 'Physical',
+                          groupValue: choice,
+                          onChanged: (dynamic value) {
+                            setState(() {
+                              choice = value;
+                              toast("$choice Selected");
+                              style = "true";
+                            });
+                          },
+                        ),
+                      ),
+                      Text('Physical/ On-site', style: primaryTextStyle()),
+                    ],
+                  ),
+                ],
+              ),
+              8.height,
+              (style == "true")
+                  ? TextFormField(
                 controller: locationCont,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
@@ -599,7 +656,8 @@ class _PostServiceState extends State<PostService> {
                           BorderSide(color: appStore.textSecondaryColor!)),
                 ),
                 textInputAction: TextInputAction.next,
-              ),
+              )
+                  : Container(),
               16.height,
               Text(
                 ' Availability (Day)',
