@@ -1334,7 +1334,7 @@ class _JTNextListState extends State<JTNextList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(clocking[index]["name"], style: primaryTextStyle(fontFamily: fontMedium), maxLines: 2),
+                              Text(clocking[index]["name"], style: primaryTextStyle(fontFamily: fontMedium), maxLines: 1),
                               SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
