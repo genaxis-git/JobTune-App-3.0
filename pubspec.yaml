@@ -182,6 +182,11 @@ flutter:
     - images/widgets/materialWidgets/mwInformationDisplayWidgets/cards/
     - images/widgets/materialWidgets/mwInformationDisplayWidgets/gridview/
     - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/
+    - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/pin.png
+    - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/Home.png
+    - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/Work.png
+    - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/Family.png
+    - images/widgets/materialWidgets/mwInputSelectionWidgets/Checkbox/School.png
     - images/widgets/materialWidgets/mwInputSelectionWidgets/switch/
     - images/widgets/materialWidgets/mwLayoutWidgtes/MWUserAccountDrawerHeaderWidget/
     - images/widgets/materialWidgets/mwDialogAlertPanelWidgets/
