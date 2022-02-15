@@ -76,6 +76,7 @@ dependencies:
   showcaseview: ^1.0.0
   fl_chart: ^0.36.1
   syncfusion_flutter_charts: ^19.1.67
+  flutter_phone_direct_caller: ^2.1.0
 
   # VIDEOS
   video_player: ^2.1.4

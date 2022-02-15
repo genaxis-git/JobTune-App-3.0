@@ -46,6 +46,10 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
 
   // functions starts //
 
+  var firststatus = "false";
+  var laststatus = "false";
+  var icstatus = "false";
+
   List category = [];
   String? selectedIndexCategory = 'Job category specialize/ in priority..';
   List<String> listOfCategory = ['Job category specialize/ in priority..'];
@@ -86,12 +90,13 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     });
 
     setState(() {
+      print("komi");
       fname = TextEditingController(text: profile[0]["first_name"]);
       lname = TextEditingController(text: profile[0]["last_name"]);
       nric = TextEditingController(text: profile[0]["nric"]);
       description = TextEditingController(text: profile[0]["description"]);
 
-      if(profile[0]["dob"] != "0000-00-00"){
+      if(profile[0]["dob"] != ""){
         selectedDate = DateTime.parse(profile[0]["dob"]);
       }
 
@@ -121,6 +126,16 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
       }
       else {
         img = "no profile.png";
+      }
+
+      if(profile[0]["first_name"] != ""){
+        firststatus = "true";
+      }
+      if(profile[0]["last_name"] != ""){
+        laststatus = "true";
+      }
+      if(profile[0]["nric"] != ""){
+        icstatus = "true";
       }
     });
   }
@@ -158,70 +173,73 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
-    print(fname+lname+nric+gender+race+desc+dob);
+    if(firststatus == "true" && laststatus == "true" && icstatus == "true" && selectedIndexRace != 'Choose Race..' && selectedIndexGender != 'Choose Gender..'){
+      if(category == "non"){
+        http.get(
+            Uri.parse(
+                server + "jtnew_user_updateprofile&id=" + lgid
+                    + "&fname=" + fname
+                    + "&lname=" + lname
+                    + "&telno=" + profile[0]["phone_no"]
+                    + "&nric=" + nric
+                    + "&gender=" + gender
+                    + "&race=" + race
+                    + "&desc=" + desc
+                    + "&dob=" + dob
+                    + "&address=" + profile[0]["address"]
+                    + "&city=" + profile[0]["city"]
+                    + "&state=" + profile[0]["state"]
+                    + "&postcode=" + profile[0]["postcode"]
+                    + "&country=" + profile[0]["country"]
+                    + "&ecname=" + profile[0]["ec_name"]
+                    + "&ecno=" + profile[0]["ec_phone_no"]
+                    + "&banktype=" + profile[0]["bank_type"]
+                    + "&bankno=" + profile[0]["bank_account_no"]
+                    + "&lat=" + profile[0]["location_latitude"]
+                    + "&long=" + profile[0]["location_longitude"]
+                    + "&category=" + profile[0]["category"]
+            ),
+            headers: {"Accept": "application/json"}
+        );
+      }
+      else {
+        http.get(
+            Uri.parse(
+                server + "jtnew_user_updateprofile&id=" + lgid
+                    + "&fname=" + fname
+                    + "&lname=" + lname
+                    + "&telno=" + profile[0]["phone_no"]
+                    + "&nric=" + nric
+                    + "&gender=" + gender
+                    + "&race=" + race
+                    + "&desc=" + desc
+                    + "&dob=" + dob
+                    + "&address=" + profile[0]["address"]
+                    + "&city=" + profile[0]["city"]
+                    + "&state=" + profile[0]["state"]
+                    + "&postcode=" + profile[0]["postcode"]
+                    + "&country=" + profile[0]["country"]
+                    + "&ecname=" + profile[0]["ec_name"]
+                    + "&ecno=" + profile[0]["ec_phone_no"]
+                    + "&banktype=" + profile[0]["bank_type"]
+                    + "&bankno=" + profile[0]["bank_account_no"]
+                    + "&lat=" + profile[0]["location_latitude"]
+                    + "&long=" + profile[0]["location_longitude"]
+                    + "&category=" + category
+            ),
+            headers: {"Accept": "application/json"}
+        );
+      }
 
-    if(category == "non"){
-      http.get(
-          Uri.parse(
-              server + "jtnew_user_updateprofile&id=" + lgid
-                  + "&fname=" + fname
-                  + "&lname=" + lname
-                  + "&telno=" + profile[0]["phone_no"]
-                  + "&nric=" + nric
-                  + "&gender=" + gender
-                  + "&race=" + race
-                  + "&desc=" + desc
-                  + "&dob=" + dob
-                  + "&address=" + profile[0]["address"]
-                  + "&city=" + profile[0]["city"]
-                  + "&state=" + profile[0]["state"]
-                  + "&postcode=" + profile[0]["postcode"]
-                  + "&country=" + profile[0]["country"]
-                  + "&ecname=" + profile[0]["ec_name"]
-                  + "&ecno=" + profile[0]["ec_phone_no"]
-                  + "&banktype=" + profile[0]["bank_type"]
-                  + "&bankno=" + profile[0]["bank_account_no"]
-                  + "&lat=" + profile[0]["location_latitude"]
-                  + "&long=" + profile[0]["location_longitude"]
-                  + "&category=" + profile[0]["category"]
-          ),
-          headers: {"Accept": "application/json"}
+      toast("Updated!");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
       );
     }
     else {
-      http.get(
-          Uri.parse(
-              server + "jtnew_user_updateprofile&id=" + lgid
-                  + "&fname=" + fname
-                  + "&lname=" + lname
-                  + "&telno=" + profile[0]["phone_no"]
-                  + "&nric=" + nric
-                  + "&gender=" + gender
-                  + "&race=" + race
-                  + "&desc=" + desc
-                  + "&dob=" + dob
-                  + "&address=" + profile[0]["address"]
-                  + "&city=" + profile[0]["city"]
-                  + "&state=" + profile[0]["state"]
-                  + "&postcode=" + profile[0]["postcode"]
-                  + "&country=" + profile[0]["country"]
-                  + "&ecname=" + profile[0]["ec_name"]
-                  + "&ecno=" + profile[0]["ec_phone_no"]
-                  + "&banktype=" + profile[0]["bank_type"]
-                  + "&bankno=" + profile[0]["bank_account_no"]
-                  + "&lat=" + profile[0]["location_latitude"]
-                  + "&long=" + profile[0]["location_longitude"]
-                  + "&category=" + category
-          ),
-          headers: {"Accept": "application/json"}
-      );
+      toast("Please make sure all required details are complete");
     }
-
-    toast("Updated!");
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => JTProfileScreenUser()),
-    );
   }
 
   PickedFile? _image;
@@ -373,6 +391,15 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            firststatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            firststatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -388,6 +415,15 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            laststatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            laststatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -403,6 +439,15 @@ class _JTPersonalScreenUserState extends State<JTPersonalScreenUser> {
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            icstatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            icstatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       Card(

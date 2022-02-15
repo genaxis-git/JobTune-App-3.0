@@ -58,9 +58,6 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
       if(profile[0]["profile_pic"] != "") {
         img = profile[0]["profile_pic"];
       }
-      else {
-        img = "no profile.png";
-      }
     });
   }
 
@@ -94,7 +91,7 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
         children: [
           Row(
             children: [
-              Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + img,
+              Image.network(image + img,
                   height: 70, width: 70, fit: BoxFit.cover)
                   .cornerRadiusWithClipRRect(40),
               16.width,
@@ -122,19 +119,19 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
           settingItem(context, 'My Profile', onTap: () {
             JTProfileScreenUser().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
-          settingItem(context, 'Timetable', onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => WebViewTimetableUser(id: email)),
-            );
-          }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
-          settingItem(context, 'Verify Clocking', onTap: () {
-            JTVerifyScreenUser().launch(context);
-          }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
-          settingItem(context, 'Transaction', onTap: () {
-            JTTransactionScreen().launch(context);
-          }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
+          // settingItem(context, 'Timetable', onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => WebViewTimetableUser(id: email)),
+          //   );
+          // }, leading: Icon(MaterialIcons.calendar_today), detail: SizedBox()),
+          // settingItem(context, 'Verify Clocking', onTap: () {
+          //   JTVerifyScreenUser().launch(context);
+          // }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
+          // settingItem(context, 'Transaction', onTap: () {
+          //   JTTransactionScreen().launch(context);
+          // }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
           SizedBox(height: 60),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -163,45 +160,29 @@ class _JTAccountScreenUserState extends State<JTAccountScreenUser> {
       );
     }
 
-    return Observer(
-      builder: (_) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: appStore.appBarColor,
-          title: appBarTitleWidget(context, 'My Account'),
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => JTDashboardSreenUser()),
-                );
-              }),
-        ),
-        body: ContainerX(
-          mobile: SingleChildScrollView(
-            padding: EdgeInsets.only(top: 16),
-            child: Column(
-              children: [
-                profileView(),
-                Divider(color: appDividerColor, height: 8)
-                    .paddingOnly(top: 4, bottom: 4),
-                options(),
-              ],
-            ),
-          ),
-          web: Column(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'My Account'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTDashboardSreenUser()),
+              );
+            }),
+      ),
+      body: ContainerX(
+        mobile: SingleChildScrollView(
+          padding: EdgeInsets.only(top: 16),
+          child: Column(
             children: [
               profileView(),
-              Divider(height: 8).paddingOnly(top: 4, bottom: 4),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: options(),
-                  ),
-                ],
-              )
+              Divider(color: appDividerColor, height: 8)
+                  .paddingOnly(top: 4, bottom: 4),
+              options(),
             ],
           ),
         ),

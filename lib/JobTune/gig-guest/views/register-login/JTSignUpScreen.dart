@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -54,7 +55,12 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
     });
 
     if(user.length == 0){
-      smtp(email, pass);
+      sendEmail(
+          name: email.split("@")[0],
+          email: email,
+          password: pass,
+      );
+      // smtp(email, pass);
     }
     else if(user.length > 0){
       showInDialog(context,
@@ -63,22 +69,60 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
     }
   }
 
+  Future sendEmail({
+    required String name,
+    required String email,
+    required String password,
+} ) async {
+      final serviceId = 'service_vr4mj1n';
+      final templateId = 'template_dnadj2a';
+      final userId = 'user_R4UwCbpcOLg9WlTrh4RuS';
+
+      final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+      final response = await http.post(
+          url,
+          headers: {
+            'origin': 'http://localhost',
+            'Content-Type': 'application/json',
+          },
+          body: json.encode({
+            'service_id': serviceId,
+            'template_id' : templateId,
+            'user_id': userId,
+            'template_params': {
+              'to_name': name,
+              'to_email': email,
+              'hostname': 'bobdomo.com/jobtuneai/JobTune',
+            }
+          })
+      );
+
+      print('sent');
+      print(response.body);
+
+      var formattedDate = DateTime.now().toString().split(".")[0];
+
+      register(email, password, formattedDate);
+  }
+
   Future<void> smtp(email, pass) async{
     http.get(
         Uri.parse(
-            server + "jt_mail&jemail=" + email + "&host=jobtune.ai"),
+            server + "jt_mail&jemail=" + email + "&host=bobdomo.com/jobtuneai/JobTune"),
         headers: {"Accept": "application/json"}
     );
 
-    register(email, pass);
+    var formattedDate = DateTime.now().toString().split(".")[0];
+
+    register(email, pass, formattedDate);
   }
 
-  Future<void> register(email, pass) async {
+  Future<void> register(email, pass, formattedDate) async {
     toast("Sign Up succeed!");
 
     http.get(
         Uri.parse(
-            server + "jtnew_signups&jemail=" + email + '&jpassword=' + pass),
+            server + "jtnew_signups&jemail=" + email + '&jpassword=' + pass + '&jtime=' + formattedDate),
         headers: {"Accept": "application/json"}
     );
 
@@ -251,6 +295,10 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                                     fontSize: 15
                                 ),
                               ),
+                            ],
+                          ),
+                          Row(
+                            children: [
                               GestureDetector(
                                 child: Text(
                                     "Terms & Conditions",
@@ -265,16 +313,16 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                                 //   ),
                                 // ),
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
                               Text(
-                                "and the ",
+                                " and the ",
                                 style: TextStyle(
                                     fontSize: 15
                                 ),
                               ),
+                            ],
+                          ),
+                          Row(
+                            children: [
                               GestureDetector(
                                 child: Text(
                                     "Privacy Policy.",
@@ -293,8 +341,6 @@ class _JTSignUpScreenState extends State<JTSignUpScreen> {
                           ),
                         ],
                       ),
-
-
                       value: _isSelected_agree,
                       onChanged: (newValue) {
                         setState(() {
@@ -384,7 +430,7 @@ class _AlertAgreeState extends State<AlertAgree> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/termscond.jpg",
+                      mobile + "resized/termscond.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -478,7 +524,7 @@ class _AlertRegisteredBeforeState extends State<AlertRegisteredBefore> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
+                      mobile + "resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

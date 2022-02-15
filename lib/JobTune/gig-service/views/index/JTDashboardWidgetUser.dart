@@ -46,6 +46,8 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
     final String lgid = prefs.getString('email').toString();
 
     if(lgid != "null") {
+      print("hello");
+      print(server + "jtnew_user_selectprofile&lgid=" + lgid);
       http.Response response = await http.get(
           Uri.parse(
               server + "jtnew_user_selectprofile&lgid=" + lgid),
@@ -64,6 +66,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
       }
     }
     else {
+      print("hello");
       readCategory();
     }
   }
@@ -313,7 +316,8 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Card(
+                        (displaystatus == true)
+                        ? Card(
                           child: InkWell(
                             onTap: (){
                               mExpandedSheet(context);
@@ -357,7 +361,8 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                               ),
                             ),
                           ),
-                        ),
+                        )
+                        : SizedBox(height: 5,),
                         Stack(
                           children: [
                             Column(

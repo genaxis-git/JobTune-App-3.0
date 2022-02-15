@@ -4,6 +4,7 @@ import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import 'JTDashboardWidgetGuest.dart';
+import 'JTDrawerGSOnly.dart';
 import 'JTDrawerWidgetGuest.dart';
 
 
@@ -62,7 +63,8 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
             backgroundColor: appStore.appBarColor,
             title: appBarTitleWidget(context, greet),
           ),
-          drawer: JTDrawerWidgetGuest(),
+          // drawer: JTDrawerWidgetGuest(),
+          drawer: JTDrawerGSOnlyWidgetUser(),
           body: JTDashboardWidgetGuest(),
         ),
       ),

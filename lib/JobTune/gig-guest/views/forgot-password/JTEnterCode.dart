@@ -42,12 +42,17 @@ class _JTEnterCodeState extends State<JTEnterCode> {
     
     if(user.length > 0){
       if(user[0]["password"].split("").length == 6){
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => JTResetPasswordScreen(id: email)
-          ),
-        );
+        if(user[0]["password"] == pass){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => JTResetPasswordScreen(id: email)
+            ),
+          );
+        }
+        else{
+          toast("Wrong code. Please try again.");
+        }
       }
       else{
         showInDialog(context,

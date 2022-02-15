@@ -44,6 +44,8 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
   double newcount = 0.0;
   double newprovider = 0.0;
   Future<void> readLogin(email, pass) async{
+    print("hello");
+    print(server + "jtnew_selectlogins&lgid=" + email);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_selectlogins&lgid=" + email),
@@ -296,7 +298,7 @@ class _AlertVerifyEmailState extends State<AlertVerifyEmail> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/warn.jpg",
+                      mobile + "resized/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -388,7 +390,7 @@ class _AlertWrongPasswordState extends State<AlertWrongPassword> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
+                      mobile + "resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),
@@ -516,7 +518,7 @@ class _AlertNotRegisteredState extends State<AlertNotRegistered> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
+                      mobile + "resized/rsz_database.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

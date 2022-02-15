@@ -39,6 +39,11 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
 
 // functions starts //
 
+  String fullstatus = "false";
+  String postcodestatus = "false";
+  String citystatus = "false";
+  String countrystatus = "false";
+
   List profile = [];
   String email = " ";
   Future<void> readProfile() async {
@@ -67,6 +72,22 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
       }
       else{
         selectedIndexState = profile[0]["state"];
+      }
+
+      if(profile[0]["address"] != ""){
+        fullstatus = "true";
+      }
+
+      if(profile[0]["city"] != ""){
+        citystatus = "true";
+      }
+
+      if(profile[0]["postcode"] != ""){
+        postcodestatus = "true";
+      }
+
+      if(profile[0]["country"] != ""){
+        countrystatus = "true";
       }
     });
   }
@@ -106,8 +127,25 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
         headers: {"Accept": "application/json"}
     );
 
-    addAddress(full,postcode,city,country,state);
+    if(full == profile[0]["address"] && postcode == profile[0]["postcode"] && city == profile[0]["city"] && state == profile[0]["state"] && country == profile[0]["country"]){
+      addAddress(full,postcode,city,country,state);
+    }
+    else {
+      allzero(full,postcode,city,country,state);
+    }
+  }
 
+  Future<void> allzero(full,postcode,city,country,state) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_updatealladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    addAddress(full,postcode,city,country,state);
   }
 
   Future<void> addAddress(full,postcode,city,country,state) async {
@@ -123,7 +161,10 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                 + "&state=" + state
                 + "&country=" + country
                 + "&name=" + profile[0]["first_name"] + " " + profile[0]["last_name"]
+                + "&email=" + profile[0]["email"]
+                + "&telno=" + profile[0]["phone_no"]
                 + "&tag=Home"
+                + "&status=1"
         ),
         headers: {"Accept": "application/json"}
     );
@@ -205,6 +246,15 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            fullstatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            fullstatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -221,6 +271,15 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            postcodestatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            postcodestatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -237,6 +296,15 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            citystatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            citystatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       Container(
@@ -288,6 +356,15 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            countrystatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            countrystatus = "true";
+                          }
+                        },
                       ),
                       40.height,
                       Container(
@@ -296,10 +373,15 @@ class _JTAddressScreenUserState extends State<JTAddressScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        if(selectedIndexState.toString() != 'Choose State'){
+                        if(selectedIndexState.toString() != 'Choose State..'){
                           pickedstate = selectedIndexState.toString();
                         }
-                        updateProfile(full.text,postcode.text,city.text,country.text,pickedstate);
+                        if(selectedIndexState.toString() != 'Choose State..' && fullstatus != "false" && postcodestatus != "false" && citystatus != "false" && countrystatus != "false"){
+                          updateProfile(full.text,postcode.text,city.text,country.text,pickedstate);
+                        }
+                        else{
+                          toast("Please make sure all required details are complete.");
+                        }
                       }),
                       20.height,
                     ],

@@ -13,6 +13,7 @@ import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTAddressScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
 import '../index/JTDrawerWidget.dart';
@@ -20,6 +21,7 @@ import '../index/JTProductDetailWidget.dart';
 import '../index/JTReviewScreenUser.dart';
 import 'JTChangeAddress.dart';
 import 'JTCheckSlotScreen.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 bool package = true;
 
@@ -371,6 +373,28 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       );
   }
 
+  void _launchCaller() async {
+    const url = "tel:0163929098" ;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _makeSocialMediaRequest(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _callNumber() async{
+    var number = provider[0]["phone_no"]; //set the number here
+    await FlutterPhoneDirectCaller.callNumber(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget checkCalendar() {
@@ -421,6 +445,22 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       });
     }
 
+    Widget callNow() {
+      return Container(
+        height: 50,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        alignment: Alignment.center,
+        width: context.width() / 2,
+        decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
+        child: Text('Call Provider', style: boldTextStyle(color: white)),
+      ).onTap(() {
+        // Do your logic
+        //FOR PHONE NUMBER:
+        final Uri _phoneLaunchUri = Uri(scheme: 'tel', path: provider[0]["phone_no"]);
+        _makeSocialMediaRequest(_phoneLaunchUri.toString());
+      });
+    }
+
     Widget loginBtn() {
       return Container(
         height: 50,
@@ -445,13 +485,13 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         children: [
           checkCalendar(),
           (email != "null")
-          ? buyNowBtn()
+          ? callNow()
           : loginBtn(),
 
         ],
       );
     }
-    print("email"+email);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
@@ -475,7 +515,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                   Container(
                     height: context.height() * 0.45,
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/img/" + img,
+                      image + img,
                       width: context.width(),
                       height: context.height() * 0.45,
                       fit: BoxFit.cover,
@@ -516,45 +556,45 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                         10.height,
                         Row(
                           children: [
-                            (double.parse(averagerate).toStringAsFixed(1) != "0.0")
-                            ? Container(
-                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.star_border, color: Colors.white, size: 14),
-                                  8.width,
-                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                                ],
-                              ),
-                            ).onTap(() {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
-                              );
-                            })
-                            : Container(
-                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.star_border, color: Colors.white, size: 14),
-                                  8.width,
-                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                                ],
-                              ),
-                            ),
-                            8.width,
-                            (totalrating != "0")
-                            ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
-                              );
-                            })
-                            : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
+                            // (double.parse(averagerate).toStringAsFixed(1) != "0.0")
+                            // ? Container(
+                            //   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                            //   padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.star_border, color: Colors.white, size: 14),
+                            //       8.width,
+                            //       Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                            //     ],
+                            //   ),
+                            // ).onTap(() {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => JTReviewScreenUser(id: widget.id)),
+                            //   );
+                            // })
+                            // : Container(
+                            //   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                            //   padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                            //   child: Row(
+                            //     children: [
+                            //       Icon(Icons.star_border, color: Colors.white, size: 14),
+                            //       8.width,
+                            //       Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                            //     ],
+                            //   ),
+                            // ),
+                            // 8.width,
+                            // (totalrating != "0")
+                            // ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => JTReviewScreenUser(id: widget.id)),
+                            //   );
+                            // })
+                            // : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
                           ],
                         ),
                       ],
@@ -570,28 +610,28 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Please come to', style: primaryTextStyle()),
-                                      10.width,
-                                      Text('[ add receiver ]', style: boldTextStyle()).expand(),
-                                    ],
-                                  ).expand(),
-                                  Container(
-                                    padding: EdgeInsets.all(4),
-                                    decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
-                                    child: Text('Add address', style: primaryTextStyle()),
-                                  ).onTap(() async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => JTChangeAddressScreen(
-                                            id: widget.id,
-                                            page: widget.page,
-                                          ),
-                                        ));
-                                  }),
+                                  // Row(
+                                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     Text('Please come to', style: primaryTextStyle()),
+                                  //     10.width,
+                                  //     Text('[ add receiver ]', style: boldTextStyle()).expand(),
+                                  //   ],
+                                  // ).expand(),
+                                  // Container(
+                                  //   padding: EdgeInsets.all(4),
+                                  //   decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                                  //   child: Text('Add address', style: primaryTextStyle()),
+                                  // ).onTap(() async {
+                                  //   Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) => JTChangeAddressScreen(
+                                  //           id: widget.id,
+                                  //           page: widget.page,
+                                  //         ),
+                                  //       ));
+                                  // }),
                                 ],
                               ),
                               4.height,
@@ -603,37 +643,37 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           : Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Please come to', style: primaryTextStyle()),
-                                      10.width,
-                                      Text(fullname, style: boldTextStyle()).expand(),
-                                    ],
-                                  ).expand(),
-                                  Container(
-                                    padding: EdgeInsets.all(4),
-                                    decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
-                                    child: Text('Change', style: primaryTextStyle()),
-                                  ).onTap(() async {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => JTChangeAddressScreen(
-                                            id: widget.id,
-                                            page: widget.page,
-                                          ),
-                                        ));
-                                  }),
-                                ],
-                              ),
-                              4.height,
-                              Text(address, style: secondaryTextStyle()),
-                              16.height,
-                              Divider(height: 0),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     Row(
+                              //       crossAxisAlignment: CrossAxisAlignment.start,
+                              //       children: [
+                              //         Text('Please come to', style: primaryTextStyle()),
+                              //         10.width,
+                              //         Text(fullname, style: boldTextStyle()).expand(),
+                              //       ],
+                              //     ).expand(),
+                              //     Container(
+                              //       padding: EdgeInsets.all(4),
+                              //       decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                              //       child: Text('Change', style: primaryTextStyle()),
+                              //     ).onTap(() async {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //             builder: (context) => JTChangeAddressScreen(
+                              //               id: widget.id,
+                              //               page: widget.page,
+                              //             ),
+                              //           ));
+                              //     }),
+                              //   ],
+                              // ),
+                              // 4.height,
+                              // Text(address, style: secondaryTextStyle()),
+                              // 16.height,
+                              // Divider(height: 0),
                             ],
                           ),
                           Padding(
@@ -1146,7 +1186,7 @@ class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
                 children: [
                   Container(
                     child: Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/warn.jpg",
+                      "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/mobile/warn.jpg",
                       width: context.width() * 0.70,
                       fit: BoxFit.cover,
                     ),

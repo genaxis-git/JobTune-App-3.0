@@ -31,6 +31,9 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
 
   var bankno = TextEditingController();
 
+  String bankstatus = "false";
+  String accstatus = "false";
+
 // functions starts //
 
   List profile = [];
@@ -153,6 +156,15 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            bankstatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            bankstatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       Container(
@@ -199,7 +211,12 @@ class _JTBankScreenProviderState extends State<JTBankScreenProvider> {
                         if(selectedIndexBank.toString() != 'Bank Name..'){
                           pickedbank = selectedIndexBank.toString();
                         }
-                        updateProfile(bankno.text,pickedbank);
+                        if(bankstatus != "false" && selectedIndexBank.toString() != 'Bank Name..'){
+                          updateProfile(bankno.text,pickedbank);
+                        }
+                        else{
+                          toast("Please make sure all required details are completed.");
+                        }
                       }),
                       20.height,
                     ],

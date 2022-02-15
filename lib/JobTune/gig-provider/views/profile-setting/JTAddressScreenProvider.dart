@@ -35,6 +35,11 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
   var city = TextEditingController();
   var country = TextEditingController();
 
+  String fullstatus = "false";
+  String postcodestatus = "false";
+  String citystatus = "false";
+  String countrystatus = "false";
+
 // functions starts //
 
   List profile = [];
@@ -92,6 +97,8 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                 + "&bankno=" + profile[0]["bank_acc_no"]
                 + "&lat=" + latitude.toString()
                 + "&long=" + longitude.toString()
+                + "&ecname=" + profile[0]["emergency_name"]
+                + "&ecno=" + profile[0]["emergency_no"]
         ),
         headers: {"Accept": "application/json"}
     );
@@ -165,6 +172,15 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            fullstatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            fullstatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -181,6 +197,15 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            postcodestatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            postcodestatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -197,6 +222,15 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            citystatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            citystatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       Container(
@@ -248,6 +282,15 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            countrystatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            countrystatus = "true";
+                          }
+                        },
                       ),
                       40.height,
                       Container(
@@ -256,10 +299,15 @@ class _JTAddressScreenProviderState extends State<JTAddressScreenProvider> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        if(selectedIndexState.toString() != 'Choose State'){
+                        if(selectedIndexState.toString() != 'Choose State..'){
                           pickedstate = selectedIndexState.toString();
                         }
-                        updateProfile(full.text,postcode.text,city.text,country.text,pickedstate);
+                        if(fullstatus != "false" && postcodestatus != "false" && citystatus != "false" && countrystatus != "false" && selectedIndexState.toString() != 'Choose State..'){
+                          updateProfile(full.text,postcode.text,city.text,country.text,pickedstate);
+                        }
+                        else{
+                          toast("Please make sure all required details are completed.");
+                        }
                       }),
                       20.height,
                     ],

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
@@ -84,22 +85,34 @@ class _PostServiceState extends State<PostService> {
   Future<void> insertService(days, starts, ends, title, category, by, rate, desc, location, fee) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
-    http.get(
-        Uri.parse(
-            server + "jtnew_provider_insertservice&proid=" + lgid
-                + '&name=' + title
-                + '&category=' + category
-                + '&by=' + by
-                + '&rate=' + rate
-                + '&desc=' + desc
-                + '&days=' + days
-                + '&starts=' + starts
-                + '&ends=' + ends
-                + '&location=' + location
-                + '&fee=' + fee
-        ),
-        headers: {"Accept": "application/json"}
-    );
+
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd hh:mm:ss');
+    String formattedDate = formatter.format(now);
+
+    if(choice != null){
+      http.get(
+          Uri.parse(
+              server + "jtnew_provider_insertservice&proid=" + lgid
+                  + '&name=' + title
+                  + '&category=' + category
+                  + '&by=' + by
+                  + '&rate=' + rate
+                  + '&desc=' + desc
+                  + '&days=' + days
+                  + '&starts=' + starts
+                  + '&ends=' + ends
+                  + '&location=' + location
+                  + '&fee=' + fee
+                  + '&type=' + choice.toString()
+                  + '&addtime=' + formattedDate.toString()
+          ),
+          headers: {"Accept": "application/json"}
+      );
+    }
+    else{
+      toast("Please choose your working style");
+    }
 
     readlatestService(by);
   }
@@ -261,6 +274,10 @@ class _PostServiceState extends State<PostService> {
     if (pickedOUT != null)
       setState(() {
         selectedTimeOUT = pickedOUT;
+
+        if(selectedTimeOUT.hour < selectedTimeIN.hour){
+          toast("Error: please check Start Shift.");
+        }
       });
   }
 
@@ -973,20 +990,20 @@ class _PostServiceState extends State<PostService> {
                   //     controlAffinity: ListTileControlAffinity.leading,
                   //   ),
                   // ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          "We would like to inform you that a sum of RM "+insurancefee+" will be deducted from the total amount of payment you will receive each time as your insurance fee.",
-                          maxLines: 4,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Flexible(
+                  //       child: Text(
+                  //         "We would like to inform you that a sum of RM "+insurancefee+" will be deducted from the total amount of payment you will receive each time as your insurance fee.",
+                  //         maxLines: 4,
+                  //         overflow: TextOverflow.clip,
+                  //         style: TextStyle(
+                  //           fontSize: 15,
+                  //         ),
+                  //       ),
+                  //     )
+                  //   ],
+                  // ),
                 ],
               )
               : Container(),
@@ -1077,23 +1094,50 @@ class _PostServiceState extends State<PostService> {
                    var ends = hrout+":"+minout+":00";
 
                    if(selectedTimeOUT.hour > selectedTimeIN.hour) {
-                     if(titleCont.text == "" || descCont.text == "" || locationCont.text == "" || stringList == "") {
-                       toast("Form not complete");
-                     }
-                     else {
-                       if(selectedIndexCategory != 'Category') {
-                         if(selectedRateBy == 'Hour') {
-                           rateperhour = rateCont.text;
-                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
+                     if(choice != null){
+                       if(choice == "Online"){
+                         if(titleCont.text == "" || descCont.text == "" || stringList == "") {
+                           toast("Form not complete");
                          }
                          else {
-                           rateperhour = "0.00";
-                           insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
+                           if(selectedIndexCategory != 'Category') {
+                             if(selectedRateBy == 'Hour') {
+                               rateperhour = rateCont.text;
+                               insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,"Online/ Remote/ From home",insurancefee);
+                             }
+                             else {
+                               rateperhour = "0.00";
+                               insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,"Online/ Remote/ From home",insurancefee);
+                             }
+                           }
+                           else{
+                             toast("Please choose service category first.");
+                           }
                          }
                        }
                        else{
-                         toast("Please choose service category first.");
+                         if(titleCont.text == "" || descCont.text == "" || locationCont.text == "" || stringList == "") {
+                           toast("Form not complete");
+                         }
+                         else {
+                           if(selectedIndexCategory != 'Category') {
+                             if(selectedRateBy == 'Hour') {
+                               rateperhour = rateCont.text;
+                               insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
+                             }
+                             else {
+                               rateperhour = "0.00";
+                               insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
+                             }
+                           }
+                           else{
+                             toast("Please choose service category first.");
+                           }
+                         }
                        }
+                     }
+                     else{
+                       toast("Form not completed");
                      }
                    }
                    else {

@@ -89,7 +89,6 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
-    print("ini:"+server + "jtnew_user_selectalladdress&id=" + lgid);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectalladdress&id=" + lgid),
@@ -202,7 +201,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
               colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Home.jpg'),
+              image: NetworkImage(image + 'category/Home.jpg'),
               height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -222,7 +221,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
               colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Religious.jpg'),
+              image: NetworkImage(image + 'category/Religious.jpg'),
               height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -242,7 +241,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
               colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Baby Sitting.jpg'),
+              image: NetworkImage(image + 'category/Baby Sitting.jpg'),
               height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -262,7 +261,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
               colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Photographer.jpg'),
+              image: NetworkImage(image + 'category/Photographer.jpg'),
               height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -282,7 +281,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Mobile Salon.jpg'),
+            image: NetworkImage(image + 'category/Mobile Salon.jpg'),
             height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -302,7 +301,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Kitchen Assistant.jpg'),
+            image: NetworkImage(image + 'category/Kitchen Assistant.jpg'),
             height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -322,7 +321,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
               colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-              image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Lawn Mowing.jpg'),
+              image: NetworkImage(image + 'category/Lawn Mowing.jpg'),
               height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -342,7 +341,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         children: [
           Ink.image(
             colorFilter: ColorFilter.mode(Colors.grey, BlendMode.multiply),
-            image: NetworkImage('https://jobtune.ai/gig/JobTune/assets/img/category/Data Entry.jpg'),
+            image: NetworkImage(image + 'category/Data Entry.jpg'),
             height: isMobile ? 180 : 350,
               fit: BoxFit.cover
           ),
@@ -400,7 +399,8 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Card(
+                              (displaystatus == "true")
+                              ? Card(
                                 child: InkWell(
                                   onTap: (){
                                     mExpandedSheet(context);
@@ -444,7 +444,8 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                                     ),
                                   ),
                                 ),
-                              ),
+                              )
+                              : SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -529,8 +530,17 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
-                              Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)),
+                              // Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
+                              Text(' Service Listing', style: boldTextStyle()).paddingAll(8),
+                              Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
+                                appStore.setDrawerItemIndex(-1);
+
+                                if (isMobile) {
+                                  JTDashboardSreenUser().launch(context, isNewTask: true);
+                                } else {
+                                  //                                  DTDashboardScreen().launch(context, isNewTask: true);
+                                }
+                              }),
                             ],
                           ),
                         ],

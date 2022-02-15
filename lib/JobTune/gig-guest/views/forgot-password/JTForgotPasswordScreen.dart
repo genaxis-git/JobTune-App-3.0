@@ -38,6 +38,42 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
         backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
   }
 
+  Future sendEmail({
+    required String email,
+    required String code,
+  } ) async {
+    final serviceId = 'service_fdp7v11';
+    final templateId = 'template_wntkn36';
+    final userId = 'user_h1Lfo3VnB06ve6A2TnW3Q';
+
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(
+        url,
+        headers: {
+          'origin': 'http://localhost',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'service_id': serviceId,
+          'template_id' : templateId,
+          'user_id': userId,
+          'template_params': {
+            'to_name': email.split("@")[0],
+            'to_email': email,
+            'digits': code,
+            'hostname': 'bobdomo.com/jobtuneai/JobTune',
+          }
+        })
+    );
+
+    print('sent');
+    print(response.body);
+
+    showInDialog(context,
+        child: AlertForgotPassword(),
+        backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +159,11 @@ class _JTForgotPasswordScreenState extends State<JTForgotPasswordScreen> {
                       }
 
                       if(emailstatus == "true"){
-                        sendingCode(emailCont.text,next.toInt().toString());
+                        // sendingCode(emailCont.text,next.toInt().toString());
+                        sendEmail(
+                          email: emailCont.text,
+                          code: next.toInt().toString(),
+                        );
                       }
                       else{
                         toast("Key-in your email first.");
@@ -214,7 +254,7 @@ class _AlertForgotPasswordState extends State<AlertForgotPassword> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => JTSignInScreen()),
+                            builder: (context) => JTEnterCode()),
                       );
                     },
                     child: Container(

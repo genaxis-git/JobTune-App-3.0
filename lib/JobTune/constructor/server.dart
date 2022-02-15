@@ -1,5 +1,6 @@
 //server URL - production
-final server = "https://jobtune.ai/REST/API/index.php?interface=";
+// final server = "https://jobtune.ai/REST/API/index.php?interface=";
+final server = "https://bobdomo.com/jobtuneai/JobTune/REST/API/index.php?interface=";
 
 //server URL - dev
 final dev =
@@ -14,7 +15,9 @@ final devserver =
     "http://jobtune-dev.my1.cloudapp.myiacloud.com/REST/API/index.php?interface=";
 
 //server img - production
-final image = "https://jobtune.ai/gig/JobTune/assets/img/";
+// final image = "https://jobtune.ai/gig/JobTune/assets/img/";
+final image = "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/img/";
+final mobile = "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/mobile/";
 
 //server img - dev
 final imagedev =

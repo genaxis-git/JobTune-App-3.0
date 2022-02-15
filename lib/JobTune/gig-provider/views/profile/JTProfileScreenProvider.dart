@@ -6,9 +6,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountServiceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTAddressScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTBankScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTContactScreenProvider.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTEmergencyScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTPersonalScreenProvider.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTAddressScreenUser.dart';
@@ -39,6 +41,8 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
   String banktype = " ";
   String bankno = " ";
   String desc = " ";
+  String ecname = " ";
+  String ecno = " ";
   String img = "no profile.png";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -63,6 +67,8 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
       address = profile[0]["address"];
       banktype = profile[0]["bank_type"];
       bankno = profile[0]["bank_acc_no"];
+      ecname = profile[0]["emergency_name"] ;
+      ecno = profile[0]["emergency_no"] ;
 
       if(profile[0]["profile_pic"] != "") {
         img = profile[0]["profile_pic"];
@@ -154,7 +160,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => JTAccountScreenUsers()),
+                  MaterialPageRoute(builder: (context) => JTAccountServiceScreen()),
                 );
               }
           ),
@@ -203,66 +209,67 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                               ),
                               Padding(
                                 padding: EdgeInsets.all(16),
-                                child: Divider(color: Color(0XFFDADADA), height: 0.5),
+                                // child: Divider(color: Color(0XFFDADADA), height: 0.5),
+                                child: Divider(color: Colors.white, height: 0.5),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          totaldone + " / " + totalnotdone,
-                                          style: TextStyle(
-                                            color: Colors.blueAccent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            letterSpacing: 1,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5,),
-                                        Text(
-                                          "Served",
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 16,
-                                              letterSpacing: 1,
-                                              fontFamily: 'Medium'
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          spending,
-                                          style: TextStyle(
-                                            color: Colors.blueAccent,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                            letterSpacing: 1,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5,),
-                                        Text(
-                                          "Received\n(RM)",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: 16,
-                                              letterSpacing: 1,
-                                              fontFamily: 'Medium'
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              //   children: <Widget>[
+                              //     Padding(
+                              //       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
+                              //       child: Column(
+                              //         children: [
+                              //           Text(
+                              //             totaldone + " / " + totalnotdone,
+                              //             style: TextStyle(
+                              //               color: Colors.blueAccent,
+                              //               fontWeight: FontWeight.bold,
+                              //               fontSize: 20,
+                              //               letterSpacing: 1,
+                              //             ),
+                              //           ),
+                              //           SizedBox(height: 5,),
+                              //           Text(
+                              //             "Served",
+                              //             style: TextStyle(
+                              //                 color: Colors.black54,
+                              //                 fontSize: 16,
+                              //                 letterSpacing: 1,
+                              //                 fontFamily: 'Medium'
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //     Padding(
+                              //       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
+                              //       child: Column(
+                              //         children: [
+                              //           Text(
+                              //             spending,
+                              //             style: TextStyle(
+                              //               color: Colors.blueAccent,
+                              //               fontWeight: FontWeight.bold,
+                              //               fontSize: 20,
+                              //               letterSpacing: 1,
+                              //             ),
+                              //           ),
+                              //           SizedBox(height: 5,),
+                              //           Text(
+                              //             "Received\n(RM)",
+                              //             textAlign: TextAlign.center,
+                              //             style: TextStyle(
+                              //                 color: Colors.black54,
+                              //                 fontSize: 16,
+                              //                 letterSpacing: 1,
+                              //                 fontFamily: 'Medium'
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               SizedBox(height: 16),
                             ],
                           ),
@@ -272,7 +279,7 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         margin: EdgeInsets.symmetric(horizontal: 16.0),
                         alignment: FractionalOffset.center,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
+                          backgroundImage: NetworkImage(image + img),
                           radius: 50,
                         ),
                       ),
@@ -412,13 +419,13 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            jtprofile_rowHeading("BANK INFORMATION"),
+                            jtprofile_rowHeading("EMERGENCY CONTACT"),
                             IconButton(
                               icon: Icon(AntDesign.edit, color: Colors.black,),
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => JTBankScreenProvider()),
+                                  MaterialPageRoute(builder: (context) => JTAccountServiceProvider(id:"Provider")),
                                 );
                               },
                             ),
@@ -426,9 +433,9 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         ),
                         SizedBox(height: 10),
                         jtprofile_profileText(
-                            (banktype == "")
-                                ? "Bank Type.."
-                                : banktype
+                            (ecname == "")
+                                ? "Guardian Name.."
+                                : ecname
                         ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
@@ -436,15 +443,60 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
                         ),
                         SizedBox(height: 8),
                         jtprofile_profileText(
-                            (bankno == "")
-                                ? "Account No.."
-                                : bankno
+                            (ecno == "")
+                                ? "Guardian Phone No.."
+                                : ecno
                         ),
                         SizedBox(height: 8),
                       ],
                     ),
                   ),
                 ),
+                // SizedBox(height: 8),
+                // Container(
+                //   margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                //   decoration: jtprofile_boxDecoration(bgColor: appStore.scaffoldBackground, radius: 10, showShadow: true),
+                //   child: Padding(
+                //     padding: EdgeInsets.all(8.0),
+                //     child: Column(
+                //       children: <Widget>[
+                //         SizedBox(height: 8),
+                //         Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             jtprofile_rowHeading("BANK INFORMATION"),
+                //             IconButton(
+                //               icon: Icon(AntDesign.edit, color: Colors.black,),
+                //               onPressed: () {
+                //                 Navigator.push(
+                //                   context,
+                //                   MaterialPageRoute(builder: (context) => JTBankScreenProvider()),
+                //                 );
+                //               },
+                //             ),
+                //           ],
+                //         ),
+                //         SizedBox(height: 10),
+                //         jtprofile_profileText(
+                //             (banktype == "")
+                //                 ? "Bank Type.."
+                //                 : banktype
+                //         ),
+                //         Padding(
+                //           padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                //           child: jtprofile_view(),
+                //         ),
+                //         SizedBox(height: 8),
+                //         jtprofile_profileText(
+                //             (bankno == "")
+                //                 ? "Account No.."
+                //                 : bankno
+                //         ),
+                //         SizedBox(height: 8),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 16),
               ],
             ),

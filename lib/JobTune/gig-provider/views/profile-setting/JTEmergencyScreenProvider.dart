@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-nomad/views/profile/employee/JTProfileScreenEmployee.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTProfileSettingWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
@@ -14,25 +13,28 @@ import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidget
 import '../../../../main.dart';
 
 
-class JTContactScreenProvider extends StatefulWidget {
+class JTAccountServiceProvider extends StatefulWidget {
+  const JTAccountServiceProvider({Key? key, required this.id}) : super(key: key);
+  final String id;
   @override
-  _JTContactScreenProviderState createState() => _JTContactScreenProviderState();
+  _JTAccountServiceProviderState createState() => _JTAccountServiceProviderState();
 }
 
-class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
+class _JTAccountServiceProviderState extends State<JTAccountServiceProvider> {
   bool obscureText = true;
   bool autoValidate = false;
   var formKey = GlobalKey<FormState>();
 
-  var phoneno = TextEditingController();
-  var emails = TextEditingController();
+  var names = TextEditingController();
+  var telnos = TextEditingController();
 
-  String telnostatus = "false";
+  String namestatus = "false";
+  String nostatus = "false";
 
-  // functions starts //
+// functions starts //
 
   List profile = [];
-  String lgemail = " ";
+  String email = " ";
   Future<void> readProfile() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
@@ -44,17 +46,17 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
     );
 
     this.setState(() {
-      lgemail = lgid;
+      email = lgid;
       profile = json.decode(response.body);
     });
 
     setState(() {
-      phoneno = TextEditingController(text: profile[0]["phone_no"]);
-      emails = TextEditingController(text: profile[0]["email"]);
+      names = TextEditingController(text: profile[0]["emergency_name"]);
+      telnos = TextEditingController(text: profile[0]["emergency_no"]);
     });
   }
 
-  Future<void> updateProfile(telno) async {
+  Future<void> updateProfile(names,telnos) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
@@ -63,7 +65,7 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
             server + "jtnew_provider_updateprofile&id=" + lgid
                 + "&names=" + profile[0]["name"]
                 + "&type=" + profile[0]["industry_type"]
-                + "&telno=" + telno
+                + "&telno=" + profile[0]["phone_no"]
                 + "&desc=" + profile[0]["description"]
                 + "&address=" + profile[0]["address"]
                 + "&city=" + profile[0]["city"]
@@ -74,8 +76,8 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
                 + "&bankno=" + profile[0]["bank_acc_no"]
                 + "&lat=" + profile[0]["location_latitude"]
                 + "&long=" + profile[0]["location_longitude"]
-                + "&ecname=" + profile[0]["emergency_name"]
-                + "&ecno=" + profile[0]["emergency_no"]
+                + "&ecname=" + names
+                + "&ecno=" + telnos
         ),
         headers: {"Accept": "application/json"}
     );
@@ -95,6 +97,10 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
 
   // functions ends //
 
+  init() async {
+    //
+  }
+
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
@@ -105,7 +111,7 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
-        title: jtprofile_appBarTitleWidget(context, 'Update Contacts Info'),
+        title: jtprofile_appBarTitleWidget(context, 'Update Emergency Contact'),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
@@ -128,19 +134,44 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Contacts Info', style: boldTextStyle(size: 24)),
+                  Text('Emergency Contact', style: boldTextStyle(size: 24)),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       20.height,
                       TextFormField(
-                        controller: phoneno,
+                        controller: names,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
-                          labelText: 'Phone No.',
+                          labelText: 'Guardian Name',
                           contentPadding: EdgeInsets.all(16),
                           labelStyle: secondaryTextStyle(),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
+                        ),
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            namestatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            namestatus = "true";
+                          }
+                        },
+                      ),
+                      16.height,
+                      TextFormField(
+                        controller: telnos,
+//                    focusNode: emailFocus,
+                        style: primaryTextStyle(),
+                        decoration: InputDecoration(
+                          labelText: 'Guardian Phone No.',
+                          labelStyle: secondaryTextStyle(),
+                          contentPadding: EdgeInsets.all(16),
                           border: OutlineInputBorder(),
                           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
                           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
@@ -149,29 +180,13 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
                         textInputAction: TextInputAction.next,
                         validator: (s) {
                           if (s!.trim().isEmpty) {
-                            telnostatus = "false";
+                            nostatus = "false";
                             return errorThisFieldRequired;
                           }
                           else {
-                            telnostatus = "true";
+                            nostatus = "true";
                           }
                         },
-                      ),
-                      16.height,
-                      TextFormField(
-                        readOnly: true,
-                        controller: emails,
-                        style: primaryTextStyle(),
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          labelStyle: secondaryTextStyle(),
-                          contentPadding: EdgeInsets.all(16),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
-                        ),
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
                       ),
                       40.height,
                       Container(
@@ -180,11 +195,11 @@ class _JTContactScreenProviderState extends State<JTContactScreenProvider> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        if(telnostatus != "false"){
-                          updateProfile(phoneno.text);
+                        if(namestatus != "false" && nostatus != "false"){
+                          updateProfile(names.text,telnos.text);
                         }
                         else{
-                          toast("Please make sure all required details are complete");
+                          toast("Please make sure all required details are completed.");
                         }
                       }),
                       20.height,

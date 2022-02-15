@@ -31,6 +31,8 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
 
   // functions starts //
 
+  var telnostatus = "false";
+
   List profile = [];
   String lgemail = " ";
   Future<void> readProfile() async {
@@ -51,6 +53,10 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
     setState(() {
       phoneno = TextEditingController(text: profile[0]["phone_no"]);
       emails = TextEditingController(text: profile[0]["email"]);
+
+      if(profile[0]["phone_no"] != ""){
+        telnostatus = "true";
+      }
     });
   }
 
@@ -160,6 +166,15 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            telnostatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            telnostatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       TextFormField(
@@ -184,7 +199,12 @@ class _JTContactScreenUserState extends State<JTContactScreenUser> {
                         decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(8), boxShadow: defaultBoxShadow()),
                         child: Text('Update', style: boldTextStyle(color: white, size: 18)),
                       ).onTap(() {
-                        updateProfile(phoneno.text);
+                        if(telnostatus == "true"){
+                          updateProfile(phoneno.text);
+                        }
+                        else{
+                          toast("Please make sure all required details are completed.");
+                        }
                       }),
                       20.height,
                     ],

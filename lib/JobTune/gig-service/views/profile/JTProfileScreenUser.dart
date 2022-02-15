@@ -185,65 +185,66 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                             ),
                             Padding(
                               padding: EdgeInsets.all(16),
-                              child: Divider(color: Color(0XFFDADADA), height: 0.5),
+                              // child: Divider(color: Color(0XFFDADADA), height: 0.5),
+                              child: Divider(color: Colors.white, height: 0.5),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        booktotal,
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5,),
-                                      Text(
-                                        "Booking",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 16,
-                                            letterSpacing: 1,
-                                            fontFamily: 'Medium'
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        spending,
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          letterSpacing: 1,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5,),
-                                      Text(
-                                        "Spent (RM)",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 16,
-                                            letterSpacing: 1,
-                                            fontFamily: 'Medium'
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            //   children: <Widget>[
+                            //     Padding(
+                            //       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
+                            //       child: Column(
+                            //         children: [
+                            //           Text(
+                            //             booktotal,
+                            //             style: TextStyle(
+                            //               color: Colors.blueAccent,
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 20,
+                            //               letterSpacing: 1,
+                            //             ),
+                            //           ),
+                            //           SizedBox(height: 5,),
+                            //           Text(
+                            //             "Booking",
+                            //             style: TextStyle(
+                            //                 color: Colors.black54,
+                            //                 fontSize: 16,
+                            //                 letterSpacing: 1,
+                            //                 fontFamily: 'Medium'
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //     Padding(
+                            //       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
+                            //       child: Column(
+                            //         children: [
+                            //           Text(
+                            //             spending,
+                            //             style: TextStyle(
+                            //               color: Colors.blueAccent,
+                            //               fontWeight: FontWeight.bold,
+                            //               fontSize: 20,
+                            //               letterSpacing: 1,
+                            //             ),
+                            //           ),
+                            //           SizedBox(height: 5,),
+                            //           Text(
+                            //             "Spent (RM)",
+                            //             style: TextStyle(
+                            //                 color: Colors.black54,
+                            //                 fontSize: 16,
+                            //                 letterSpacing: 1,
+                            //                 fontFamily: 'Medium'
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                             SizedBox(height: 16),
                           ],
                         ),
@@ -253,7 +254,7 @@ class _JTProfileScreenUserState extends State<JTProfileScreenUser> {
                       margin: EdgeInsets.symmetric(horizontal: 16.0),
                       alignment: FractionalOffset.center,
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage("https://jobtune.ai/gig/JobTune/assets/img/" + img),
+                        backgroundImage: NetworkImage(image + img),
                         radius: 50,
                       ),
                     ),

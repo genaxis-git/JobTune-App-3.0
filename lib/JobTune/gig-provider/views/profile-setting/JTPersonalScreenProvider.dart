@@ -27,6 +27,8 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
   var desc = TextEditingController();
   String pickedcat = "";
   String? selectedIndexCategory = 'Industry Type..';
+  String namestatus = "false";
+  String categorystatus = "false";
 
   // functions starts //
 
@@ -58,6 +60,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
       else {
         img = "no profile.png";
       }
+      print("ayam" + img);
       if(profile[0]["industry_type"] == ""){
         selectedIndexCategory = 'Industry Type..';
       }
@@ -105,6 +108,8 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
                 + "&bankno=" + profile[0]["bank_acc_no"]
                 + "&lat=" + profile[0]["location_latitude"]
                 + "&long=" + profile[0]["location_longitude"]
+                + "&ecname=" + profile[0]["emergency_name"]
+                + "&ecno=" + profile[0]["emergency_no"]
         ),
         headers: {"Accept": "application/json"}
     );
@@ -119,7 +124,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
   PickedFile? _image;
   File? _showimg;
 //  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/mobile_uploadPhoto_user.php';
-  final String uploadUrl = 'https://jobtune.ai/gig/JobTune/assets/img/jtnew_uploadPhoto_provider.php';
+  final String uploadUrl = image + 'jtnew_uploadPhoto_provider.php';
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async{
@@ -197,7 +202,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
                           ? Stack(
                         alignment: Alignment.center,
                         children: [
-                          Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
+                          Image.network(image + img, height: 120, width: 120, fit: BoxFit.cover).cornerRadiusWithClipRRect(60),
                           Positioned(
                             top: 80,
                             right: 0,
@@ -256,6 +261,15 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
                         ),
                         keyboardType: TextInputType.text,
                         textInputAction: TextInputAction.next,
+                        validator: (s) {
+                          if (s!.trim().isEmpty) {
+                            namestatus = "false";
+                            return errorThisFieldRequired;
+                          }
+                          else {
+                            namestatus = "true";
+                          }
+                        },
                       ),
                       16.height,
                       Container(
@@ -298,7 +312,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
                         maxLines: 4,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
-                          labelText: 'Description',
+                          labelText: 'Description (optional)',
                           contentPadding: EdgeInsets.all(16),
                           labelStyle: secondaryTextStyle(),
                           border: OutlineInputBorder(),
@@ -318,7 +332,12 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
                         if(selectedIndexCategory.toString() != 'Industry Type..'){
                           pickedcat = selectedIndexCategory.toString();
                         }
-                        updateProfile(names.text,pickedcat,desc.text);
+                        if(namestatus != "false" && selectedIndexCategory.toString() != 'Industry Type..'){
+                          updateProfile(names.text,pickedcat,desc.text);
+                        }
+                        else{
+                          toast("Please make sure all required details are complete");
+                        }
                       }),
                       20.height,
                     ],

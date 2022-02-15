@@ -5,9 +5,11 @@ import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardScreenProduct.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/service-manage/JTManageServiceScreen.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/add_post/add_post_service.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile/JTProfileScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/service-history/JTServiceHistoryScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/timetable/JTTimetableScreenProvider.dart';
@@ -30,14 +32,14 @@ import '../my_product/JTMyProduct.dart';
 import '../co_de_product/JTCoDeBookingScreen.dart';
 import '../order_history/JTOrderHistory.dart';
 
-class JTAccountScreenUsers extends StatefulWidget {
-  static String tag = '/JTAccountScreenUsers';
+class JTAccountServiceScreen extends StatefulWidget {
+  static String tag = '/JTAccountServiceScreen';
 
   @override
-  _JTAccountScreenUsersState createState() => _JTAccountScreenUsersState();
+  _JTAccountServiceScreenState createState() => _JTAccountServiceScreenState();
 }
 
-class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
+class _JTAccountServiceScreenState extends State<JTAccountServiceScreen> {
   List profile = [];
   String email = " ";
   String names = " ";
@@ -61,6 +63,8 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
         profile[0]["phone_no"] == "" ||
         profile[0]["address"] == "" ||
         profile[0]["bank_type"] == "" ||
+        profile[0]["emergency_name"] == "" ||
+        profile[0]["emergency_no"] == "" ||
         profile[0]["bank_acc_no"] == "" ||
         profile[0]["profile_pic"] == "") {
       showInDialog(context,
@@ -69,7 +73,7 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => JTAddPost()),
+        MaterialPageRoute(builder: (context) => JTAddPostService()),
       );
     }
   }
@@ -102,6 +106,14 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
     });
   }
 
+  Future<void> logout() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('email');
+    // await prefs.clear();
+
+    JTDashboardScreenGuest().launch(context, isNewTask: true);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,10 +137,10 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           Row(
             children: [
               Image.network(
-                      image + img,
-                      height: 70,
-                      width: 70,
-                      fit: BoxFit.cover)
+                  image + img,
+                  height: 70,
+                  width: 70,
+                  fit: BoxFit.cover)
                   .cornerRadiusWithClipRRect(40),
               16.width,
               Column(
@@ -155,28 +167,52 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           settingItem(context, 'My Profile', onTap: () {
             JTProfileScreenProvider().launch(context);
           }, leading: Icon(MaterialIcons.person_outline), detail: SizedBox()),
-          settingItem(context, 'Timetable', onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => WebViewTimetableProvider(id: email)),
-            );
-          }, leading: Icon(MaterialIcons.event), detail: SizedBox()),
+          // settingItem(context, 'Timetable', onTap: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => WebViewTimetableProvider(id: email)),
+          //   );
+          // }, leading: Icon(MaterialIcons.event), detail: SizedBox()),
           settingItem(context, 'My Service', onTap: () {
             ServiceScreen().launch(context);
           }, leading: Icon(MaterialIcons.work_outline), detail: SizedBox()),
-          settingItem(context, 'Clocking', onTap: () {
-            JTClockingScreenUser().launch(context);
-          }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
-          settingItem(context, 'Service History', onTap: () {
-            JTServiceHistoryScreen().launch(context);
-          }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
-          settingItem(context, 'Transaction', onTap: () {
-            JTTransactionProvider().launch(context);
-          }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
-          settingItem(context, 'Co-De', onTap: () {
-            DTCartScreen1().launch(context);
-          }, leading: Icon(MaterialIcons.people_outline), detail: SizedBox()),
+          // settingItem(context, 'Clocking', onTap: () {
+          //   JTClockingScreenUser().launch(context);
+          // }, leading: Icon(MaterialIcons.schedule), detail: SizedBox()),
+          // settingItem(context, 'Service History', onTap: () {
+          //   JTServiceHistoryScreen().launch(context);
+          // }, leading: Icon(MaterialIcons.event_note), detail: SizedBox()),
+          // settingItem(context, 'Transaction', onTap: () {
+          //   JTTransactionProvider().launch(context);
+          // }, leading: Icon(MaterialIcons.credit_card), detail: SizedBox()),
+          // settingItem(context, 'Co-De', onTap: () {
+          //   DTCartScreen1().launch(context);
+          // }, leading: Icon(MaterialIcons.people_outline), detail: SizedBox()),
+          SizedBox(height: 60),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("   GENERAL",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  )),
+            ],
+          ),
+          // settingItem(context, 'Help', onTap: () {
+          //   launch('https://www.google.com');
+          // }, leading: Icon(MaterialIcons.help_outline), detail: SizedBox()),
+          // settingItem(context, 'About', onTap: () {
+          //   DTAboutScreen().launch(context);
+          // }, leading: Icon(MaterialIcons.info_outline), detail: SizedBox()),
+          settingItem(context, 'Change Password', onTap: () {
+            JTChangePasswordScreen().launch(context);
+          }, leading: Icon(MaterialIcons.security), detail: SizedBox()),
+          settingItem(context, 'Logout', onTap: () {
+            logout();
+          }, leading: Icon(MaterialIcons.logout), detail: SizedBox()),
         ],
       );
     }
@@ -221,95 +257,31 @@ class _JTAccountScreenUsersState extends State<JTAccountScreenUsers> {
           });
     }
 
-    return SafeArea(
-      child: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: appStore.appBarColor,
-            // title: Text(
-            //   'Provider Account',
-            //   style: boldTextStyle(
-            //       color: appStore.textPrimaryColor, size: 20),
-            // ),
-            title: appBarTitleWidget(context, 'Provider Account'),
-            bottom: TabBar(
-              onTap: (index) {
-                print(index);
-              },
-              indicatorColor: Colors.blue,
-              labelColor: appStore.textPrimaryColor,
-              labelStyle: boldTextStyle(),
-              tabs: [
-                Tab(
-                  text: "Service",
-                ),
-                Tab(
-                  text: "Product",
-                ),
-              ],
-            ),
-          ),
-          drawer: JTDrawerWidgetProduct(),
-          floatingActionButton: addServiceProduct(),
-          body: TabBarView(
-            children: [
-              ContainerX(
-                mobile: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: [
-                      profileView(),
-                      Divider(color: appDividerColor, height: 8)
-                          .paddingOnly(top: 4, bottom: 4),
-                      options(),
-                    ],
-                  ),
-                ),
-                web: Column(
-                  children: [
-                    profileView(),
-                    Divider(height: 8).paddingOnly(top: 4, bottom: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: options(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              ContainerX(
-                mobile: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: [
-                      profileView(),
-                      Divider(color: appDividerColor, height: 8)
-                          .paddingOnly(top: 4, bottom: 4),
-                      options_product(),
-                    ],
-                  ),
-                ),
-                web: Column(
-                  children: [
-                    profileView(),
-                    Divider(height: 8).paddingOnly(top: 4, bottom: 4),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: options_product(),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: appBarTitleWidget(context, 'Provider Account'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTDashboardSreenUser()),
+              );
+            }),
+      ),
+      // drawer: JTDrawerWidgetProduct(),
+      floatingActionButton: addServiceProduct(),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(top: 16),
+        child: Column(
+          children: [
+            profileView(),
+            Divider(color: appDividerColor, height: 8)
+                .paddingOnly(top: 4, bottom: 4),
+            options(),
+          ],
         ),
       ),
     );

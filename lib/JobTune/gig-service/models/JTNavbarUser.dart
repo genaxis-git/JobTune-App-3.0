@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/change-password/JTChangePasswordScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountScreenUsers.dart';
+import 'package:prokit_flutter/JobTune/gig-provider/views/account/JTAccountServiceScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/account/JTAccountScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/timetable/JTScheduleScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/transaction/JTTransactionScreen.dart';
@@ -65,7 +66,7 @@ List<NavbarUserList> getDrawerItemsService() {
   List<NavbarUserList> drawerItems = [];
 
   drawerItems.add(NavbarUserList(name: 'My Account', widget: JTAccountScreenUser()));
-  drawerItems.add(NavbarUserList(name: 'Provider Account', widget: JTAccountScreenUsers()));
+  drawerItems.add(NavbarUserList(name: 'Provider Account', widget: JTAccountServiceScreen()));
   // drawerItems.add(NavbarUserList(name: 'Timetable', widget: JTScheduleScreenUser()));
   drawerItems.add(NavbarUserList(name: 'Change Password', widget: JTChangePasswordScreen()));
   // drawerItems.add(NavbarUserList(name: 'Transaction', widget: JTTransactionScreen()));
