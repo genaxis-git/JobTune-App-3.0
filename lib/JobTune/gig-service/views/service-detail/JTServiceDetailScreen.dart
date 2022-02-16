@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -14,6 +17,9 @@ import 'package:prokit_flutter/defaultTheme/screen/DTAddressScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../main.dart';
 import '../index/JTDrawerWidget.dart';
@@ -455,9 +461,106 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         child: Text('Call Provider', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
-        //FOR PHONE NUMBER:
-        final Uri _phoneLaunchUri = Uri(scheme: 'tel', path: provider[0]["phone_no"]);
-        _makeSocialMediaRequest(_phoneLaunchUri.toString());
+        print("ayam");
+        showCupertinoModalPopup(context: context, builder: (BuildContext context) => CustomTheme(
+          child: CupertinoActionSheet(
+            actions: [
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    final Uri _phoneLaunchUri = Uri(scheme: 'tel', path: provider[0]["phone_no"]);
+                    _makeSocialMediaRequest(_phoneLaunchUri.toString());
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Call',
+                        style: primaryTextStyle(size: 18),
+                      ),
+                      Icon(
+                        Icons.call,
+                        color: Colors.blueAccent,
+                      )
+                    ],
+                  )),
+              CupertinoActionSheetAction(
+                  onPressed: () async {
+                    if (Platform.isAndroid) {
+                      var uri = 'sms:'+provider[0]["phone_no"]+'?body=hello%20there';
+                      await launch(uri);
+                    } else if (Platform.isIOS) {
+                      // iOS
+                      var uri = 'sms:'+provider[0]["phone_no"]+'&body=hello%20there';
+                      await launch(uri);
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Chat (Phone)',
+                        style: primaryTextStyle(size: 18),
+                      ),
+                      Icon(
+                        Icons.chat_rounded,
+                        color: Colors.blueAccent,
+                      )
+                    ],
+                  )),
+              CupertinoActionSheetAction(
+                  onPressed: () async {
+                    final link = WhatsAppUnilink(
+                      phoneNumber: provider[0]["phone_no"],
+                      text: "Hello there!",
+                    );
+                    await launch('$link');
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Chat (Whatsapp)',
+                        style: primaryTextStyle(size: 18),
+                      ),
+                      FaIcon(FontAwesomeIcons.whatsapp,color: Colors.green,),
+                    ],
+                  )),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  final Uri _emailLaunchUri = Uri(
+                      scheme: 'mailto',
+                      path: provider[0]["email"],
+                      queryParameters: {
+                        'subject': 'Service Detail Inquiries'
+                      }
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Email',
+                      style: primaryTextStyle(size: 18),
+                    ),
+                    Icon(
+                      Icons.email_outlined,
+                      color: Colors.blueAccent,
+                    )
+                  ],
+                ),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+                onPressed: () {
+                  finish(context);
+                },
+                child: Text(
+                  'Cancel',
+                  style: primaryTextStyle(color: redColor, size: 18),
+                )),
+          ),
+        ));
+        // UrlLauncher.launch('tel:+${provider[0]["phone_no"].toString()}');
       });
     }
 
