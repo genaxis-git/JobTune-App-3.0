@@ -137,7 +137,10 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
       print(arrlist);
       print("dah");
       arrlist = [];
-      readAddress("last");
+      // readAddress("last");
+      Navigator.pop(context);
+      Navigator.pop(context);
+      JTDashboardSreenUser().launch(context, isNewTask: true);
     }
   }
 
@@ -1128,6 +1131,7 @@ class _AddAddressDialogState extends State<AddAddressDialog> {
                           + "&name=" + name.text
                           + "&email=" + email.text
                           + "&telno=" + telno.text
+                          + "&status=0"
                           ),
                           headers: {"Accept": "application/json"}
                       );

@@ -56,6 +56,7 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
 
   List servicelist = [];
   Future<void> checkFeatured() async {
+    
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_filterservice&keyword="+widget.searchkey
@@ -125,7 +126,7 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
                     children: [
                       80.height,
                       Image.network(
-                          "https://jobtune.ai/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
+                          "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/mobile/resized/rsz_database.jpg",
                           width: 250
                       ),
                       Padding(
@@ -300,7 +301,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                       child: Stack(
                         children: [
                           Image.network(
-                            "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                            "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
                             fit: BoxFit.cover,
                             height: 110,
                             width: 126,

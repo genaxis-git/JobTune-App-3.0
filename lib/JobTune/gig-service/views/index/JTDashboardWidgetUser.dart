@@ -127,6 +127,9 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   }
 
   Future<void> checkCategory(city,state,country) async {
+    print(server + "jtnew_user_selectavailablecategory&city="+city
+        +"&state="+state
+        +"&country="+country);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectavailablecategory&city="+city
@@ -293,12 +296,14 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+    print("ayam");
+    print(displaystatus);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: (clocking.length > 0) ? 520.0 : 240.0,
+              expandedHeight: (clocking.length > 0) ? 520.0 : 270.0,
               floating: true,
               pinned: false,
               snap: false,
@@ -316,7 +321,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        (displaystatus == true)
+                        (displaystatus == "true")
                         ? Card(
                           child: InkWell(
                             onTap: (){
@@ -441,24 +446,24 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                             }).toList(),
                           ),
                         ),
-                        15.height,
-                        (clocking.length > 0)
-                            ? Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(' Standby List', style: boldTextStyle()).paddingAll(8),
-                              ],
-                            ),
-                            // 6.height,
-                            SizedBox(
-                                height: width * 0.598,
-                                child: JTNextList()
-                            ),
-                          ],
-                        )
-                            : Container(),
+                        // 15.height,
+                        // (clocking.length > 0)
+                        //     ? Column(
+                        //   children: [
+                        //     Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //       children: [
+                        //         Text(' Standby List', style: boldTextStyle()).paddingAll(8),
+                        //       ],
+                        //     ),
+                        //     // 6.height,
+                        //     SizedBox(
+                        //         height: width * 0.598,
+                        //         child: JTNextList()
+                        //     ),
+                        //   ],
+                        // )
+                        //     : Container(),
                       ],
                     ),
                   ),
@@ -952,7 +957,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                         child: Stack(
                           children: [
                             Image.network(
-                              "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                              image + servicelist[index]["profile_pic"],
                               fit: BoxFit.cover,
                               height: 110,
                               width: 126,
@@ -1012,7 +1017,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                     child: Stack(
                       children: [
                         Image.network(
-                          "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                          image + servicelist[index]["profile_pic"],
                           fit: BoxFit.cover,
                           height: 110,
                           width: 126,
@@ -1319,7 +1324,7 @@ class _JTNextListState extends State<JTNextList> {
                         alignment: FractionalOffset.centerLeft,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12.0),
-                          child: Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
+                          child: Image.network(image + clocking[index]["profile_pic"], height: width * 0.38, width: MediaQuery.of(context).size.width, fit: BoxFit.cover),
                         )),
                     Container(
                       transform: Matrix4.translationValues(0.0, -30.0, 0.0),
