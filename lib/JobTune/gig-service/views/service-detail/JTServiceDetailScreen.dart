@@ -13,7 +13,6 @@ import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreen
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTAddressScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -510,7 +509,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
               CupertinoActionSheetAction(
                   onPressed: () async {
                     final link = WhatsAppUnilink(
-                      phoneNumber: provider[0]["phone_no"],
+                      phoneNumber: '+600169702140',
                       text: "Hello there!",
                     );
                     await launch('$link');
@@ -526,14 +525,19 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                     ],
                   )),
               CupertinoActionSheetAction(
-                onPressed: () {
-                  final Uri _emailLaunchUri = Uri(
-                      scheme: 'mailto',
-                      path: provider[0]["email"],
-                      queryParameters: {
-                        'subject': 'Service Detail Inquiries'
-                      }
+                onPressed: () async {
+                  final Uri params = Uri(
+                    scheme: 'mailto',
+                    path: provider[0]["email"],
+                    query: 'subject=Service Detail Inquiries', //add subject and body here
                   );
+
+                  var url = params.toString();
+                  if (await canLaunch(url)) {
+                  await launch(url);
+                  } else {
+                  throw 'Could not launch $url';
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
