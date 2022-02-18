@@ -296,8 +296,6 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    print("ayam");
-    print(displaystatus);
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {

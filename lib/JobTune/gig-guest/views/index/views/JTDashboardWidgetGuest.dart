@@ -12,6 +12,8 @@ import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
 import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
@@ -378,7 +380,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 440.0,
+              expandedHeight: 450.0,
               floating: true,
               pinned: false,
               snap: false,
@@ -551,8 +553,477 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
             ),
           ];
         },
-        body: Container(height: 390, child: JTProductList()),
+        // body: Container(height: 390, child: JTProductList()),
+        body: Container(
+          height: 500,
+          child: JTServiceListUser(),
+        ),
       )
+    );
+  }
+}
+
+class JTServiceListUser extends StatefulWidget {
+  @override
+  _JTServiceListUserState createState() => _JTServiceListUserState();
+}
+
+class _JTServiceListUserState extends State<JTServiceListUser> {
+
+  // functions starts //
+
+  List profile = [];
+  Future<void> checkProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    if(lgid == "null"){
+      serviceList();
+    }
+    else {
+      http.Response response = await http.get(
+          Uri.parse(
+              server + "jtnew_user_selectprofile&lgid=" + lgid),
+          headers: {"Accept": "application/json"}
+      );
+
+      this.setState(() {
+        profile = json.decode(response.body);
+      });
+
+      if(profile[0]["address"] != ""){
+        readAddress();
+      }
+      else{
+        serviceList();
+      }
+
+    }
+  }
+
+  List selectedaddress = [];
+  String fullname = "";
+  String address = "";
+  String tag = "";
+  String tagname = "";
+  String city = "";
+  String state = "";
+  String addressread = "";
+  String displayaddress = "";
+  String displaystatus = "false";
+  List displaylist = [];
+  Future<void> readAddress() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectalladdress&id=" + lgid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      selectedaddress = json.decode(response.body);
+    });
+
+    for(var m=0; m<selectedaddress.length; m++){
+      if(selectedaddress[m]["added_status"] == "1"){
+        displaystatus = "true";
+        setState(() {
+          fullname = selectedaddress[m]["added_name"];
+          city = selectedaddress[m]["added_city"];
+          state = selectedaddress[m]["added_state"];
+          addressread = selectedaddress[m]["added_address"];
+          tagname = selectedaddress[m]["added_tag"];
+          if(selectedaddress[m]["added_tag"] != "Home" && selectedaddress[m]["added_tag"] != "Work" && selectedaddress[m]["added_tag"] != "School" && selectedaddress[m]["added_tag"] != "Family") {
+            tag = "pin";
+          }
+          else{
+            tag = selectedaddress[m]["added_tag"];
+          }
+
+          if(addressread.split(",").length > 3) {
+            displayaddress = addressread.split(",")[0] + "," + addressread.split(",")[1] + "," + addressread.split(",")[2];
+          }
+          else{
+            displayaddress = addressread;
+          }
+        });
+
+        checkFeatured(selectedaddress[m]["added_city"],selectedaddress[m]["added_state"],selectedaddress[m]["added_country"]);
+      }
+    }
+  }
+
+  List servicelist = [];
+  Future<void> checkFeatured(city,state,country) async {
+    print(server + "jtnew_user_selectfeatured&city="+city
+        +"&state="+state
+        +"&country="+country);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectfeatured&city="+city
+                +"&state="+state
+                +"&country="+country
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+  }
+
+  Future<void> serviceList() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectfeatured&city=&state=&country="
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkProfile();
+  }
+
+  // functions ends //
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+        padding: EdgeInsets.all(8),
+        itemCount: servicelist == null ? 0 : servicelist.length,
+        itemBuilder: (BuildContext context, int index) {
+          if(index == 0){
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('    Featured', style: boldTextStyle()).paddingBottom(8),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => JTServiceDetailScreen(
+                            id: servicelist[index]["service_id"],
+                            page: "detail",
+                          )),
+                    );
+                  },
+                  child: Container(
+                    decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+                    margin: EdgeInsets.all(8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 110,
+                          width: 126,
+                          child: Stack(
+                            children: [
+                              Image.network(
+                                image + servicelist[index]["profile_pic"],
+                                fit: BoxFit.cover,
+                                height: 110,
+                                width: 126,
+                              ).cornerRadiusWithClipRRect(8),
+                            ],
+                          ),
+                        ),
+                        8.width,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(servicelist[index]["name"],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  // fontWeight: FontWeight.bold,
+                                    fontSize: 17
+                                )
+                            ),
+                            3.height,
+                            DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                            13.height,
+                            DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                            5.height,
+                            Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
+                          ],
+                        ).paddingAll(8).expand(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          else{
+            return GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => JTServiceDetailScreen(
+                        id: servicelist[index]["service_id"],
+                        page: "detail",
+                      )),
+                );
+              },
+              child: Container(
+                decoration: boxDecorationRoundedWithShadow(8, backgroundColor: appStore.appBarColor!),
+                margin: EdgeInsets.all(8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 110,
+                      width: 126,
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            image + servicelist[index]["profile_pic"],
+                            fit: BoxFit.cover,
+                            height: 110,
+                            width: 126,
+                          ).cornerRadiusWithClipRRect(8),
+                        ],
+                      ),
+                    ),
+                    8.width,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(servicelist[index]["name"],
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              // fontWeight: FontWeight.bold,
+                                fontSize: 17
+                            )
+                        ),
+                        3.height,
+                        DisplayRating(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                        13.height,
+                        DisplayRate(id: servicelist[index]["service_id"],rate: servicelist[index]["rate"]),
+                        5.height,
+                        Text(servicelist[index]["location"], style: secondaryTextStyle(size: 13)),
+                      ],
+                    ).paddingAll(8).expand(),
+                  ],
+                ),
+              ),
+            );
+          }
+        }
+    );
+  }
+}
+
+class DisplayRate extends StatefulWidget {
+  const DisplayRate({
+    Key? key,
+    required this.id,
+    required this.rate,
+  }) : super(key: key);
+  final String id;
+  final String rate;
+  @override
+  _DisplayRateState createState() => _DisplayRateState();
+}
+
+class _DisplayRateState extends State<DisplayRate> {
+
+  // function starts //
+
+  List servicelist = [];
+  List numbers = [];
+  double max = 0;
+  double min = 0;
+  Future<void> readPackage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectpackage&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      servicelist = json.decode(response.body);
+    });
+
+    for(var m=0;m<servicelist.length;m++) {
+      numbers.add(servicelist[m]["package_rate"]);
+    }
+
+    min = double.parse(servicelist[0]["package_rate"]);
+    for(var m=0;m<servicelist.length;m++) {
+      if(double.parse(servicelist[m]["package_rate"])>max){
+        max = double.parse(servicelist[m]["package_rate"]);
+      }
+      if(double.parse(servicelist[m]["package_rate"])<min){
+        min = double.parse(servicelist[m]["package_rate"]);
+      }
+    }
+
+    setState(() {
+      print("result:" + min.toString()+" "+max.toString());
+      min = min;
+      max = max;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.readPackage();
+  }
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        (widget.rate != "0.00")
+            ? JTpriceWidget(double.parse(double.parse(widget.rate).toStringAsFixed(2)))
+            : (min != max)
+            ? Flexible(
+          child: Text(
+            "RM " + min.toStringAsFixed(2) + " ~ RM " + max.toStringAsFixed(2),
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              decoration: TextDecoration.none,
+              color: appStore.textPrimaryColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        )
+            : JTpriceWidget(min),
+      ],
+    );
+  }
+}
+
+class DisplayRating extends StatefulWidget {
+  const DisplayRating({
+    Key? key,
+    required this.id,
+    required this.rate,
+  }) : super(key: key);
+  final String id;
+  final String rate;
+  @override
+  _DisplayRatingState createState() => _DisplayRatingState();
+}
+
+class _DisplayRatingState extends State<DisplayRating> {
+
+  // functions starts //
+
+  String averagerate = "0.0";
+  Future<void> readAverage() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectaveragerating&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    setState(() {
+      averagerate = response.body;
+    });
+
+    showRating(averagerate);
+  }
+
+  List<Widget> _children = [];
+  void showRating(a){
+    _children =
+    List.from(_children)
+      ..add(
+          Row(
+            children: [
+              IgnorePointer(
+                child: RatingBar(
+                  onRatingChanged: (r) {},
+                  filledIcon: Icons.star,
+                  emptyIcon: Icons.star_border,
+                  initialRating: double.parse(double.parse(a).toStringAsFixed(1)),
+                  maxRating: 5,
+                  filledColor: Colors.yellow,
+                  size: 14,
+                ),
+              ),
+              5.width,
+              Text('${double.parse(double.parse(a).toStringAsFixed(1))}', style: secondaryTextStyle(size: 12)),
+            ],
+          )
+      );
+  }
+
+  @override
+  void initState() {
+    this.readAverage();
+    super.initState();
+  }
+
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _children,
+    );
+  }
+}
+
+class ShowsRating extends StatefulWidget {
+  const ShowsRating({
+    Key? key,
+    required this.show,
+  }) : super(key: key);
+  final String show;
+  @override
+  _ShowsRatingState createState() => _ShowsRatingState();
+}
+
+class _ShowsRatingState extends State<ShowsRating> {
+
+  // functions starts //
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  // function ends //
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        IgnorePointer(
+          child: RatingBar(
+            onRatingChanged: (r) {},
+            filledIcon: Icons.star,
+            emptyIcon: Icons.star_border,
+            initialRating: double.parse(double.parse(widget.show).toStringAsFixed(1)),
+            maxRating: 5,
+            filledColor: Colors.yellow,
+            size: 14,
+          ),
+        ),
+        5.width,
+        Text('${double.parse(double.parse(widget.show).toStringAsFixed(1))}', style: secondaryTextStyle(size: 12)),
+      ],
     );
   }
 }

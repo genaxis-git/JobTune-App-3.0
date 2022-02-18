@@ -34,6 +34,16 @@ class _JTDashboardSreenUserState extends State<JTDashboardSreenUser> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     backgroundColor: appStore.appBarColor,
+    //     title: appBarTitleWidget(context, 'Gig Service'),
+    //   ),
+    //   drawerScrimColor: Colors.grey.withOpacity(0.3),
+    //   drawer: JTDrawerWidgetUser(),
+    //   // drawer: JTDrawerGSOnlyWidgetUser(),
+    //   body: JTDashboardWidgetUser(),
+    // );
     return SafeArea(
       child: Observer(
         builder: (context) => Scaffold(

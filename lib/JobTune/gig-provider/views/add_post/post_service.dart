@@ -1095,7 +1095,7 @@ class _PostServiceState extends State<PostService> {
 
                    if(selectedTimeOUT.hour > selectedTimeIN.hour) {
                      if(choice != null){
-                       if(choice == "Online"){
+                       if(choice == "Remote"){
                          if(titleCont.text == "" || descCont.text == "" || stringList == "") {
                            toast("Form not complete");
                          }

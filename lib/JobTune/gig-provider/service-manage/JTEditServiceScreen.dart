@@ -107,6 +107,7 @@ class _EditServiceState extends State<EditService> {
                 + '&ends=' + ends
                 + '&location=' + location
                 + '&fee=' + fee
+                + '&type=' + choice.toString()
         ),
         headers: {"Accept": "application/json"}
     );
@@ -245,6 +246,10 @@ class _EditServiceState extends State<EditService> {
       titleCont = TextEditingController(text: info[0]["name"]);
       descCont = TextEditingController(text: info[0]["description"].toString().replaceAll("<br>", "\n"));
       locationCont = TextEditingController(text: info[0]["location"]);
+      choice = info[0]["service_type"];
+      if(info[0]["service_type"] == "Physical"){
+        style = "true";
+      }
 
       if(info[0]["available_start"] != ""){
         selectedTimeIN = TimeOfDay.fromDateTime(DateTime.parse("2020-10-10 " + info[0]["available_start"]));
@@ -323,6 +328,9 @@ class _EditServiceState extends State<EditService> {
     }
     print(packagearr);
   }
+
+  var choice;
+  String style = "false";
 
 
   @override
@@ -719,8 +727,63 @@ class _EditServiceState extends State<EditService> {
                         ),
                         textInputAction: TextInputAction.next,
                       ),
+                      16.height,
+                      Text(
+                        ' Working style',
+                        style: primaryTextStyle(),
+                      ),
                       8.height,
-                      TextFormField(
+                      Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Theme(
+                                data: Theme.of(context).copyWith(unselectedWidgetColor: appStore.textPrimaryColor),
+                                child: Radio(
+                                  value: 'Remote',
+                                  groupValue: choice,
+                                  onChanged: (dynamic value) {
+                                    setState(() {
+                                      choice = value;
+                                      toast("$choice Selected");
+                                      style = "false";
+                                    });
+                                  },
+                                ),
+                              ),
+                              Text('Online/ Remote/ From home', style: primaryTextStyle()),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Theme(
+                                data: Theme.of(context).copyWith(
+                                  unselectedWidgetColor: appStore.textPrimaryColor,
+                                ),
+                                child: Radio(
+                                  value: 'Physical',
+                                  groupValue: choice,
+                                  onChanged: (dynamic value) {
+                                    setState(() {
+                                      choice = value;
+                                      toast("$choice Selected");
+                                      style = "true";
+                                    });
+                                  },
+                                ),
+                              ),
+                              Text('Physical/ On-site', style: primaryTextStyle()),
+                            ],
+                          ),
+                        ],
+                      ),
+                      8.height,
+                      (style == "true")
+                      ? TextFormField(
                         controller: locationCont,
                         style: primaryTextStyle(),
                         decoration: InputDecoration(
@@ -737,7 +800,8 @@ class _EditServiceState extends State<EditService> {
                               BorderSide(color: appStore.textSecondaryColor!)),
                         ),
                         textInputAction: TextInputAction.next,
-                      ),
+                      )
+                      : Container(),
                       16.height,
                       Text(
                         ' Availability (Day)',
@@ -1168,15 +1232,29 @@ class _EditServiceState extends State<EditService> {
                             }
                             else {
                               if(selectedIndexCategory != 'Category') {
-                                if(selectedRateBy == 'Hour') {
-                                  rateperhour = rateCont.text;
-                                  toast("Loading..");
-                                  insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
+                                if(choice == "Physical"){
+                                  if(selectedRateBy == 'Hour') {
+                                    rateperhour = rateCont.text;
+                                    toast("Loading..");
+                                    insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,locationCont.text,insurancefee);
+                                  }
+                                  else {
+                                    rateperhour = "0.00";
+                                    toast("Loading..");
+                                    insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
+                                  }
                                 }
-                                else {
-                                  rateperhour = "0.00";
-                                  toast("Loading..");
-                                  insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,locationCont.text,insurancefee);
+                                else{
+                                  if(selectedRateBy == 'Hour') {
+                                    rateperhour = rateCont.text;
+                                    toast("Loading..");
+                                    insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,double.parse(rateperhour).toStringAsFixed(2),descCont.text,"Online/ Remote/ From home",insurancefee);
+                                  }
+                                  else {
+                                    rateperhour = "0.00";
+                                    toast("Loading..");
+                                    insertService(stringList,starts,ends,titleCont.text,selectedIndexCategory,selectedRateBy,rateperhour,descCont.text,"Online/ Remote/ From home",insurancefee);
+                                  }
                                 }
                               }
                               else{

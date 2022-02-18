@@ -99,6 +99,7 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
         child: Drawer(
           child: Container(
             color: appStore.scaffoldBackground,
+            height: MediaQuery.of(context).size.height,
             child: SingleChildScrollView(
               controller: scrollController,
               child: Column(
