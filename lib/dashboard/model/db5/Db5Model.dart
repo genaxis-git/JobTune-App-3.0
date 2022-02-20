@@ -4,9 +4,11 @@ class Db5CategoryData {
 }
 
 class Db6BestDestinationData {
-  var name = "";
-  var rating = "";
-  var image = "";
+  String? name = "";
+  String? rating = "";
+  String? image = "";
+
+  Db6BestDestinationData({this.name, this.image, this.rating});
 }
 
 class Db6RecentSearchData {

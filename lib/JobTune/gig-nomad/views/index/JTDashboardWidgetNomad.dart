@@ -169,6 +169,7 @@ class _JTDashboardWidgetNomadState extends State<JTDashboardWidgetNomad> {
                                                 context,
                                                 MaterialPageRoute(builder: (context) => JTSearchingResultUser(
                                                   searchkey: searchCont.text,
+                                                  page: "gig-service",
                                                 )),
                                               );
                                             },

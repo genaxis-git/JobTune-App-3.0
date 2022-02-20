@@ -62,10 +62,10 @@ class _JTAccountServiceScreenState extends State<JTAccountServiceScreen> {
         profile[0]["industry_type"] == "" ||
         profile[0]["phone_no"] == "" ||
         profile[0]["address"] == "" ||
-        profile[0]["bank_type"] == "" ||
+        // profile[0]["bank_type"] == "" ||
         profile[0]["emergency_name"] == "" ||
         profile[0]["emergency_no"] == "" ||
-        profile[0]["bank_acc_no"] == "" ||
+        // profile[0]["bank_acc_no"] == "" ||
         profile[0]["profile_pic"] == "") {
       showInDialog(context,
           child: AlertCompleteProfile(),

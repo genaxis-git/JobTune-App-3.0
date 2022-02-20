@@ -301,7 +301,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: (clocking.length > 0) ? 520.0 : 270.0,
+              expandedHeight: (clocking.length > 0) ? 520.0 : 220.0,
               floating: true,
               pinned: false,
               snap: false,
@@ -385,6 +385,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
                                               context,
                                               MaterialPageRoute(builder: (context) => JTSearchingResultUser(
                                                 searchkey: searchCont.text,
+                                                page: "gig-service",
                                               )),
                                             );
                                           },

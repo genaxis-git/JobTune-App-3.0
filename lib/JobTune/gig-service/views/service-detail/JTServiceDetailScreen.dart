@@ -10,6 +10,7 @@ import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/page-view/JTPageScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTAddressListModel.dart';
@@ -137,10 +138,12 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       _locatioanavailable(res[m]);
     }
 
+    readLikes(info[0]["provider_id"],info[0]["service_id"]);
     readProvider(info[0]["provider_id"],info[0]["service_id"]);
   }
 
   String img = "no profile.png";
+  String providername = " ";
   List provider = [];
   Future<void> readProvider(a,b) async {
     print(server + "jtnew_provider_selectprofile&lgid=" + a);
@@ -155,6 +158,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     });
 
     setState(() {
+      providername = provider[0]["name"];
       if(provider[0]["profile_pic"] != "") {
         img = provider[0]["profile_pic"];
       }
@@ -172,7 +176,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   double max = 0;
   double min = 0;
   Future<void> readPackage(b) async {
-    print(server + "jtnew_provider_selectpackage&id=" + b);
+
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_provider_selectpackage&id=" + b),
@@ -256,6 +260,32 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         });
       }
     }
+  }
+
+  List likes = [];
+  Future<void> readLikes(id,service) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    print("ayam");
+    print(service);
+    print(server + "jtnew_provider_selecttotallike&id="+ id);
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selecttotallike&id="+ id
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      likes = json.decode(response.body);
+    });
+
+    for(var m=0;m<likes.length;m++){
+      if(likes[m]["service_id"] == service && likes[m]["user"] == lgid){
+        likestatus = "true";
+      }
+    }
+
   }
 
   @override
@@ -400,6 +430,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
 
+  String likestatus = "false";
+
   @override
   Widget build(BuildContext context) {
     Widget checkCalendar() {
@@ -416,6 +448,63 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
           MaterialPageRoute(builder: (context) => WebViewCalendar(id:proid)),
         );
         // Do your logic
+      });
+    }
+
+    Widget likeprovider() {
+      return Container(
+        height: 50,
+        width: context.width() / 2,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+        child: (likestatus == "true")
+            ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Liked ', style: boldTextStyle()),
+                Icon(Icons.favorite, color: Colors.red, size: 25)
+                ],
+              )
+            : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Like ', style: boldTextStyle()),
+                Icon(Icons.favorite_border, size: 25),
+              ],
+            )
+
+      ).onTap(() async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final String lgid = prefs.getString('email').toString();
+
+        if(likestatus == "true"){
+          setState(() {
+            likestatus = "false";
+          });
+
+          http.get(
+              Uri.parse(
+                  server + "jtnew_user_deletelikeservice&id=" + info[0]["service_id"]
+                      + "&user=" + lgid
+              ),
+              headers: {"Accept": "application/json"}
+          );
+        }
+        else{
+          setState(() {
+            likestatus = "true";
+          });
+
+          http.get(
+              Uri.parse(
+                  server + "jtnew_user_insertlikeservice&id=" + info[0]["service_id"]
+                      + "&user=" + lgid
+                      + "&provider=" + info[0]["provider_id"]
+              ),
+              headers: {"Accept": "application/json"}
+          );
+        }
       });
     }
 
@@ -575,7 +664,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         alignment: Alignment.center,
         width: context.width() / 2,
         decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
-        child: Text('Login to Book', style: boldTextStyle(color: white)),
+        child: Text('Login to Chat', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
         Navigator.push(
@@ -590,7 +679,8 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       return Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          checkCalendar(),
+          // checkCalendar(),
+          likeprovider(),
           (email != "null")
           ? callNow()
           : loginBtn(),
@@ -606,7 +696,14 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              JTDashboardSreenUser().launch(context, isNewTask: true);
+              if(widget.page == "location-sorting" || widget.page == "category-sorting" || widget.page == "provider-page"){
+                Navigator.pop(
+                  context,
+                );
+              }
+              else{
+                JTDashboardSreenUser().launch(context, isNewTask: true);
+              }
             }
         ),
       ),
@@ -638,151 +735,226 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                               servicename,
                               style: boldTextStyle(size: 18)
                           ),
-                          10.height,
-                          Wrap(
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            (rate != "0.00")
-                            ? JTpriceWidget(double.parse(rate), fontSize: 28, textColor: Color(0xFF0A79DF))
-                            : (min != max)
-                            ? Row(
-                              children: [
-                                JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
-                                Text(
-                                  " to ",
+                          5.height,
+                          Row(
+                            children: [
+                              Text(
+                                  " by ",
+                                style: TextStyle(
+                                  color: Colors.black26,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: (){
+                                  JTProviderPageScreen(
+                                    id: widget.id,
+                                    provider: provider[0]["email"],
+                                  ).launch(context, isNewTask: true);
+                                },
+                                child: Text(
+                                  providername,
                                   style: TextStyle(
+                                    color: Color(0xFF0A79DF),
+                                    fontWeight: FontWeight.w900,
                                     fontSize: 18,
                                   ),
                                 ),
-                                JTpriceWidget(max, fontSize: 28, textColor: Color(0xFF0A79DF)),
-                              ],
-                            )
-                            : JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
-                          ],
-                        ),
-                        10.height,
-                        Row(
-                          children: [
-                            // (double.parse(averagerate).toStringAsFixed(1) != "0.0")
-                            // ? Container(
-                            //   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                            //   padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                            //   child: Row(
-                            //     children: [
-                            //       Icon(Icons.star_border, color: Colors.white, size: 14),
-                            //       8.width,
-                            //       Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                            //     ],
-                            //   ),
-                            // ).onTap(() {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => JTReviewScreenUser(id: widget.id)),
-                            //   );
-                            // })
-                            // : Container(
-                            //   decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                            //   padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                            //   child: Row(
-                            //     children: [
-                            //       Icon(Icons.star_border, color: Colors.white, size: 14),
-                            //       8.width,
-                            //       Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                            //     ],
-                            //   ),
-                            // ),
-                            // 8.width,
-                            // (totalrating != "0")
-                            // ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => JTReviewScreenUser(id: widget.id)),
-                            //   );
-                            // })
-                            // : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                          10.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  (rate != "0.00")
+                                      ? JTpriceWidget(double.parse(rate), fontSize: 28, textColor: Color(0xFF0A79DF))
+                                      : (min != max)
+                                      ? Row(
+                                    children: [
+                                      JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                                      Text(
+                                        " to ",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      JTpriceWidget(max, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                                    ],
+                                  )
+                                      : JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
+                                ],
+                              ),
+                              (likestatus == "true")
+                                  ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: (){
+                                      setState(() {
+                                        if(likestatus == "true"){
+                                          likestatus = "false";
+                                        }
+                                        else{
+                                          likestatus = "true";
+                                        }
+                                      });
+                                    },
+                                    child: Icon(Icons.favorite, color: Colors.red, size: 32),
+                                  ),
+                                  SizedBox(width: 10,)
+                                ],
+                              )
+                                  : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: (){
+                                      setState(() {
+                                        if(likestatus == "true"){
+                                          likestatus = "false";
+                                        }
+                                        else{
+                                          likestatus = "true";
+                                        }
+                                      });
+                                    },
+                                    child: Icon(Icons.favorite_border, size: 30),
+
+                                  ),
+                                  SizedBox(width: 10,)
+                                ],
+                              ),
+                            ],
+                          ),
+
+                        // 10.height,
+                        // Row(
+                        //   children: [
+                        //     (double.parse(averagerate).toStringAsFixed(1) != "0.0")
+                        //     ? Container(
+                        //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                        //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        //       child: Row(
+                        //         children: [
+                        //           Icon(Icons.star_border, color: Colors.white, size: 14),
+                        //           8.width,
+                        //           Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                        //         ],
+                        //       ),
+                        //     ).onTap(() {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => JTReviewScreenUser(id: widget.id)),
+                        //       );
+                        //     })
+                        //     : Container(
+                        //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                        //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                        //       child: Row(
+                        //         children: [
+                        //           Icon(Icons.star_border, color: Colors.white, size: 14),
+                        //           8.width,
+                        //           Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     8.width,
+                        //     (totalrating != "0")
+                        //     ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
+                        //       Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) => JTReviewScreenUser(id: widget.id)),
+                        //       );
+                        //     })
+                        //     : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
+                        //   ],
+                        // ),
                       ],
                       ).paddingAll(16),
-                      Divider(height: 20),
+                      Divider(height: 20,color: Colors.black26),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          (fullname == "" && address == "")
-                          ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Row(
-                                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                                  //   children: [
-                                  //     Text('Please come to', style: primaryTextStyle()),
-                                  //     10.width,
-                                  //     Text('[ add receiver ]', style: boldTextStyle()).expand(),
-                                  //   ],
-                                  // ).expand(),
-                                  // Container(
-                                  //   padding: EdgeInsets.all(4),
-                                  //   decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
-                                  //   child: Text('Add address', style: primaryTextStyle()),
-                                  // ).onTap(() async {
-                                  //   Navigator.push(
-                                  //       context,
-                                  //       MaterialPageRoute(
-                                  //         builder: (context) => JTChangeAddressScreen(
-                                  //           id: widget.id,
-                                  //           page: widget.page,
-                                  //         ),
-                                  //       ));
-                                  // }),
-                                ],
-                              ),
-                              4.height,
-                              Text(address, style: secondaryTextStyle()),
-                              16.height,
-                              Divider(height: 0),
-                            ],
-                          )
-                          : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: [
-                              //     Row(
-                              //       crossAxisAlignment: CrossAxisAlignment.start,
-                              //       children: [
-                              //         Text('Please come to', style: primaryTextStyle()),
-                              //         10.width,
-                              //         Text(fullname, style: boldTextStyle()).expand(),
-                              //       ],
-                              //     ).expand(),
-                              //     Container(
-                              //       padding: EdgeInsets.all(4),
-                              //       decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
-                              //       child: Text('Change', style: primaryTextStyle()),
-                              //     ).onTap(() async {
-                              //       Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //             builder: (context) => JTChangeAddressScreen(
-                              //               id: widget.id,
-                              //               page: widget.page,
-                              //             ),
-                              //           ));
-                              //     }),
-                              //   ],
-                              // ),
-                              // 4.height,
-                              // Text(address, style: secondaryTextStyle()),
-                              // 16.height,
-                              // Divider(height: 0),
-                            ],
-                          ),
+                          // (fullname == "" && address == "")
+                          // ? Column(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   children: [
+                          //     Row(
+                          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //       children: [
+                          //         Row(
+                          //           crossAxisAlignment: CrossAxisAlignment.start,
+                          //           children: [
+                          //             Text('Please come to', style: primaryTextStyle()),
+                          //             10.width,
+                          //             Text('[ add receiver ]', style: boldTextStyle()).expand(),
+                          //           ],
+                          //         ).expand(),
+                          //         Container(
+                          //           padding: EdgeInsets.all(4),
+                          //           decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                          //           child: Text('Add address', style: primaryTextStyle()),
+                          //         ).onTap(() async {
+                          //           Navigator.push(
+                          //               context,
+                          //               MaterialPageRoute(
+                          //                 builder: (context) => JTChangeAddressScreen(
+                          //                   id: widget.id,
+                          //                   page: widget.page,
+                          //                 ),
+                          //               ));
+                          //         }),
+                          //       ],
+                          //     ),
+                          //     4.height,
+                          //     Text(address, style: secondaryTextStyle()),
+                          //     16.height,
+                          //     Divider(height: 0),
+                          //   ],
+                          // )
+                          // : Column(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   children: [
+                          //     Row(
+                          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //       children: [
+                          //         Row(
+                          //           crossAxisAlignment: CrossAxisAlignment.start,
+                          //           children: [
+                          //             Text('Please come to', style: primaryTextStyle()),
+                          //             10.width,
+                          //             Text(fullname, style: boldTextStyle()).expand(),
+                          //           ],
+                          //         ).expand(),
+                          //         Container(
+                          //           padding: EdgeInsets.all(4),
+                          //           decoration: BoxDecoration(border: Border.all(color: appColorPrimary), borderRadius: BorderRadius.circular(3)),
+                          //           child: Text('Change', style: primaryTextStyle()),
+                          //         ).onTap(() async {
+                          //           Navigator.push(
+                          //               context,
+                          //               MaterialPageRoute(
+                          //                 builder: (context) => JTChangeAddressScreen(
+                          //                   id: widget.id,
+                          //                   page: widget.page,
+                          //                 ),
+                          //               ));
+                          //         }),
+                          //       ],
+                          //     ),
+                          //     4.height,
+                          //     Text(address, style: secondaryTextStyle()),
+                          //     16.height,
+                          //     Divider(height: 0),
+                          //   ],
+                          // ),
                           Padding(
                             padding: EdgeInsets.fromLTRB(5, 20, 10, 30),
                             child: Text(

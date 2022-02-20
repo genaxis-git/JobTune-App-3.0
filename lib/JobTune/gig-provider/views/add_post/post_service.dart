@@ -660,7 +660,7 @@ class _PostServiceState extends State<PostService> {
                 controller: locationCont,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
-                  labelText: 'Preferred Location',
+                  labelText: 'Preferred  Location (city names, state names..)',
                   contentPadding: EdgeInsets.all(16),
                   labelStyle: secondaryTextStyle(),
                   border: OutlineInputBorder(),

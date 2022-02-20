@@ -28,8 +28,13 @@ import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 
 class JTSearchingResultUser extends StatefulWidget {
-  const JTSearchingResultUser({Key? key, required this.searchkey}) : super(key: key);
+  const JTSearchingResultUser({
+    Key? key,
+    required this.searchkey,
+    required this.page
+  }) : super(key: key);
   final String searchkey;
+  final String page;
   @override
   _JTSearchingResultUserState createState() => _JTSearchingResultUserState();
 }
@@ -106,7 +111,9 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
                         padding: EdgeInsets.all(17),
                         child: Column(
                           children: [
-                            Text('We have '+servicelist.length.toString()+' results from searching  "' + widget.searchkey + '"...', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black87, fontFamily: "Bold"), maxLines: 3),
+                            (widget.page == "gig-service")
+                            ? Text('We have '+servicelist.length.toString()+' results from searching  "' + widget.searchkey + '"...', textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black87, fontFamily: "Bold"), maxLines: 3)
+                            : Text('Services available in ' + widget.searchkey, textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black87, fontFamily: "Bold"), maxLines: 3),
                             Text("\nSelect a service to view details", textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: Colors.black54), maxLines: 3),
                           ],
                         ),
@@ -165,6 +172,7 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
                                             context,
                                             MaterialPageRoute(builder: (context) => JTSearchingResultUser(
                                               searchkey: searchCont.text,
+                                              page: widget.page,
                                             )),
                                           );
                                         },
@@ -223,11 +231,14 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
                         )
                     ).onTap(() {
                       // Do your logic
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => JTDashboardSreenUser()),
-                      );
+                      if(widget.page == "gig-service"){
+                        JTDashboardSreenUser().launch(context, isNewTask: true);
+                      }
+                      else{
+                        Navigator.pop(
+                          context,
+                        );
+                      }
                     })
                   ],
                 )
@@ -285,7 +296,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   MaterialPageRoute(
                       builder: (context) => JTServiceDetailScreen(
                         id: servicelist[index]["service_id"],
-                        page: "detail"
+                        page: "location-sorting"
                       )),
                 );
               },
@@ -301,7 +312,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                       child: Stack(
                         children: [
                           Image.network(
-                            "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                            image + servicelist[index]["profile_pic"],
                             fit: BoxFit.cover,
                             height: 110,
                             width: 126,

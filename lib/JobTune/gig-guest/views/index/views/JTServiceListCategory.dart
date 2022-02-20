@@ -517,7 +517,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                     MaterialPageRoute(
                         builder: (context) => JTServiceDetailScreen(
                           id: servicelist[index]["service_id"],
-                          page: "detail"
+                          page: "category-sorting"
                         )),
                   );
                 },
@@ -579,7 +579,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                   MaterialPageRoute(
                       builder: (context) => JTServiceDetailScreen(
                         id: servicelist[index]["service_id"],
-                        page: "detail",
+                        page: "category-sorting",
                       )),
                 );
               },
@@ -782,7 +782,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
                   MaterialPageRoute(
                       builder: (context) => JTServiceDetailScreen(
                         id: otherlist[index]["service_id"],
-                        page: "detail"
+                        page: "category-sorting"
                       )),
                 );
               },

@@ -52,7 +52,7 @@ class T8ButtonState extends State<T8Button> {
       onTap: widget.onPressed,
       child: Container(
           decoration: boxDecoration(bgColor: t8_colorPrimary, radius: 16),
-          padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+          padding: EdgeInsets.fromLTRB(16, 4, 16, 5),
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[

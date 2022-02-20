@@ -379,37 +379,37 @@ List<Db5CategoryData> generateCategories() {
   return categories;
 }
 
-List<Db6BestDestinationData> generateBestDestination() {
-  List<Db6BestDestinationData> bestDestinationData = [];
-
-  Db6BestDestinationData model = Db6BestDestinationData();
-  model.name = "Malawi";
-  model.rating = "4";
-  model.image = db5_item1;
-
-  Db6BestDestinationData model2 = Db6BestDestinationData();
-  model2.name = "Japan";
-  model2.rating = "2";
-  model2.image = db5_item2;
-
-  Db6BestDestinationData model3 = Db6BestDestinationData();
-  model3.name = "London";
-  model3.rating = "1";
-  model3.image = db5_item3;
-
-  Db6BestDestinationData model4 = Db6BestDestinationData();
-  model4.name = "San Fransisco";
-  model4.rating = "5";
-  model4.image = db5_item4;
-
-  bestDestinationData.add(model);
-  bestDestinationData.add(model2);
-  bestDestinationData.add(model3);
-  bestDestinationData.add(model4);
-  bestDestinationData.add(model);
-  bestDestinationData.add(model);
-  return bestDestinationData;
-}
+// List<Db6BestDestinationData> generateBestDestination() {
+//   List<Db6BestDestinationData> bestDestinationData = [];
+//
+//   Db6BestDestinationData model = Db6BestDestinationData();
+//   model.name = "Malawi";
+//   model.rating = "4";
+//   model.image = db5_item1;
+//
+//   Db6BestDestinationData model2 = Db6BestDestinationData();
+//   model2.name = "Japan";
+//   model2.rating = "2";
+//   model2.image = db5_item2;
+//
+//   Db6BestDestinationData model3 = Db6BestDestinationData();
+//   model3.name = "London";
+//   model3.rating = "1";
+//   model3.image = db5_item3;
+//
+//   Db6BestDestinationData model4 = Db6BestDestinationData();
+//   model4.name = "San Fransisco";
+//   model4.rating = "5";
+//   model4.image = db5_item4;
+//
+//   bestDestinationData.add(model);
+//   bestDestinationData.add(model2);
+//   bestDestinationData.add(model);
+//   bestDestinationData.add(model3);
+//   bestDestinationData.add(model4);
+//   bestDestinationData.add(model);
+//   return bestDestinationData;
+// }
 
 List<DB6Service> getTopLaundryService() {
   List<DB6Service> categories = [];

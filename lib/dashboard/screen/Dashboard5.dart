@@ -28,7 +28,7 @@ class Dashboard5State extends State<Dashboard5> {
   void initState() {
     super.initState();
     mListings = generateCategories();
-    mListings1 = generateBestDestination();
+    // mListings1 = generateBestDestination();
     _selectedIndex = 0;
   }
 
@@ -136,7 +136,7 @@ class Dashboard5State extends State<Dashboard5> {
                           child: Stack(
                             alignment: Alignment.bottomCenter,
                             children: <Widget>[
-                              Image.asset(mListings1[index].image),
+                              Image.asset(mListings1[index].image.toString()),
                               Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Column(
@@ -144,7 +144,7 @@ class Dashboard5State extends State<Dashboard5> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(mListings1[index].name, style: primaryTextStyle(color: white)),
+                                    Text(mListings1[index].name.toString(), style: primaryTextStyle(color: white)),
                                     Container(
                                         child: Padding(
                                           padding: EdgeInsets.fromLTRB(10, 4, 10, 4),

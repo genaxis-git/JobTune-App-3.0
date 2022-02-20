@@ -1,32 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:prokit_flutter/Banking/utils/BankingContants.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTApps.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
-import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDashboardProductWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
+import 'package:prokit_flutter/dashboard/model/db5/Db5Model.dart';
+import 'package:prokit_flutter/dashboard/utils/DbColors.dart';
+import 'package:prokit_flutter/dashboard/utils/DbDataGenerator.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSearchScreen.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 import 'JTDashboardScreenGuest.dart';
-import 'JTProductDetailScreenGuest.dart';
 import 'JTServiceListCategory.dart';
 
 class JTDashboardWidgetGuest extends StatefulWidget {
@@ -41,7 +36,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   List<Widget> pages = [];
   List<CategoryModel> categories = [];
-
+  List<Db6BestDestinationData> mListings1 = [];
   int selectedIndex = 0;
 
   late List<NewVacancies> mListings3;
@@ -132,6 +127,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   List category = [];
   Future<void> readCategory() async {
+    print(server + "jtnew_user_selectavailablecategory");
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selectavailablecategory"),
@@ -173,6 +169,78 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     }
   }
 
+  List taggings = [];
+  List tags = [];
+  List place = [];
+  List placecount = [];
+  Future<void> serviceList() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectfeatured&city=&state=&country="
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      taggings = json.decode(response.body);
+    });
+
+    for(var m=0;m<taggings.length;m++) {
+      if(taggings[m]["service_type"] == "Remote"){
+        if(tags.contains("WFH") == false){
+          tags.add("WFH");
+          countService("Online/ Remote/ From home", "country/remote.jpg");
+        }
+      }
+      else{
+        if(tags.contains(taggings[m]["state"]) == false){
+          tags.add(taggings[m]["state"]);
+          http.Response response = await http.get(
+              Uri.parse(
+                  server + "jtnew_user_selectimage&place=" + taggings[m]["state"]
+              ),
+              headers: {"Accept": "application/json"}
+          );
+
+          this.setState(() {
+            place = json.decode(response.body);
+          });
+
+          countService(taggings[m]["state"],place[0]["place_image"]);
+        }
+      }
+    }
+  }
+
+  Future<void> countService(states,img) async {
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_filterservice&keyword=" + states
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      placecount = json.decode(response.body);
+    });
+
+    if(states == "Wilayah Persekutuan Kuala Lumpur"){
+      states = "Kuala Lumpur";
+    }
+    if(states == "Wilayah Persekutuan Putrajaya"){
+      states = "Putrajaya";
+    }
+    if(states == "Wilayah Persekutuan Labuan"){
+      states = "Labuan";
+    }
+    if(states == "Online/ Remote/ From home"){
+      states = "WFH";
+    }
+
+    mListings1.add(Db6BestDestinationData(name: states, image: image + img, rating: placecount.length.toString()));
+
+  }
+
+
   // functions ends //
 
   @override
@@ -180,6 +248,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     super.initState();
     mListings3 = getJobList();
     this.checkProfile();
+    this.serviceList();
     init();
     Timer.periodic(Duration(seconds: 4), (Timer timer) {
       if (_currentPage < 7) {
@@ -380,7 +449,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 450.0,
+              expandedHeight: 420.0,
               floating: true,
               pinned: false,
               snap: false,
@@ -454,12 +523,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                                   Text(' Services Categories', style: boldTextStyle()).paddingAll(8),
                                   Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
                                     appStore.setDrawerItemIndex(-1);
-
-                                    if (isMobile) {
-                                      JTDashboardSreenUser().launch(context, isNewTask: true);
-                                    } else {
-                                      //                                  DTDashboardScreen().launch(context, isNewTask: true);
-                                    }
+                                    JTDashboardSreenUser().launch(context, isNewTask: true);
                                   }),
                                 ],
                               ),
@@ -528,20 +592,15 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
                               ],
                             ),
                           ),
-                          10.height,
+                          30.height,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Text(' Product Listing', style: boldTextStyle()).paddingAll(8),
-                              Text(' Service Listing', style: boldTextStyle()).paddingAll(8),
+                              Text('  Across Malaysia', style: boldTextStyle()).paddingAll(8),
                               Text('View All    ', style: TextStyle(color: Colors.blueGrey ,fontSize: 15)).onTap(() {
                                 appStore.setDrawerItemIndex(-1);
-
-                                if (isMobile) {
-                                  JTDashboardSreenUser().launch(context, isNewTask: true);
-                                } else {
-                                  //                                  DTDashboardScreen().launch(context, isNewTask: true);
-                                }
+                                JTDashboardSreenUser().launch(context, isNewTask: true);
                               }),
                             ],
                           ),
@@ -554,9 +613,77 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
           ];
         },
         // body: Container(height: 390, child: JTProductList()),
+        // body: Container(
+        //   height: 500,
+        //   child: JTServiceListUser(),
+        // ),
         body: Container(
-          height: 500,
-          child: JTServiceListUser(),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          margin: EdgeInsets.only(left: 16, right: 16),
+          child: StaggeredGridView.countBuilder(
+            crossAxisCount: 4,
+            primary: false,
+            mainAxisSpacing: 16.0,
+            crossAxisSpacing: 16.0,
+            staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+            itemCount: mListings1.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (BuildContext context, int index) => Container(
+              margin: EdgeInsets.only(left: 4, bottom: 4, top: 4),
+              child: InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => JTSearchingResultUser(
+                      searchkey: mListings1[index].name.toString(),
+                      page: "gig-guest",
+                    )),
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      Image.network(mListings1[index].image.toString()),
+                      Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(mListings1[index].name.toString(), style: primaryTextStyle(color: Colors.white)),
+                            Container(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                      children: [
+                                        WidgetSpan(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 4.0),
+                                            child: Icon(Icons.people_outline, color: db5_yellow, size: 16),
+                                          ),
+                                        ),
+                                        TextSpan(text: mListings1[index].rating, style: secondaryTextStyle(size: 14, color: db5_white, fontFamily: fontMedium)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                decoration: BoxDecoration(color: db5_black_trans, borderRadius: BorderRadius.all(Radius.circular(12)))
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       )
     );
