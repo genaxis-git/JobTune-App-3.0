@@ -267,9 +267,6 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
-    print("ayam");
-    print(service);
-    print(server + "jtnew_provider_selecttotallike&id="+ id);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_provider_selecttotallike&id="+ id
@@ -286,6 +283,31 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
       }
     }
 
+    readFollows(id);
+  }
+
+  List follows = [];
+  Future<void> readFollows(id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectfollowing&id="+ id
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      follows = json.decode(response.body);
+    });
+
+    for(var m=0;m<follows.length;m++){
+      if(follows[m]["user"] == lgid){
+        setState(() {
+          followstatus = "true";
+        });
+      }
+    }
   }
 
   @override
@@ -431,6 +453,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
   }
 
   String likestatus = "false";
+  String followstatus = "false";
 
   @override
   Widget build(BuildContext context) {
@@ -500,6 +523,62 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
               Uri.parse(
                   server + "jtnew_user_insertlikeservice&id=" + info[0]["service_id"]
                       + "&user=" + lgid
+                      + "&provider=" + info[0]["provider_id"]
+              ),
+              headers: {"Accept": "application/json"}
+          );
+        }
+      });
+    }
+
+    Widget followprovider() {
+      return Container(
+        height: 50,
+        width: context.width() / 2,
+        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(color: appStore.scaffoldBackground, boxShadow: defaultBoxShadow(spreadRadius: 3.0)),
+        child: (followstatus == "true")
+            ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Following ', style: boldTextStyle()),
+                Icon(Icons.check_rounded, color: Colors.blueAccent, size: 21)
+                ],
+              )
+            : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Follow  ', style: boldTextStyle()),
+                Icon(Icons.person_add_alt_1, size: 21),
+              ],
+            )
+
+      ).onTap(() async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final String lgid = prefs.getString('email').toString();
+
+        if(followstatus == "true"){
+          setState(() {
+            followstatus = "false";
+          });
+
+          http.get(
+              Uri.parse(
+                  server + "jtnew_user_deletefollowing&user=" + lgid
+                      + "&provider=" + info[0]["provider_id"]
+              ),
+              headers: {"Accept": "application/json"}
+          );
+        }
+        else{
+          setState(() {
+            followstatus = "true";
+          });
+
+          http.get(
+              Uri.parse(
+                  server + "jtnew_user_insertfollowing&&user=" + lgid
                       + "&provider=" + info[0]["provider_id"]
               ),
               headers: {"Accept": "application/json"}
@@ -680,7 +759,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         mainAxisSize: MainAxisSize.max,
         children: [
           // checkCalendar(),
-          likeprovider(),
+          followprovider(),
           (email != "null")
           ? callNow()
           : loginBtn(),
@@ -794,15 +873,21 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   InkWell(
-                                    onTap: (){
+                                    onTap: () async{
+                                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      final String lgid = prefs.getString('email').toString();
+
                                       setState(() {
-                                        if(likestatus == "true"){
-                                          likestatus = "false";
-                                        }
-                                        else{
-                                          likestatus = "true";
-                                        }
+                                        likestatus = "false";
                                       });
+
+                                      http.get(
+                                          Uri.parse(
+                                              server + "jtnew_user_deletelikeservice&id=" + info[0]["service_id"]
+                                                  + "&user=" + lgid
+                                          ),
+                                          headers: {"Accept": "application/json"}
+                                      );
                                     },
                                     child: Icon(Icons.favorite, color: Colors.red, size: 32),
                                   ),
@@ -813,15 +898,22 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   InkWell(
-                                    onTap: (){
+                                    onTap: () async{
+                                      final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                      final String lgid = prefs.getString('email').toString();
+
                                       setState(() {
-                                        if(likestatus == "true"){
-                                          likestatus = "false";
-                                        }
-                                        else{
-                                          likestatus = "true";
-                                        }
+                                        likestatus = "true";
                                       });
+
+                                      http.get(
+                                          Uri.parse(
+                                              server + "jtnew_user_insertlikeservice&id=" + info[0]["service_id"]
+                                                  + "&user=" + lgid
+                                                  + "&provider=" + info[0]["provider_id"]
+                                          ),
+                                          headers: {"Accept": "application/json"}
+                                      );
                                     },
                                     child: Icon(Icons.favorite_border, size: 30),
 

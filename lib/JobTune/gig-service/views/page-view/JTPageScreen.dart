@@ -75,7 +75,24 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
     this.setState(() {
       likes = json.decode(response.body);
     });
+  }
 
+  List follows = [];
+  String nums = "0";
+  Future<void> readFollows() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectfollowing&id="+widget.provider
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      follows = json.decode(response.body);
+    });
+
+    setState(() {
+      nums = follows.length.toString();
+    });
   }
 
   String img = "no profile.png";
@@ -121,6 +138,7 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
     this.readProvider();
     this.checkFeatured();
     this.readLikes();
+    this.readFollows();
   }
 
   @override
@@ -128,6 +146,7 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
     changeStatusColor(appStore.appBarColor!);
     var width = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: appStore.scaffoldBackground,
       body: DefaultTabController(
@@ -287,7 +306,7 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
                     unselectedLabelColor: appStore.textPrimaryColor,
                     tabs: [
                       Tab(text: "Posts"),
-                      Tab(text: "Followers"),
+                      Tab(text: "Followers (" + nums + ")"),
                       Tab(text: "Tags"),
                     ],
                   ),
@@ -303,8 +322,7 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
               ),
               Container(
                 margin: EdgeInsets.only(left: 8, top: 20, right: 8),
-
-
+                child: JTFollowers(searchkey: widget.provider,),
               ),
               Container(
                 margin: EdgeInsets.only(left: 3, top: 0, right: 3),
@@ -459,6 +477,122 @@ class JTPostListState extends State<JTPostList> {
                     Divider(color: t10_view_color, height: 0.5)
                   ],
                 ))
+          );
+        });
+  }
+}
+
+
+class JTFollowers extends StatefulWidget {
+  static String tag = '/JTFollowers';
+
+  const JTFollowers({
+    Key? key,
+    required this.searchkey,
+  }) : super(key: key);
+  final String searchkey;
+
+  @override
+  JTFollowersState createState() => JTFollowersState();
+}
+
+class JTFollowersState extends State<JTFollowers> {
+  late List<T10Product> mList;
+
+  // starts function //
+
+  List follows = [];
+  Future<void> readFollows() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectfollowing&id="+widget.searchkey
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      follows = json.decode(response.body);
+    });
+  }
+
+  // ends function //
+
+  @override
+  void initState() {
+    super.initState();
+    this.readFollows();
+    mList = getProducts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    changeStatusColor(appStore.appBarColor!);
+    var width = MediaQuery.of(context).size.width;
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: follows == null ? 0 : follows.length,
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+              onTap: (){
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => JTServiceDetailScreen(
+                //           id: follows[index]["service_id"],
+                //           page: "provider-page"
+                //       )),
+                // );
+              },
+              child: Container(
+                  margin: EdgeInsets.only(left: spacing_standard_new, right: spacing_standard_new, bottom: spacing_standard_new),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Image.network(
+                                image + follows[index]["profile_pic"],
+                                height: 80,
+                                fit: BoxFit.cover)
+                                .cornerRadiusWithClipRRect(50),
+                          ),
+                          SizedBox(
+                            width: spacing_standard_new,
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(follows[index]["first_name"] + " " + follows[index]["last_name"],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                        color: appStore.textSecondaryColor
+                                    )
+                                ),
+                                Text(follows[index]["city"] + ", " + follows[index]["state"],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                        color: appStore.textSecondaryColor,
+                                        fontSize: 17
+                                    )
+                                ),
+                                3.height,
+                                10.height,
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: spacing_standard_new),
+                      Divider(color: Colors.blueGrey, height: 0.5)
+                    ],
+                  ))
           );
         });
   }
