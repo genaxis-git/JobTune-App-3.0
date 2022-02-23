@@ -267,6 +267,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
+    print(server + "jtnew_provider_selecttotallike&id="+ id);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_provider_selecttotallike&id="+ id
@@ -558,31 +559,38 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final String lgid = prefs.getString('email').toString();
 
-        if(followstatus == "true"){
-          setState(() {
-            followstatus = "false";
-          });
+        if(lgid != "null"){
+          if(followstatus == "true"){
+            setState(() {
+              followstatus = "false";
+            });
 
-          http.get(
-              Uri.parse(
-                  server + "jtnew_user_deletefollowing&user=" + lgid
-                      + "&provider=" + info[0]["provider_id"]
-              ),
-              headers: {"Accept": "application/json"}
-          );
+            http.get(
+                Uri.parse(
+                    server + "jtnew_user_deletefollowing&user=" + lgid
+                        + "&provider=" + info[0]["provider_id"]
+                ),
+                headers: {"Accept": "application/json"}
+            );
+          }
+          else{
+            setState(() {
+              followstatus = "true";
+            });
+
+            http.get(
+                Uri.parse(
+                    server + "jtnew_user_insertfollowing&&user=" + lgid
+                        + "&provider=" + info[0]["provider_id"]
+                ),
+                headers: {"Accept": "application/json"}
+            );
+          }
         }
         else{
-          setState(() {
-            followstatus = "true";
-          });
-
-          http.get(
-              Uri.parse(
-                  server + "jtnew_user_insertfollowing&&user=" + lgid
-                      + "&provider=" + info[0]["provider_id"]
-              ),
-              headers: {"Accept": "application/json"}
-          );
+          showInDialog(context,
+              child: AlertLoginFirst(),
+              backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
         }
       });
     }
@@ -877,17 +885,24 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                       final SharedPreferences prefs = await SharedPreferences.getInstance();
                                       final String lgid = prefs.getString('email').toString();
 
-                                      setState(() {
-                                        likestatus = "false";
-                                      });
+                                      if(lgid != "null"){
+                                        setState(() {
+                                          likestatus = "false";
+                                        });
 
-                                      http.get(
-                                          Uri.parse(
-                                              server + "jtnew_user_deletelikeservice&id=" + info[0]["service_id"]
-                                                  + "&user=" + lgid
-                                          ),
-                                          headers: {"Accept": "application/json"}
-                                      );
+                                        http.get(
+                                            Uri.parse(
+                                                server + "jtnew_user_deletelikeservice&id=" + info[0]["service_id"]
+                                                    + "&user=" + lgid
+                                            ),
+                                            headers: {"Accept": "application/json"}
+                                        );
+                                      }
+                                      else{
+                                        showInDialog(context,
+                                            child: AlertLoginFirst(),
+                                            backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                                      }
                                     },
                                     child: Icon(Icons.favorite, color: Colors.red, size: 32),
                                   ),
@@ -902,18 +917,25 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                       final SharedPreferences prefs = await SharedPreferences.getInstance();
                                       final String lgid = prefs.getString('email').toString();
 
-                                      setState(() {
-                                        likestatus = "true";
-                                      });
+                                      if(lgid != "null"){
+                                        setState(() {
+                                          likestatus = "true";
+                                        });
 
-                                      http.get(
-                                          Uri.parse(
-                                              server + "jtnew_user_insertlikeservice&id=" + info[0]["service_id"]
-                                                  + "&user=" + lgid
-                                                  + "&provider=" + info[0]["provider_id"]
-                                          ),
-                                          headers: {"Accept": "application/json"}
-                                      );
+                                        http.get(
+                                            Uri.parse(
+                                                server + "jtnew_user_insertlikeservice&id=" + info[0]["service_id"]
+                                                    + "&user=" + lgid
+                                                    + "&provider=" + info[0]["provider_id"]
+                                            ),
+                                            headers: {"Accept": "application/json"}
+                                        );
+                                      }
+                                      else{
+                                        showInDialog(context,
+                                            child: AlertLoginFirst(),
+                                            backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+                                      }
                                     },
                                     child: Icon(Icons.favorite_border, size: 30),
 
@@ -1624,6 +1646,134 @@ class _AlertCompleteProfileState extends State<AlertCompleteProfile> {
                           padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                           child: Center(
                             child: Text("Go to Profile", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              16.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AlertLoginFirst extends StatefulWidget {
+  @override
+  _AlertLoginFirstState createState() => _AlertLoginFirstState();
+}
+
+class _AlertLoginFirstState extends State<AlertLoginFirst> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.close, color: appStore.iconColor),
+                    onPressed: () {
+                      finish(context);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      "https://jobtune.ai/gig/JobTune/assets/mobile/resized/hr.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Login with Us! ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ],
+                  ),
+                  15.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "We need you to login with us first so that our provider would know who are their future client.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: Colors.redAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Later", style: boldTextStyle(color: white)),
+                          ),
+                        ),
+                      ),
+                      5.width,
+                      GestureDetector(
+                        onTap: () {
+                          finish(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => JTSignInScreen()),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Center(
+                            child: Text("Login Now", style: boldTextStyle(color: white)),
                           ),
                         ),
                       ),

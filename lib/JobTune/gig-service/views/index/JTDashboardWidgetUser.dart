@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -301,7 +303,7 @@ class _JTDashboardWidgetUserState extends State<JTDashboardWidgetUser> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: (clocking.length > 0) ? 520.0 : 220.0,
+              expandedHeight: (clocking.length > 0) ? 520.0 : (Platform.isIOS) ? (displaystatus == "false") ? 220.0 : 275.0 : 260,
               floating: true,
               pinned: false,
               snap: false,

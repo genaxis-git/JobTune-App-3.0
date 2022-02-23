@@ -3,28 +3,18 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_svg/svg.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTServiceListCategory.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/theme10/models/T10Models.dart';
 import 'package:prokit_flutter/theme10/utils/T10Colors.dart';
 import 'package:prokit_flutter/theme10/utils/T10Constant.dart';
 import 'package:prokit_flutter/theme10/utils/T10DataGenerator.dart';
-import 'package:prokit_flutter/theme10/utils/T10Images.dart';
 import 'package:prokit_flutter/theme10/utils/T10Strings.dart';
-import 'package:prokit_flutter/theme10/utils/T10Widget.dart';
-import 'package:prokit_flutter/theme3/utils/T3Images.dart';
 import 'package:prokit_flutter/theme3/utils/colors.dart';
-import 'package:prokit_flutter/theme3/utils/strings.dart';
 import 'package:prokit_flutter/theme8/utils/T8Colors.dart';
-import 'package:prokit_flutter/theme8/utils/T8Widget.dart';
 
 import '../../../../main.dart';
 import 'JTServiceTagsScreen.dart';
@@ -93,6 +83,8 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
     setState(() {
       nums = follows.length.toString();
     });
+
+    finish(context);
   }
 
   String img = "no profile.png";
@@ -103,7 +95,6 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
   String desc = " ";
   List provider = [];
   Future<void> readProvider() async {
-
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_provider_selectprofile&lgid=" + widget.provider),
@@ -137,8 +128,37 @@ class JTProviderPageScreenState extends State<JTProviderPageScreen> {
     mList = getProfile();
     this.readProvider();
     this.checkFeatured();
-    this.readLikes();
     this.readFollows();
+    this.readLikes();
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appStore.scaffoldBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          contentPadding: EdgeInsets.all(0.0),
+          insetPadding: EdgeInsets.symmetric(horizontal: 100),
+          content: Padding(
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  backgroundColor: Color(0xffD6D6D6),
+                  strokeWidth: 4,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                ),
+                SizedBox(height: 16),
+                Text("Loading...", style: primaryTextStyle(color: appStore.textPrimaryColor)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -549,9 +569,17 @@ class JTFollowersState extends State<JTFollowers> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Expanded(
+                          (follows[index]["profile_pic"] != "")
+                          ? Expanded(
                             child: Image.network(
                                 image + follows[index]["profile_pic"],
+                                height: 80,
+                                fit: BoxFit.cover)
+                                .cornerRadiusWithClipRRect(50),
+                          )
+                          : Expanded(
+                            child: Image.network(
+                                image + "no profile.png",
                                 height: 80,
                                 fit: BoxFit.cover)
                                 .cornerRadiusWithClipRRect(50),
@@ -564,7 +592,17 @@ class JTFollowersState extends State<JTFollowers> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(follows[index]["first_name"] + " " + follows[index]["last_name"],
+                                (follows[index]["first_name"] + " " + follows[index]["last_name"] != " ")
+                                ? Text(follows[index]["first_name"] + " " + follows[index]["last_name"],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                        color: appStore.textSecondaryColor
+                                    )
+                                )
+                                : Text("unknown",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
@@ -573,7 +611,17 @@ class JTFollowersState extends State<JTFollowers> {
                                         color: appStore.textSecondaryColor
                                     )
                                 ),
-                                Text(follows[index]["city"] + ", " + follows[index]["state"],
+                                (follows[index]["city"] + ", " + follows[index]["state"] != ", ")
+                                ? Text(follows[index]["city"] + ", " + follows[index]["state"],
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                        color: appStore.textSecondaryColor,
+                                        fontSize: 17
+                                    )
+                                )
+                                : Text("unknown",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(

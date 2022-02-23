@@ -264,7 +264,7 @@ class _JTAccountServiceScreenState extends State<JTAccountServiceScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) => JTDashboardSreenUser()),

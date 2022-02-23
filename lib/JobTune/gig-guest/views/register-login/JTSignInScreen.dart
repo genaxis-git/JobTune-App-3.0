@@ -132,11 +132,12 @@ class _JTSignInScreenState extends State<JTSignInScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => JTDashboardScreenGuest()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => JTDashboardScreenGuest()),
+              // );
+              Navigator.pop(context);
             }),
       ),
       body: Center(

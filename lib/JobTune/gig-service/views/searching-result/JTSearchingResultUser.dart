@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'dart:convert';
-import 'dart:math';
 import'dart:io' show Platform;
 import 'package:http/http.dart' as http;
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardWidgetUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
-import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTProductModel.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCartScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTCategoryDetailScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSearchScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTSignInScreen.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
-import 'package:prokit_flutter/defaultTheme/utils/DTWidgets.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
-import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 
 class JTSearchingResultUser extends StatefulWidget {
@@ -61,7 +49,6 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
 
   List servicelist = [];
   Future<void> checkFeatured() async {
-    
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_filterservice&keyword="+widget.searchkey
@@ -77,6 +64,35 @@ class _JTSearchingResultUserState extends State<JTSearchingResultUser> {
   void initState() {
     super.initState();
     this.checkFeatured();
+  }
+
+  _onLoading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appStore.scaffoldBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          contentPadding: EdgeInsets.all(0.0),
+          insetPadding: EdgeInsets.symmetric(horizontal: 100),
+          content: Padding(
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  backgroundColor: Color(0xffD6D6D6),
+                  strokeWidth: 4,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                ),
+                SizedBox(height: 16),
+                Text("Loading...", style: primaryTextStyle(color: appStore.textPrimaryColor)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // functions ends //

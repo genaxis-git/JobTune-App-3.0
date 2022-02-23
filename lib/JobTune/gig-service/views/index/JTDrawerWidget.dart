@@ -169,13 +169,13 @@ class _JTDrawerWidgetUserState extends State<JTDrawerWidgetUser> {
                   ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(16),
-                        child: Text('For Employer',
-                            style: boldTextStyle(color: Colors.black)),
-                      ).onTap(() {
-                        gotoEmployer();
-                      }),
+                      // Container(
+                      //   padding: EdgeInsets.all(16),
+                      //   child: Text('For Employer',
+                      //       style: boldTextStyle(color: Colors.black)),
+                      // ).onTap(() {
+                      //   gotoEmployer();
+                      // }),
                       Container(
                         padding: EdgeInsets.all(16),
                         child: Text('Log In/ Create account', style: boldTextStyle(color: Colors.black)),

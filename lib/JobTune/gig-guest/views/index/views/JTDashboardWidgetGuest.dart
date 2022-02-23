@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSear
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/dashboard/model/db5/Db5Model.dart';
 import 'package:prokit_flutter/dashboard/utils/DbColors.dart';
-import 'package:prokit_flutter/dashboard/utils/DbDataGenerator.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
@@ -45,8 +45,11 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
 
   List profile = [];
   Future<void> checkProfile() async {
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
+
+    _onLoading();
 
     if(lgid != "null") {
       http.Response response = await http.get(
@@ -209,10 +212,10 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         }
       }
     }
+    finish(context); //stop the loading
   }
 
   Future<void> countService(states,img) async {
-
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_filterservice&keyword=" + states
@@ -237,15 +240,15 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     }
 
     mListings1.add(Db6BestDestinationData(name: states, image: image + img, rating: placecount.length.toString()));
-
   }
 
 
-  // functions ends //
+  // functions ends //;
 
   @override
   void initState() {
     super.initState();
+    // _onLoading();
     mListings3 = getJobList();
     this.checkProfile();
     this.serviceList();
@@ -263,6 +266,35 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         curve: Curves.easeIn,
       );
     });
+  }
+
+  _onLoading() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: appStore.scaffoldBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          contentPadding: EdgeInsets.all(0.0),
+          insetPadding: EdgeInsets.symmetric(horizontal: 100),
+          content: Padding(
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(
+                  backgroundColor: Color(0xffD6D6D6),
+                  strokeWidth: 4,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                ),
+                SizedBox(height: 16),
+                Text("Loading...", style: primaryTextStyle(color: appStore.textPrimaryColor)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   init() async {
@@ -435,6 +467,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
+
   }
 
   int _currentPage = 0;
@@ -449,7 +482,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              expandedHeight: 420.0,
+              expandedHeight: (Platform.isIOS) ? (displaystatus == "false") ? 420.0 : 466.0 : 455,
               floating: true,
               pinned: false,
               snap: false,
@@ -630,7 +663,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
             itemCount: mListings1.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) => Container(
-              margin: EdgeInsets.only(left: 4, bottom: 4, top: 4),
+              margin: EdgeInsets.only(left: 4, bottom: 0, top: 0), // initial = top bottom = 4
               child: InkWell(
                 onTap: (){
                   Navigator.push(
