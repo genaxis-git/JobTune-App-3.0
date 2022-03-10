@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -19,6 +20,7 @@ import 'package:prokit_flutter/dashboard/utils/DbColors.dart';
 import 'package:prokit_flutter/defaultTheme/model/CategoryModel.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:prokit_flutter/main/utils/rating_bar.dart';
 
 import 'JTDashboardScreenGuest.dart';
@@ -32,16 +34,61 @@ class JTDashboardWidgetGuest extends StatefulWidget {
 }
 
 class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
-//  PageController pageController = PageController();
 
   List<Widget> pages = [];
   List<CategoryModel> categories = [];
   List<Db6BestDestinationData> mListings1 = [];
   int selectedIndex = 0;
-
   late List<NewVacancies> mListings3;
 
-  // functions starts //
+  @override
+  void initState() {
+    super.initState();
+    mListings3 = getJobList();
+    this.checkVersion();
+    this.checkProfile();
+    this.serviceList();
+    init();
+    Timer.periodic(Duration(seconds: 4), (Timer timer) {
+      if (_currentPage < 7) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeIn,
+      );
+    });
+  }
+
+  //// functions starts ////
+
+  // initialize current version
+  String userversion = '3.0.0';
+  // check latest version available
+  String latestversion = '';
+  Future<void> checkVersion() async {
+
+    print(server + "jtnew_user_selectlatestversion");
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectlatestversion"),
+        headers: {"Accept": "application/json"}
+    );
+
+    latestversion = json.decode(response.body);
+
+    if(userversion != latestversion){
+      showInDialog(context,
+          barrierDismissible: false,
+          child: AlertUpdateApp(),
+          backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+    }
+    
+  }
 
   List profile = [];
   Future<void> checkProfile() async {
@@ -49,7 +96,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String lgid = prefs.getString('email').toString();
 
-    _onLoading();
+    // _onLoading();
 
     if(lgid != "null") {
       http.Response response = await http.get(
@@ -212,7 +259,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
         }
       }
     }
-    finish(context); //stop the loading
+    // finish(context); //stop the loading
   }
 
   Future<void> countService(states,img) async {
@@ -243,30 +290,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   }
 
 
-  // functions ends //;
-
-  @override
-  void initState() {
-    super.initState();
-    // _onLoading();
-    mListings3 = getJobList();
-    this.checkProfile();
-    this.serviceList();
-    init();
-    Timer.periodic(Duration(seconds: 4), (Timer timer) {
-      if (_currentPage < 7) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-
-      pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeIn,
-      );
-    });
-  }
+  // functions ends //
 
   _onLoading() {
     showDialog(
@@ -1393,6 +1417,104 @@ class _AddressListState extends State<AddressList> {
             ),
           );
         }
+    );
+  }
+}
+
+
+class AlertUpdateApp extends StatefulWidget {
+  @override
+  _AlertUpdateAppState createState() => _AlertUpdateAppState();
+}
+
+class _AlertUpdateAppState extends State<AlertUpdateApp> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: dynamicBoxConstraints(),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: appStore.scaffoldBackground,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 10.0),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.network(
+                      mobile + "resized/rsz_120943848.jpg",
+                      width: context.width() * 0.70,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              10.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Update Available Now",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+              15.height,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "A new version has been released and is required for a better experience.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    ],
+                  ),
+                  25.height,
+                  GestureDetector(
+                    onTap: () {
+                      // finish(context);
+                      LaunchReview.launch(
+                        androidAppId: "com.bobdomo.jobtuneai",
+                        iOSAppId: "1563664635",
+                      );
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      decoration: BoxDecoration(color: Colors.blueAccent, borderRadius: BorderRadius.all(Radius.circular(5))),
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                      child: Center(
+                        child: Text("Update", style: boldTextStyle(color: white)),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              7.height,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
