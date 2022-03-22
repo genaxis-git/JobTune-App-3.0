@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-import 'package:prokit_flutter/defaultTheme/model/DTReviewModel.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/flutter_rating_bar.dart';
 import 'dart:convert';
@@ -25,6 +24,7 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
   String totalrating = "0";
   List ratinglist = [];
   Future<void> readTotal() async {
+    print(server + "jtnew_user_selecttotalrate&id=" + widget.id);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_selecttotalrate&id=" + widget.id),
@@ -64,7 +64,7 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                child: Image.network("https://jobtune.ai/gig/JobTune/assets/img/" + ratinglist[index]["profile_pic"],
+                child: Image.network(image + ratinglist[index]["profile_pic"],
                     height: 30, width: 30, fit: BoxFit.cover)
                     .cornerRadiusWithClipRRect(40),
                 decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black54),
@@ -74,7 +74,7 @@ class _JTReviewWidgetState extends State<JTReviewWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(ratinglist[index]["first_name"] + " " + ratinglist[index]["last_name"], style: boldTextStyle()),
+                  Text(ratinglist[index]["name"], style: boldTextStyle()),
                   Row(
                     children: [
                       IgnorePointer(

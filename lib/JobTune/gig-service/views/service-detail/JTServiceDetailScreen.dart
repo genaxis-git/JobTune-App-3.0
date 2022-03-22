@@ -821,7 +821,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              if(widget.page == "location-sorting" || widget.page == "category-sorting" || widget.page == "provider-page" || widget.page == "notifications"){
+              if(widget.page == "location-sorting" || widget.page == "category-sorting" || widget.page == "provider-page" || widget.page == "notifications" || widget.page == "ratings"){
                 Navigator.pop(
                   context,
                 );
@@ -1051,50 +1051,62 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                           //   ],
                           // ),
 
-                        // 10.height,
-                        // Row(
-                        //   children: [
-                        //     (double.parse(averagerate).toStringAsFixed(1) != "0.0")
-                        //     ? Container(
-                        //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                        //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        //       child: Row(
-                        //         children: [
-                        //           Icon(Icons.star_border, color: Colors.white, size: 14),
-                        //           8.width,
-                        //           Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                        //         ],
-                        //       ),
-                        //     ).onTap(() {
-                        //       Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (context) => JTReviewScreenUser(id: widget.id)),
-                        //       );
-                        //     })
-                        //     : Container(
-                        //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
-                        //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-                        //       child: Row(
-                        //         children: [
-                        //           Icon(Icons.star_border, color: Colors.white, size: 14),
-                        //           8.width,
-                        //           Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //     8.width,
-                        //     (totalrating != "0")
-                        //     ? Text(totalrating + ' ratings', style: secondaryTextStyle(size: 16)).onTap(() {
-                        //       Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (context) => JTReviewScreenUser(id: widget.id)),
-                        //       );
-                        //     })
-                        //     : Text('No ratings yet', style: secondaryTextStyle(size: 16)),
-                        //   ],
-                        // ),
+                        10.height,
+                        Row(
+                          children: [
+                            (double.parse(averagerate).toStringAsFixed(1) != "0.0")
+                            ? Container(
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.star_border, color: Colors.white, size: 14),
+                                  8.width,
+                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                                ],
+                              ),
+                            ).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
+                            })
+                            : Container(
+                              decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.star_border, color: Colors.white, size: 14),
+                                  8.width,
+                                  Text(double.parse(averagerate).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                                ],
+                              ),
+                            ).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
+                            }),
+                            8.width,
+                            (totalrating != "0")
+                            ? Text(totalrating + ' reviews', style: secondaryTextStyle(size: 16)).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
+                            })
+                            : Text('No reviews yet', style: secondaryTextStyle(size: 16)).onTap(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => JTReviewScreenUser(id: widget.id)),
+                              );
+                            })
+                          ],
+                        ),
                       ],
                       ).paddingAll(16),
                       Divider(height: 20,color: Colors.black26),

@@ -200,8 +200,6 @@ class _ServiceListState extends State<ServiceList> {
   Widget build(BuildContext context) {
     final deviceData = MediaQuery.of(context).size;
     var fontScaling = MediaQuery.of(context).textScaleFactor;
-    print("ayam");
-    print("parah " + indexlist.length.toString());
     return ListView.builder(
       itemCount: indexlist == null ? 0 : indexlist.length,
       itemBuilder: (BuildContext context, int index) {

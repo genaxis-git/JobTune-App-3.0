@@ -55,7 +55,9 @@ class JTOpenNotiScreenState extends State<JTOpenNotiScreen> {
       provider = follows[0]["name"];
     });
 
-    readService(follows[0]["attachment"]);
+    if(follows[0]["attachment"] != ""){
+      readService(follows[0]["attachment"]);
+    }
   }
 
   List info = [];
@@ -213,13 +215,14 @@ class JTOpenNotiScreenState extends State<JTOpenNotiScreen> {
                             ],
                           ),
                         ),
-                        20.height,
+                        10.height,
                         Padding(
                           padding: EdgeInsets.only(left: 16.0, right: 16.0),
                           child: Divider(height: 16),
                         ),
-                        20.height,
-                        Container(
+                        17.height,
+                        (follows[0]["attachment"] != "")
+                        ? Container(
                           margin: EdgeInsets.only(left: 10, right: 10, bottom: 16),
                           decoration: BoxDecoration(
                               boxShadow: defaultBoxShadow(),
@@ -299,6 +302,21 @@ class JTOpenNotiScreenState extends State<JTOpenNotiScreen> {
                                 ),
                               ),
                             ),
+                          ),
+                        ) : Container(),
+                        (follows[0]["attachment"] != "")
+                        ? Container(
+                            child: Image.network(
+                              mobile + "resized/newsletter.jpg",
+                              width: context.width() * 0.70,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                          : Container(
+                          child: Image.network(
+                            mobile + "resized/ratings.jpg",
+                            width: context.width() * 0.70,
+                            fit: BoxFit.cover,
                           ),
                         ),
                       ],

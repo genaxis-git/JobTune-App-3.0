@@ -4,11 +4,17 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/models/JTflutter_rating_bar.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/defaultTheme/model/DTReviewModel.dart';
 import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
+import 'package:prokit_flutter/main/utils/AppColors.dart';
+import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import '../../../../main.dart';
 import 'JTDrawerWidget.dart';
@@ -60,6 +66,8 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
     setState(() {
       totalrating = ratinglist.length.toString();
     });
+
+    readRatings();
   }
 
   List countrate = [];
@@ -70,6 +78,7 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
   double four = 0.0;
   double five = 0.0;
   Future<void> readRatings() async {
+    print(server + "jtnew_user_countrating&id=" + widget.id);
     http.Response response = await http.get(
         Uri.parse(
             server + "jtnew_user_countrating&id=" + widget.id),
@@ -80,37 +89,104 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
       countrate = json.decode(response.body);
     });
 
-    setState(() {
-      for(var m =0;m<countrate.length;m++) {
-        if(countrate[m]["amount"] == "0.0") {
+    for(var m =0;m<countrate.length;m++) {
+      print("hangpa");
+      print(countrate[m]["amount"]);
+      print(double.parse(countrate[m]["COUNT(amount)"]));
+      print(double.parse(totalrating));
+      if(countrate[m]["amount"] == "0.0") {
+        setState(() {
           zero = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
-        else if(countrate[m]["amount"] == "1.0") {
-          one = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
-        else if(countrate[m]["amount"] == "2.0") {
-          two = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
-        else if(countrate[m]["amount"] == "3.0") {
-          three = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
-        else if(countrate[m]["amount"] == "4.0") {
-          four = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
-        else if(countrate[m]["amount"] == "5.0") {
-          five = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
-        }
+        });
       }
+      else if(countrate[m]["amount"] == "1.0") {
+        setState(() {
+          one = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        });
+      }
+      else if(countrate[m]["amount"] == "2.0") {
+        setState(() {
+          two = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        });
+      }
+      else if(countrate[m]["amount"] == "3.0") {
+        setState(() {
+          three = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        });
+      }
+      else if(countrate[m]["amount"] == "4.0") {
+        setState(() {
+          four = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        });
+      }
+      else {
+        setState(() {
+          five = (double.parse(countrate[m]["COUNT(amount)"]) / double.parse(totalrating));
+        });
+      }
+    }
+  }
 
 
+  List info = [];
+  String servicename = "";
+  String rate = "0";
+  String desc = "";
+  String category = "";
+  String days = "";
+  String hours = "";
+  String location = "";
+  String proid = "";
+  String by = "Package";
+  String id = "";
+  Future<void> readService() async {
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectservice&id=" + widget.id),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      info = json.decode(response.body);
     });
+
+    setState(() {
+      servicename = info[0]["name"];
+      proid = info[0]["provider_id"];
+      id = info[0]["service_id"];
+      rate = double.parse(info[0]["rate"]).toStringAsFixed(2);
+      desc = info[0]["description"];
+      category = info[0]["category"];
+      days = info[0]["available_day"];
+      hours = info[0]["available_start"] + " to " + info[0]["available_end"];
+      location = info[0]["location"];
+      by = info[0]["rate_by"];
+    });
+  }
+
+  String identity = "";
+  Future<void> checkUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    if(lgid == null){
+      setState(() {
+        identity = "null";
+      });
+    }
+    else{
+      identity = lgid;
+    }
   }
 
   @override
   void initState() {
+    this.checkUser();
+    this.readService();
     this.readTotal();
     this.readAverage();
-    this.readRatings();
+    // this.readRatings();
     super.initState();
   }
 
@@ -123,263 +199,28 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
 
   @override
   Widget build(BuildContext context) {
-    print(five);
     Widget reviewListing() {
       return JTReviewWidget(id:widget.id);
     }
 
-    Widget mobileWidget() {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 200,
-              decoration: BoxDecoration(gradient: JTdefaultThemeGradient()),
-              alignment: Alignment.center,
-              child: ConstrainedBox(
-                constraints: JTdynamicBoxConstraints(),
-                child: Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FittedBox(child: Text('4.2', style: boldTextStyle(size: 40, color: white))),
-                        IgnorePointer(
-                          child: RatingBar(
-                            onRatingUpdate: (r) {},
-                            itemSize: 14.0,
-                            itemBuilder: (context, _) => Icon(Icons.star_border, color: Colors.amber),
-                            initialRating: 0.0,
-                          ),
-                        ),
-                        10.height,
-                        FittedBox(child: Text(Random().nextInt(50000000).toString().formatNumberWithComma(), style: boldTextStyle(color: white))),
-                      ],
-                    ).paddingOnly(left: 8, right: 8).expand(flex: 1),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Text('5', style: primaryTextStyle(color: white)),
-                            10.width,
-                            LinearProgressIndicator(
-                              value: 0.6,
-                              backgroundColor: white.withOpacity(0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(white),
-                            ).expand(),
-                            10.width,
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('4', style: primaryTextStyle(color: white)),
-                            10.width,
-                            LinearProgressIndicator(
-                              value: 0.4,
-                              backgroundColor: white.withOpacity(0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(white),
-                            ).expand(),
-                            10.width,
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('3', style: primaryTextStyle(color: white)),
-                            10.width,
-                            LinearProgressIndicator(
-                              value: 0.9,
-                              backgroundColor: white.withOpacity(0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(white),
-                            ).expand(),
-                            10.width,
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('2', style: primaryTextStyle(color: white)),
-                            10.width,
-                            LinearProgressIndicator(
-                              value: 0.8,
-                              backgroundColor: white.withOpacity(0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(white),
-                            ).expand(),
-                            10.width,
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text('1', style: primaryTextStyle(color: white)),
-                            10.width,
-                            LinearProgressIndicator(
-                              value: 0.2,
-                              backgroundColor: white.withOpacity(0.2),
-                              valueColor: AlwaysStoppedAnimation<Color>(white),
-                            ).expand(),
-                            10.width,
-                          ],
-                        ),
-                      ],
-                    ).expand(flex: 2),
-                  ],
-                ),
-              ),
-            ),
-            8.height,
-            Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
-              margin: EdgeInsets.all(8),
-              decoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor), borderRadius: BorderRadius.circular(8)),
-              child: Text('Write a Review', style: boldTextStyle(color: Color(0xFF0A79DF))),
-            ).onTap(() async {
-              DTReviewModel? model = await showInDialog(context, child: WriteReviewDialog(), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
-              if (model != null) {
-                list.insert(0, model);
-                setState(() {});
-              }
-            }),
-            reviewListing(),
-          ],
-        ),
-      );
-    }
-
-    Widget webWidget() {
-      return Row(
-        children: [
-          16.width,
-          Expanded(
-            flex: 3,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    height: 200,
-                    width: JTdynamicWidth(context),
-                    decoration: BoxDecoration(gradient: JTdefaultThemeGradient(), borderRadius: BorderRadius.circular(10)),
-                    alignment: Alignment.center,
-                    child: ConstrainedBox(
-                      constraints: JTdynamicBoxConstraints(),
-                      child: Row(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FittedBox(child: Text('4.2', style: boldTextStyle(size: 40, color: white))),
-                              IgnorePointer(
-                                child: RatingBar(
-                                  onRatingUpdate: (r) {},
-                                  itemSize: 14.0,
-                                  itemBuilder: (context, _) => Icon(Icons.star_border, color: Colors.amber),
-                                  initialRating: 0.0,
-                                ),
-                              ),
-                              10.height,
-                              FittedBox(child: Text(Random().nextInt(50000000).toString().formatNumberWithComma(), style: boldTextStyle(color: white))),
-                            ],
-                          ).paddingOnly(left: 8, right: 8).expand(flex: 1),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('5', style: primaryTextStyle(color: white)),
-                                  10.width,
-                                  LinearProgressIndicator(
-                                    value: 0.6,
-                                    backgroundColor: white.withOpacity(0.2),
-                                    valueColor: AlwaysStoppedAnimation<Color>(white),
-                                  ).expand(),
-                                  10.width,
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('4', style: primaryTextStyle(color: white)),
-                                  10.width,
-                                  LinearProgressIndicator(
-                                    value: 0.4,
-                                    backgroundColor: white.withOpacity(0.2),
-                                    valueColor: AlwaysStoppedAnimation<Color>(white),
-                                  ).expand(),
-                                  10.width,
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('3', style: primaryTextStyle(color: white)),
-                                  10.width,
-                                  LinearProgressIndicator(
-                                    value: 0.9,
-                                    backgroundColor: white.withOpacity(0.2),
-                                    valueColor: AlwaysStoppedAnimation<Color>(white),
-                                  ).expand(),
-                                  10.width,
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('2', style: primaryTextStyle(color: white)),
-                                  10.width,
-                                  LinearProgressIndicator(
-                                    value: 0.8,
-                                    backgroundColor: white.withOpacity(0.2),
-                                    valueColor: AlwaysStoppedAnimation<Color>(white),
-                                  ).expand(),
-                                  10.width,
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('1', style: primaryTextStyle(color: white)),
-                                  10.width,
-                                  LinearProgressIndicator(
-                                    value: 0.2,
-                                    backgroundColor: white.withOpacity(0.2),
-                                    valueColor: AlwaysStoppedAnimation<Color>(white),
-                                  ).expand(),
-                                  10.width,
-                                ],
-                              ),
-                            ],
-                          ).expand(flex: 2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  16.height,
-                  Container(
-                    alignment: Alignment.center,
-                    width: JTdynamicWidth(context),
-                    padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
-                    margin: EdgeInsets.all(8),
-                    decoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor), borderRadius: BorderRadius.circular(8)),
-                    child: Text('Write a Review', style: boldTextStyle(color: Color(0xFF0A79DF))),
-                  ).onTap(() async {
-                    DTReviewModel? model = await showInDialog(context, child: WriteReviewDialog(), backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
-                    if (model != null) {
-                      list.insert(0, model);
-                      setState(() {});
-                    }
-                  }),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 5,
-            child: reviewListing(),
-          ),
-        ],
-      );
-    }
-
     return Scaffold(
-      appBar: JTappBar(context, 'Review & Rating'),
-      drawer: JTDrawerWidgetUser(),
+      appBar: AppBar(
+        backgroundColor: appStore.appBarColor,
+        title: jtprofile_appBarTitleWidget(context, 'Review & Rating'),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => JTServiceDetailScreen(
+                      id: widget.id,
+                      page: "details",
+                    )),
+              );
+            }
+        ),
+      ),
       body: JTContainerX(
         mobile: SingleChildScrollView(
           child: Column(
@@ -477,6 +318,36 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
                   ),
                 ),
               ),
+              8.height,
+              (identity != "null")
+              ? Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor), borderRadius: BorderRadius.circular(8)),
+                child: Text('Write a Review', style: boldTextStyle(color: appColorPrimary)),
+              ).onTap(() async {
+                showInDialog(context,
+                    child: WriteReviewDialog(
+                      bid: "",
+                      sid: widget.id,
+                      provider: proid,
+                    ),
+                    backgroundColor: Colors.transparent, contentPadding: EdgeInsets.all(0));
+              })
+              : Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.only(top: 16, bottom: 16, left: 8, right: 8),
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).dividerColor), borderRadius: BorderRadius.circular(8)),
+                child: Text('Login to Write a Review', style: boldTextStyle(color: appColorPrimary)),
+              ).onTap(() async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => JTSignInScreen()),
+                );
+              }),
               reviewListing(),
             ],
           ),
@@ -487,15 +358,81 @@ class _JTReviewScreenUserState extends State<JTReviewScreenUser> {
 }
 
 // ignore: must_be_immutable
-class WriteReviewDialog extends StatelessWidget {
+class WriteReviewDialog extends StatefulWidget {
+  const WriteReviewDialog({
+    Key? key,
+    required this.bid,
+    required this.sid,
+    required this.provider,
+  }) : super(key: key);
+  final String bid;
+  final String sid;
+  final String provider;
+  @override
+  _WriteReviewDialogState createState() => _WriteReviewDialogState();
+}
+
+class _WriteReviewDialogState extends State<WriteReviewDialog> {
   var reviewCont = TextEditingController();
   var reviewFocus = FocusNode();
   double ratting = 0.0;
 
+  // function starts //
+
+  Future<void> sendRating(rate,comm) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.get(
+        Uri.parse(
+            server + "jtnew_user_insertrating&bid=" + widget.bid
+                + "&sid=" + widget.sid
+                + "&to=" + widget.provider
+                + "&rating=" + rate
+                + "&comment=" + comm
+                + "&from=" + lgid
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    var currentdate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
+
+    print(server + "jtnew_provider_insertnewnoti"
+        + "&subject=" + "New Review For You.."
+        + "&message=" + "You have received new review from me: \n\nRating: "+rate+"\nComment: "+comm+"\n\nThis review may help you to acknowledge others' opinion and level of satisfaction towards your service."
+        + "&attachment=" + ""
+        + "&from=" + lgid
+        + "&to=" + widget.provider
+        + "&date=" + currentdate);
+    http.get(
+        Uri.parse(
+            server + "jtnew_provider_insertnewnoti"
+                + "&subject=" + "New Review For You.."
+                + "&message=" + "You have received new review from me: \n\nRating: "+rate+"\nComment: "+comm+"\n\nThis review may help you to acknowledge others' opinion and level of satisfaction towards your service."
+                + "&attachment=" + ""
+                + "&from=" + lgid
+                + "&to=" + widget.provider
+                + "&date=" + currentdate
+        ),
+        headers: {"Accept": "application/json"}
+    );
+
+    finish(context);
+    toast("Your rating have been submitted. Thank you!");
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => JTReviewScreenUser(id: widget.sid)),
+    );
+  }
+
+  // function ends //
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: JTdynamicBoxConstraints(),
+      constraints: dynamicBoxConstraints(),
       child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -553,6 +490,7 @@ class WriteReviewDialog extends StatelessWidget {
               16.height,
               TextField(
                 controller: reviewCont,
+                maxLength: 250,
                 focusNode: reviewFocus,
                 style: primaryTextStyle(),
                 decoration: InputDecoration(
@@ -560,7 +498,7 @@ class WriteReviewDialog extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16),
                   labelStyle: secondaryTextStyle(),
                   border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: Color(0xFF0A79DF))),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appColorPrimary)),
                   enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0), borderSide: BorderSide(color: appStore.textSecondaryColor!)),
                 ),
                 keyboardType: TextInputType.multiline,
@@ -572,20 +510,11 @@ class WriteReviewDialog extends StatelessWidget {
               30.height,
               GestureDetector(
                 onTap: () {
-                  if (reviewCont.text != '') {
-                    var reviewData = DTReviewModel();
-                    reviewData.name = "Benjamin";
-                    reviewData.comment = reviewCont.text.validate();
-                    reviewData.ratting = ratting;
-                    finish(context, reviewData);
-                    toast('Review is submitted');
-                  } else {
-                    toast(errorThisFieldRequired);
-                  }
+                  sendRating(ratting.toString(),reviewCont.text);
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.all(Radius.circular(5))),
+                  decoration: BoxDecoration(color: appColorPrimary, borderRadius: BorderRadius.all(Radius.circular(5))),
                   padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Center(
                     child: Text("Submit", style: boldTextStyle(color: white)),
