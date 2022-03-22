@@ -14,6 +14,7 @@ import 'package:prokit_flutter/JobTune/gig-guest/models/JTNewVacancies.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailWidget.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/searching-result/JTSearchingResultUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTChangeAddress.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
 import 'package:prokit_flutter/dashboard/model/db5/Db5Model.dart';
 import 'package:prokit_flutter/dashboard/utils/DbColors.dart';
@@ -67,7 +68,7 @@ class _JTDashboardWidgetGuestState extends State<JTDashboardWidgetGuest> {
   //// functions starts ////
 
   // initialize current version
-  String userversion = '3.0.0';
+  String userversion = '3.2.0';
   // check latest version available
   String latestversion = '';
   Future<void> checkVersion() async {
@@ -1226,14 +1227,44 @@ mExpandedSheet(BuildContext context) {
       minChildSize: 0.2,
       maxChildSize: 1,
       builder: (context, scrollController) {
-        return Container(
-          color: appStore.scaffoldBackground,
-          child: GestureDetector(
-            onTap: () {
-              finish(context);
-            },
-            child: AddressList(),
-          ),
+        return Stack(
+          children: [
+            Container(
+              color: appStore.scaffoldBackground,
+              child: GestureDetector(
+                onTap: () {
+                  finish(context);
+                },
+                child: AddressList(),
+              ),
+            ),
+            Positioned(
+              bottom: 2,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => JTChangeAddressScreen(
+                            id: "0",
+                            page: "gig-index",
+                          ),
+                        ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: getColorFromHex('#87afe0'),
+                  ),
+                  child: Text(
+                    "Manage Address",
+                    style: primaryTextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       },
     ),
@@ -1317,14 +1348,15 @@ class _AddressListState extends State<AddressList> {
     }
 
     if(arrlist.contains("1") == false){
-      print(arrlist);
       print("belum");
+      print(arrlist);
+      arrlist = [];
       print(a);
       selectedone(a);
     }
     else{
-      print(arrlist);
       print("dah");
+      print(arrlist);
       arrlist = [];
       Navigator.pop(context);
       Navigator.pop(context);
@@ -1341,7 +1373,6 @@ class _AddressListState extends State<AddressList> {
 
   @override
   Widget build(BuildContext context) {
-
     void _onHorizontalLoading1() {
       showDialog(
         context: context,

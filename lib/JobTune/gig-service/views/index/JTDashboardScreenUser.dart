@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDrawerGSOnly.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/side-menu/JTSideMenuWidget.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDashboardWidget.dart';
 import 'package:prokit_flutter/defaultTheme/screen/DTDrawerWidget.dart';
 import 'package:prokit_flutter/main.dart';
@@ -51,7 +52,8 @@ class _JTDashboardSreenUserState extends State<JTDashboardSreenUser> {
             backgroundColor: appStore.appBarColor,
             title: appBarTitleWidget(context, 'Gig Service'),
           ),
-          drawer: JTDrawerWidgetUser(),
+          drawer: JTSideMenuWidget(name: "Gig-Service"),
+          // drawer: JTDrawerWidgetUser(),
           // drawer: JTDrawerGSOnlyWidgetUser(),
           body: JTDashboardWidgetUser(),
         ),

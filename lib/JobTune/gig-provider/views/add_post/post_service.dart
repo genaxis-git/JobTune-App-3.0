@@ -1,26 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
-import 'package:prokit_flutter/JobTune/gig-guest/views/index/views/JTDashboardScreenGuest.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
-import 'package:prokit_flutter/JobTune/gig-service/views/index/JTProductDetailScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/service-detail/JTServiceDetailScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTAboutScreen.dart';
-import 'package:prokit_flutter/defaultTheme/screen/DTPaymentScreen.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
-import 'package:prokit_flutter/main/utils/AppConstant.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
-import 'package:prokit_flutter/JobTune/gig-product/views/index/JTDrawerWidgetProduct.dart';
-import '../ongoing_order/JTOrderScreen.dart';
-import '../co_de_booking/JTCoDeBookingScreen.dart';
 
 class PostService extends StatefulWidget {
   @override
@@ -150,18 +140,54 @@ class _PostServiceState extends State<PostService> {
       again = response.body;
     });
 
+    Navigator.pop(context);
+
     if(by == "Package") {
       insertPackage(again);
     }
     else {
-      // navigate: product detail
-      Navigator.push(context,
-        MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-          id: again,
-          page: "detail"
-        )),
+      readFollows(again);
+    }
+  }
+
+  List follows = [];
+  Future<void> readFollows(ids) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String lgid = prefs.getString('email').toString();
+
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_provider_selectfollowing&id="+ lgid
+        ),
+        headers: {"Accept": "application/json"});
+
+    this.setState(() {
+      follows = json.decode(response.body);
+    });
+
+    for(var k=0; k<follows.length; k++){
+      var currentdate = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
+
+      http.get(
+          Uri.parse(
+              server + "jtnew_provider_insertnewnoti"
+                  + "&subject=" + "New Service Available!"
+                  + "&message=" + "Your favourite provider have posted a new service. Let's see if you interested with our new service. Just click attachment available below and you will be directed to our posting."
+                  + "&attachment=" + ids
+                  + "&from=" + lgid
+                  + "&to=" + follows[k]["user"]
+                  + "&date=" + currentdate
+          ),
+          headers: {"Accept": "application/json"}
       );
     }
+
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
+          id: ids,
+          page: "detail"
+      )),
+    );
   }
 
   Future<void> insertPackage(serviceid) async {
@@ -195,14 +221,9 @@ class _PostServiceState extends State<PostService> {
       }
     }
 
-    // alert: post success
-    Navigator.push(context,
-      MaterialPageRoute(builder: (context) => JTServiceDetailScreen(
-        id: serviceid,
-        page: "detail"
-      )),
-    );
+    readFollows(serviceid);
   }
+
 
   List info = [];
   Future<void> readService(serviceid) async {
@@ -513,6 +534,38 @@ class _PostServiceState extends State<PostService> {
 
   @override
   Widget build(BuildContext context) {
+
+    void _onHorizontalLoading1() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: appStore.scaffoldBackground,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            contentPadding: EdgeInsets.all(0.0),
+            content: Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Row(
+                children: [
+                  16.width,
+                  CircularProgressIndicator(
+                    backgroundColor: Color(0xffD6D6D6),
+                    strokeWidth: 4,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                  ),
+                  16.width,
+                  Text(
+                    "Please Wait....",
+                    style: primaryTextStyle(color: appStore.textPrimaryColor),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
       child: SingleChildScrollView(
@@ -902,6 +955,7 @@ class _PostServiceState extends State<PostService> {
                                 BorderSide(color: appStore.textSecondaryColor!)),
                           ),
                           textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                       9.width,
@@ -924,6 +978,7 @@ class _PostServiceState extends State<PostService> {
                                 BorderSide(color: appStore.textSecondaryColor!)),
                           ),
                           textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                       8.width,
@@ -1010,6 +1065,7 @@ class _PostServiceState extends State<PostService> {
               16.height,
               GestureDetector(
                  onTap: () {
+                   _onHorizontalLoading1();
                    choosenday = [];
                    if(isChecked1 == true){
                      choosenday.add("Monday");

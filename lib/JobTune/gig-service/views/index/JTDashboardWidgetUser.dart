@@ -617,14 +617,15 @@ class _AddressListState extends State<AddressList> {
     }
 
     if(arrlist.contains("1") == false){
-      print(arrlist);
       print("belum");
+      print(arrlist);
+      arrlist = [];
       print(a);
       selectedone(a);
     }
     else{
-      print(arrlist);
       print("dah");
+      print(arrlist);
       arrlist = [];
       Navigator.pop(context);
       Navigator.pop(context);
@@ -704,7 +705,7 @@ class _AddressListState extends State<AddressList> {
                           ),
                         ),
                         title: Text(
-                          addresslist[index]["added_name"],
+                          addresslist[index]["added_city"] + ", " + addresslist[index]["added_state"],
                           style: boldTextStyle(),
                         ),
                         subtitle: Text(
@@ -725,21 +726,7 @@ class _AddressListState extends State<AddressList> {
                     data: Theme.of(context).copyWith(
                       unselectedWidgetColor: appStore.textPrimaryColor,
                     ),
-                    child: RadioListTile(
-                        controlAffinity: ListTileControlAffinity.trailing,
-                        title: Text(
-                          " ",
-                          style: boldTextStyle(),
-                        ),
-                        subtitle: Text(
-                          " ",
-                          style: secondaryTextStyle(),
-                        ),
-                        value: " ",
-                        groupValue: gender1,
-                        onChanged: (dynamic value) {
-
-                        }),
+                    child: Container()
                   ),
                 ),
               ],

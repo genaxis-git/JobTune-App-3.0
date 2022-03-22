@@ -248,7 +248,7 @@ class _JTServiceListCategoryState extends State<JTServiceListCategory> {
               Column(
                 children: [
                   Image.network(
-                      "https://jobtune.ai/gig/JobTune/assets/mobile/filter.jpg",
+                      "https://bobdomo.com/jobtuneai/JobTune/gig/JobTune/assets/mobile/filter.jpg",
                       width: 250
                   ),
                   Text(
@@ -533,7 +533,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                         child: Stack(
                           children: [
                             Image.network(
-                              "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                              image + servicelist[index]["profile_pic"],
                               fit: BoxFit.cover,
                               height: 110,
                               width: 126,
@@ -595,7 +595,7 @@ class _JTServiceListUserState extends State<JTServiceListUser> {
                       child: Stack(
                         children: [
                           Image.network(
-                            "https://jobtune.ai/gig/JobTune/assets/img/" + servicelist[index]["profile_pic"],
+                            image + servicelist[index]["profile_pic"],
                             fit: BoxFit.cover,
                             height: 110,
                             width: 126,
@@ -798,7 +798,7 @@ class _JTOtherLstState extends State<JTOtherLst> {
                       child: Stack(
                         children: [
                           Image.network(
-                            "https://jobtune.ai/gig/JobTune/assets/img/" + otherlist[index]["profile_pic"],
+                            image + otherlist[index]["profile_pic"],
                             fit: BoxFit.cover,
                             height: 110,
                             width: 126,

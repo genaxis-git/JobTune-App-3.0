@@ -12,6 +12,7 @@ import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTBank
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTContactScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTEmergencyScreenProvider.dart';
 import 'package:prokit_flutter/JobTune/gig-provider/views/profile-setting/JTPersonalScreenProvider.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
 
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTAddressScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile-setting/JTBankScreenUser.dart';
@@ -158,10 +159,12 @@ class _JTProfileScreenProviderState extends State<JTProfileScreenProvider> {
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => JTAccountServiceScreen()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => JTDashboardSreenUser()),
+                // );
+                Navigator.pop(context);
+                Navigator.pop(context);
               }
           ),
         ),

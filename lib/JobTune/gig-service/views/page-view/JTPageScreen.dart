@@ -621,7 +621,7 @@ class JTFollowersState extends State<JTFollowers> {
                                         fontSize: 17
                                     )
                                 )
-                                : Text("unknown",
+                                : Text(follows[index]["city"] + ", " + follows[index]["state"],
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(

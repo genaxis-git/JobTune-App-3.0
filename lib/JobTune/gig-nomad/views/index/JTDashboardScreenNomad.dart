@@ -46,7 +46,7 @@ class _JTDashboardScreenNomadState extends State<JTDashboardScreenNomad> {
               builder: (context) => Scaffold(
                 appBar: AppBar(
                   backgroundColor: appStore.appBarColor,
-                  title: appBarTitleWidget(context, 'Gig Nomad'),
+                  title: appBarTitleWidget(context, 'Explore Jobs'),
                 ),
                 drawer: JTDrawerWidgetEmployee(),
                 body: JTDashboardWidgetNomad(),

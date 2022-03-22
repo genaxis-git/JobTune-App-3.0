@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:collection/collection.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:prokit_flutter/JobTune/constructor/server.dart';
 import 'package:prokit_flutter/JobTune/gig-guest/views/register-login/JTSignInScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/booking-form/JTBookingFormScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/index/JTDashboardScreenUser.dart';
+import 'package:prokit_flutter/JobTune/gig-service/views/index/JTReviewScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/page-view/JTPageScreen.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileScreenUser.dart';
 import 'package:prokit_flutter/JobTune/gig-service/views/profile/JTProfileWidgetUser.dart';
@@ -237,6 +239,41 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     });
   }
 
+  String totalreview = "0";
+  List reviewlist = [];
+  List reviewarr = [0];
+  String reviewavg = "0.0";
+  Future<void> readReviews() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_selectreview&id=" + proid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      reviewlist = json.decode(response.body);
+    });
+
+    setState(() {
+      totalreview = reviewlist.length.toString();
+    });
+
+    averageReview();
+  }
+
+  String averagereview = "0.0";
+  Future<void> averageReview() async {
+    http.Response response = await http.get(
+        Uri.parse(
+            server + "jtnew_user_averagereview&id=" + proid),
+        headers: {"Accept": "application/json"}
+    );
+
+    this.setState(() {
+      averagereview = response.body;
+    });
+  }
+
   List selectedaddress = [];
   Future<void> readAddress() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -319,6 +356,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
     this.readProfile();
     this.readAverage();
     this.readTotal();
+    this.readReviews();
   }
 
   // function ends //
@@ -633,7 +671,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         alignment: Alignment.center,
         width: context.width() / 2,
         decoration: BoxDecoration(color: Color(0xFF0A79DF), boxShadow: defaultBoxShadow()),
-        child: Text('Call Provider', style: boldTextStyle(color: white)),
+        child: Text('Contact Provider', style: boldTextStyle(color: white)),
       ).onTap(() {
         // Do your logic
         print("ayam");
@@ -783,7 +821,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              if(widget.page == "location-sorting" || widget.page == "category-sorting" || widget.page == "provider-page"){
+              if(widget.page == "location-sorting" || widget.page == "category-sorting" || widget.page == "provider-page" || widget.page == "notifications"){
                 Navigator.pop(
                   context,
                 );
@@ -945,6 +983,73 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                               ),
                             ],
                           ),
+
+                          // 10.height,
+                          // Row(
+                          //   children: [
+                          //     (double.parse(averagereview).toStringAsFixed(1) != "0.0")
+                          //         ? Container(
+                          //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                          //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                          //       child: Row(
+                          //         children: [
+                          //           Icon(Icons.star_border, color: Colors.white, size: 14),
+                          //           8.width,
+                          //           Text(double.parse(averagereview).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                          //         ],
+                          //       ),
+                          //     ).onTap(() {
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => JTReviewScreenUser(id: widget.id)),
+                          //       );
+                          //     })
+                          //         : Container(
+                          //       decoration: BoxDecoration(color: Color(0xFF0A79DF), borderRadius: BorderRadius.circular(16)),
+                          //       padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+                          //       child: Row(
+                          //         children: [
+                          //           Icon(Icons.star_border, color: Colors.white, size: 14),
+                          //           8.width,
+                          //           Text(double.parse(averagereview).toStringAsFixed(1), style: primaryTextStyle(color: white)),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     8.width,
+                          //     (totalreview != "0")
+                          //         ? Text(totalreview + ' reviews', style: secondaryTextStyle(size: 16)).onTap(() {
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => JTReviewScreen(id: proid)),
+                          //       );
+                          //     })
+                          //         : Row(
+                          //       children: [
+                          //         Text('No reviews yet', style: secondaryTextStyle(size: 16)).onTap(() {
+                          //           Navigator.push(
+                          //             context,
+                          //             MaterialPageRoute(
+                          //                 builder: (context) => JTReviewScreen(id: proid)),
+                          //           );
+                          //         })
+                          //         // TextButton.icon(
+                          //         //     onPressed: () {
+                          //         //       toast('Flat button with icon');
+                          //         //     },
+                          //         //     icon: Icon(
+                          //         //       Icons.add_circle_outline,
+                          //         //       color: Colors.indigoAccent,
+                          //         //     ),
+                          //         //     label: Text(
+                          //         //       '',
+                          //         //       style: primaryTextStyle(),
+                          //         //     )),
+                          //       ],
+                          //     )
+                          //   ],
+                          // ),
 
                         // 10.height,
                         // Row(

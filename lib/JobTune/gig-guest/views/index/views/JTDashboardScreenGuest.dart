@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:prokit_flutter/JobTune/gig-guest/views/side-menu/JTSideMenuWidget.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
 
 import 'JTDashboardWidgetGuest.dart';
 import 'JTDrawerGSOnly.dart';
-import 'JTDrawerWidgetGuest.dart';
 
 
 class JTDashboardScreenGuest extends StatefulWidget {
@@ -64,7 +64,8 @@ class _JTDashboardScreenGuestState extends State<JTDashboardScreenGuest> {
             title: appBarTitleWidget(context, greet),
           ),
           // drawer: JTDrawerWidgetGuest(),
-          drawer: JTDrawerGSOnlyWidgetUser(),
+          // drawer: JTDrawerGSOnlyWidgetUser(),
+          drawer: JTSideMenuWidget(name: "Home"),
           body: JTDashboardWidgetGuest(),
         ),
       ),

@@ -129,8 +129,7 @@ class _JTDrawerWidgetGuestState extends State<JTDrawerWidgetGuest> {
                         style: boldTextStyle(color: Colors.black)),
                   ).onTap(() {
                     appStore.setDrawerItemIndex(-1);
-                    JTDashboardScreenNomad(id: "Employee")
-                        .launch(context, isNewTask: true);
+                    JTDashboardScreenNomad(id: "Employee").launch(context, isNewTask: true);
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(builder: (context) => JTMaintenanceScreen()),

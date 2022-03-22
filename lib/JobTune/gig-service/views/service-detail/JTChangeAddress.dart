@@ -12,9 +12,7 @@ import 'package:prokit_flutter/defaultTheme/utils/DTDataProvider.dart';
 import 'package:prokit_flutter/main.dart';
 import 'package:prokit_flutter/main/utils/AppColors.dart';
 import 'package:prokit_flutter/main/utils/AppWidget.dart';
-import 'package:prokit_flutter/theme2/utils/T2Colors.dart';
 import 'package:prokit_flutter/theme7/utils/T7Colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'JTServiceDetailScreen.dart';
 
@@ -128,16 +126,16 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
     }
 
     if(arrlist.contains("1") == false){
-      print(arrlist);
       print("belum");
+      print(arrlist);
+      arrlist = [];
       print(a);
       selectedone(a);
     }
     else{
-      print(arrlist);
       print("dah");
+      print(arrlist);
       arrlist = [];
-      // readAddress("last");
       Navigator.pop(context);
       Navigator.pop(context);
       JTDashboardSreenUser().launch(context, isNewTask: true);
@@ -160,6 +158,38 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    void _onHorizontalLoading1() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: appStore.scaffoldBackground,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            contentPadding: EdgeInsets.all(0.0),
+            content: Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Row(
+                children: [
+                  16.width,
+                  CircularProgressIndicator(
+                    backgroundColor: Color(0xffD6D6D6),
+                    strokeWidth: 4,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                  ),
+                  16.width,
+                  Text(
+                    "Please Wait....",
+                    style: primaryTextStyle(color: appStore.textPrimaryColor),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appStore.appBarColor,
@@ -281,6 +311,7 @@ class JTChangeAddressScreenState extends State<JTChangeAddressScreen> {
                   8.height,
                   GestureDetector(
                     onTap: () async {
+                      _onHorizontalLoading1();
                       allzero(ids[0]);
                     },
                     child: Container(

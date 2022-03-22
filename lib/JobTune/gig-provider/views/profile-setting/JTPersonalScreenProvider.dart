@@ -71,7 +71,7 @@ class _JTPersonalScreenProviderState extends State<JTPersonalScreenProvider> {
   }
 
   List category = [];
-  List<String> listOfCategory = ['Industry Type..'];
+  List<String> listOfCategory = ['Industry Type..', 'Arts/Creative Design', 'Journalist/Editors', 'Entertainment', 'Education/Training'];
   Future<void> readCategory() async {
     http.Response response = await http.get(
         Uri.parse(
