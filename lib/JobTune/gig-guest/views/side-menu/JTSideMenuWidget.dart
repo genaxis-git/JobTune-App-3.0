@@ -202,21 +202,21 @@ class _JTSideMenuWidgetState extends State<JTSideMenuWidget> {
                               appStore.setDrawerItemIndex(-1);
                               JTDashboardSreenUser().launch(context, isNewTask: true);
                             }),
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child: Text('Explore Jobs',
-                                  style: boldTextStyle(color: Colors.black)),
-                            ).onTap(() {
-                              appStore.setDrawerItemIndex(-1);
-                              JTDashboardScreenNomad(id: "Employee").launch(context, isNewTask: true);
-                            }),
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child: Text('For Employer',
-                                  style: boldTextStyle(color: Colors.black)),
-                            ).onTap(() {
-                              gotoEmployer();
-                            }),
+                            // Container(
+                            //   padding: EdgeInsets.all(16),
+                            //   child: Text('Explore Jobs',
+                            //       style: boldTextStyle(color: Colors.black)),
+                            // ).onTap(() {
+                            //   appStore.setDrawerItemIndex(-1);
+                            //   JTDashboardScreenNomad(id: "Employee").launch(context, isNewTask: true);
+                            // }),
+                            // Container(
+                            //   padding: EdgeInsets.all(16),
+                            //   child: Text('For Employer',
+                            //       style: boldTextStyle(color: Colors.black)),
+                            // ).onTap(() {
+                            //   gotoEmployer();
+                            // }),
                             Divider(height: 16, color: Colors.blueGrey),
                             Container(
                               padding: EdgeInsets.all(16),
@@ -341,22 +341,22 @@ class _JTSideMenuWidgetState extends State<JTSideMenuWidget> {
                               appStore.setDrawerItemIndex(-1);
                               ServiceScreen().launch(context);
                             }),
-                            Divider(height: 16, color: Colors.blueGrey),
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child: Text('Explore Jobs',
-                                  style: boldTextStyle(color: Colors.black)),
-                            ).onTap(() {
-                              appStore.setDrawerItemIndex(-1);
-                              JTDashboardScreenNomad(id: "Employee").launch(context, isNewTask: true);
-                            }),
-                            Container(
-                              padding: EdgeInsets.all(16),
-                              child: Text('For Employer',
-                                  style: boldTextStyle(color: Colors.black)),
-                            ).onTap(() {
-                              gotoEmployer();
-                            }),
+                            // Divider(height: 16, color: Colors.blueGrey),
+                            // Container(
+                            //   padding: EdgeInsets.all(16),
+                            //   child: Text('Explore Jobs',
+                            //       style: boldTextStyle(color: Colors.black)),
+                            // ).onTap(() {
+                            //   appStore.setDrawerItemIndex(-1);
+                            //   JTDashboardScreenNomad(id: "Employee").launch(context, isNewTask: true);
+                            // }),
+                            // Container(
+                            //   padding: EdgeInsets.all(16),
+                            //   child: Text('For Employer',
+                            //       style: boldTextStyle(color: Colors.black)),
+                            // ).onTap(() {
+                            //   gotoEmployer();
+                            // }),
                             Divider(height: 16, color: Colors.blueGrey),
                             Container(
                               padding: EdgeInsets.all(16),
