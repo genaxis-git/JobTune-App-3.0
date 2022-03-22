@@ -914,8 +914,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                       : JTpriceWidget(min, fontSize: 28, textColor: Color(0xFF0A79DF)),
                                 ],
                               ),
-                              (email != proid)
-                              ? (likestatus == "true")
+                              (likestatus == "true")
                                   ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -981,8 +980,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                                   ),
                                   SizedBox(width: 10,)
                                 ],
-                              )
-                              : Container()
+                              ),
                             ],
                           ),
 
@@ -1425,9 +1423,7 @@ class _JTServiceDetailScreenState extends State<JTServiceDetailScreen> {
                 ],
               ),
             ),
-            (email != proid)
-            ? Positioned(bottom: 0, child: buttonWidget())
-            : Container(),
+            Positioned(bottom: 0, child: buttonWidget()),
           ],
         ),
         useFullWidth: true,
