@@ -1,3 +1,14 @@
+# Things to do right after clone JobTune-App-3.0 (Important)
+- run these command in your terminal
+- 1. git branch --verbose (if you see only master listed, proceed no. ii)
+- 2. git checkout -b development
+- 3. git pull origin development
+- 4. git push origin development
+- 5. git checkout master
+- 6. git pull origin master
+
+
+
 # prokit_flutter
 
 # List of Video Tutorials
